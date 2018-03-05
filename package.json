@@ -1,0 +1,42 @@
+{
+  "name": "@litert/redis",
+  "version": "0.1.1",
+  "description": "A redis protocol implement for Node.js.",
+  "main": "./dist/index.js",
+  "scripts": {
+    "prepare": "npm run rebuild",
+    "build": "tsc -p tsconfig.json",
+    "rebuild": "npm run clean && npm run lint && npm run build",
+    "test": "echo See directory sources/samples",
+    "clean": "rm -rf dist",
+    "lint": "tslint -p . -c tslint.json"
+  },
+  "keywords": [
+    "litert",
+    "lrt",
+    "redis",
+    "client"
+  ],
+  "author": "Angus.Fenying <fenying@litert.org> (https://fenying.net)",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/litert/redis.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/litert/redis.js/issues"
+  },
+  "homepage": "https://github.com/litert/redis.js#readme",
+  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
+  "dependencies": {
+    "@litert/core": "^0.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.51",
+    "typescript": "^2.7.1"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}

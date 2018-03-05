@@ -69,7 +69,7 @@ implements Abstract.RedisClient {
         pattern?: string
     ): void {
 
-        let listenerList = this._listeners[subject] || 
+        let listenerList = this._listeners[subject] ||
                     (pattern && this._listeners[pattern]);
 
         if (!listenerList) {
@@ -102,7 +102,7 @@ implements Abstract.RedisClient {
         let fn: Abstract.SubscriptionCallback | Readable;
         fn = callback || new Readable({
             "objectMode": true,
-            "read": function() {}
+            "read"() {}
         });
 
         if (!this._listeners[subject]) {

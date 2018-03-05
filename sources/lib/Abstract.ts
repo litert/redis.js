@@ -308,7 +308,7 @@ export interface SubscriptionMessage {
 }
 
 export interface SubscriptionListener {
-    
+
     on(event: "data", listener: (data: SubscriptionMessage) => void): this;
 }
 

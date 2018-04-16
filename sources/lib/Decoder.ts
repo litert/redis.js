@@ -152,7 +152,8 @@ implements Core.Decoder {
                 default:
                     this.emit("error", new Exception(
                         Constants.INVALID_FORMAT,
-                        "Unrecognizable format of stream."
+                        "Unrecognizable format of stream.",
+                        this._cursor + "/" + JSON.stringify(this._buf.toString())
                     ));
                     return this;
                 }
@@ -176,7 +177,7 @@ implements Core.Decoder {
                 }
                 else {
 
-                    this._cursor = this._buf.length - 2;
+//                    this._cursor = this._buf.length - 2;
                     return this;
                 }
 
@@ -199,7 +200,7 @@ implements Core.Decoder {
                 }
                 else {
 
-                    this._cursor = this._buf.length - 2;
+//                    this._cursor = this._buf.length - 2;
                     return this;
                 }
 
@@ -222,7 +223,7 @@ implements Core.Decoder {
                 }
                 else {
 
-                    this._cursor = this._buf.length - 2;
+//                    this._cursor = this._buf.length - 2;
                     return this;
                 }
 
@@ -256,7 +257,7 @@ implements Core.Decoder {
                 }
                 else {
 
-                    this._cursor = this._buf.length - 2;
+//                    this._cursor = this._buf.length - 2;
                     return this;
                 }
 
@@ -290,7 +291,7 @@ implements Core.Decoder {
                 }
                 else {
 
-                    this._cursor = this._buf.length - 2;
+//                    this._cursor = this._buf.length - 2;
                     return this;
                 }
 
@@ -309,7 +310,7 @@ implements Core.Decoder {
                 }
                 else {
 
-                    this._cursor = this._buf.length - 2;
+//                    this._cursor = this._buf.length - 2;
                     return this;
                 }
 

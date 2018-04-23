@@ -57,7 +57,10 @@ implements Abstract.RedisClient {
             this._password
         );
 
-        await this._subscriber.execute("AUTH", this._password);
+        if (this._password) {
+
+            await this._subscriber.execute("AUTH", this._password);
+        }
 
         this._subscriber.on("message", this._onMessage.bind(this))
         .on("error", (e) => this.emit("error", e));

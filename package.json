@@ -1,6 +1,6 @@
 {
   "name": "@litert/redis",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A redis protocol implement for Node.js.",
   "main": "./dist/index.js",
   "scripts": {
@@ -30,7 +30,7 @@
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",
   "dependencies": {
-    "@litert/core": "^0.3.2"
+    "@litert/core": "^0.5.0"
   },
   "devDependencies": {
     "@types/node": "^8.0.51",

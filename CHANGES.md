@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v0.1.5
+
+- Updated the dependency @litert/core to v0.6.0.
+
 ## v0.1.4
 
 - Updated the dependency @litert/core to v0.5.0.

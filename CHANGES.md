@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v0.1.6
+
+- Auto switch to the selected database.
+
 ## v0.1.5
 
 - Updated the dependency @litert/core to v0.6.0.

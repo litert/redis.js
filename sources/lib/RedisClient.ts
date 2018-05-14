@@ -29,6 +29,8 @@ implements Abstract.RedisClient {
 
     private _password!: string;
 
+    private _database!: number;
+
     private _subscriber!: SubscriberClient;
 
     private _listeners!: Dict<Array<Abstract.SubscriptionCallback | Readable>>;
@@ -42,6 +44,8 @@ implements Abstract.RedisClient {
     ) {
 
         super(connection, host, port, createDecoder, createEncoder);
+
+        this._database = 0;
     }
 
     protected async _initializeSubscriber(): Promise<void> {
@@ -145,32 +149,33 @@ implements Abstract.RedisClient {
         return this;
     }
 
-    protected _onReconnected(): void {
+    protected async _onReconnected(): Promise<void> {
 
         if (this._password) {
 
             /**
              * Cache all imcoming commands before authentication completed.
              */
-            this._forcePipeline().executeNow(
+            this._forcePipeline();
+
+            await this.executeNow(
                 "AUTH", this._password
-            ).catch((e) => {
-
-                delete this._password;
-
-                this.emit("error", e);
-
-                super._onReconnected();
-
-            }).then(() => {
-
-                super._onReconnected();
-            });
+            );
         }
-        else {
 
-            super._onReconnected();
+        if (this._database) {
+
+            /**
+             * Cache all imcoming commands before authentication completed.
+             */
+            this._forcePipeline();
+
+            await this.executeNow(
+                "SELECT", this._database.toString()
+            );
         }
+
+        return super._onReconnected();
     }
 
     public async exists(key: ItemKey): Promise<boolean> {
@@ -555,6 +560,8 @@ implements Abstract.RedisClient {
     public async select(index: number): Promise<void> {
 
         await this.execute<Buffer>("SELECT", index.toString());
+
+        this._database = index;
     }
 
     public async swapDB(db1: number, db2: number): Promise<void> {

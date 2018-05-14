@@ -33,7 +33,7 @@ async function sleep(ms: number): Promise<void> {
 
         let result: any;
 
-        await client.auth("redis-password");
+        await client.auth("redis-passwd");
 
         result = await client.ping();
 
@@ -42,6 +42,8 @@ async function sleep(ms: number): Promise<void> {
         result = await client.ping("HI");
 
         console.log(result.toString());
+
+        result = await client.select(1);
 
         await sleep(5000);
 

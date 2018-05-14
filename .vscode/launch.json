@@ -27,6 +27,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Commands",
+            "program": "${workspaceFolder}/sources/samples/commands.ts",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Subscriber",
             "program": "${workspaceFolder}/sources/samples/subscriber.ts",
             "sourceMaps": true,

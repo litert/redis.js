@@ -49,26 +49,19 @@ implements Abstract.ProtocolClient {
         this._password = password;
     }
 
-    protected _onReconnected(): void {
+    protected async _onReconnected(): Promise<void> {
 
         if (this._password) {
 
-            this._forcePipeline().executeNow(
-                "AUTH", this._password
-            ).then(() => {
+            this._forcePipeline();
 
-                this._resubscribe().catch((e) => {
+            try {
 
-                    this.emit("error", new Exception(
-                        Constants.SUBSCRIBE_FAILURE,
-                        "Failed to resubscribe subjects.",
-                        e
-                    ));
-
-                    super._onReconnected();
-                });
-
-            }).catch((e) => {
+                await this.executeNow(
+                    "AUTH", this._password
+                );
+            }
+            catch (e) {
 
                 this.emit("error", new Exception(
                     Constants.SUBSCRIBE_FAILURE,
@@ -76,21 +69,23 @@ implements Abstract.ProtocolClient {
                     e
                 ));
 
-                super._onReconnected();
-            });
+                return super._onReconnected();
+            }
         }
-        else {
 
-            this._resubscribe().catch((e) => {
+        try {
 
-                this.emit("error", new Exception(
-                    Constants.SUBSCRIBE_FAILURE,
-                    "Failed to resubscribe subjects.",
-                    e
-                ));
+            await this._resubscribe();
+        }
+        catch (e) {
 
-                super._onReconnected();
-            });
+            this.emit("error", new Exception(
+                Constants.SUBSCRIBE_FAILURE,
+                "Failed to resubscribe subjects.",
+                e
+            ));
+
+            return super._onReconnected();
         }
     }
 

@@ -269,7 +269,7 @@ implements Abstract.ProtocolClient {
 
             this.emit("reconnected");
 
-            this._onReconnected();
+            this._onReconnected().catch((e) => this.emit("error", e));
 
         }).catch((e) => {
 
@@ -280,14 +280,11 @@ implements Abstract.ProtocolClient {
         });
     }
 
-    protected _onReconnected(): void {
+    protected async _onReconnected(): Promise<void> {
 
         // do something after reconnected event.
 
-        if (this._buffers.length > 0) {
-
-            this._stopPipeline();
-        }
+        this._stopPipeline();
     }
 
     protected _onError(err: NodeJS.ErrnoException): void {

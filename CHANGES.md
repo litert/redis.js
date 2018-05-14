@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v0.1.7
+
+- Added keep-alive for clients.
+
 ## v0.1.6
 
 - Auto switch to the selected database.

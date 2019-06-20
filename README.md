@@ -8,10 +8,18 @@
 
 A redis protocol implement for Node.js.
 
+## Features
+
+- [x] Support both promise and callback style.
+- [x] Support read/write separation.
+- [x] Support pipeline.
+- [x] Support multi and exec.
+- [x] Support subscribe and publish.
+
 ## Requirement
 
-- TypeScript v2.6.1 (or newer)
-- Node.js v8.0.0 (or newer)
+- TypeScript v3.5.1 (or newer)
+- Node.js v10.0.0 (or newer)
 
 ## Installation
 

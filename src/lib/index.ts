@@ -12,39 +12,7 @@
    | Authors: Angus Fenying <fenying@litert.org>                          |
    +----------------------------------------------------------------------+
  */
-import * as Net from "net";
-import * as Core from "@litert/core";
-import Exception from "./Exception";
-import * as Constants from "./Constants";
+export * from "./ModuleAPI";
 
-export function createTCPConnection(
-    host: string,
-    port: number
-): Promise<Net.Socket> {
+export * from "./Common";
 
-    let ret = new Core.RawPromise<Net.Socket, Core.Exception>();
-
-    let connection = Net.createConnection(
-        port,
-        host,
-        function(this: Net.Socket): void {
-
-            this.removeAllListeners("error");
-
-            ret.resolve(connection);
-        }
-    );
-
-    connection.once("error", (err: NodeJS.ErrnoException): void => {
-
-        connection.destroy();
-
-        ret.reject(new Exception(
-            Constants.FAILED_TO_CONNECT,
-            "Unabled to connect to Redis server.",
-            err
-        ));
-    });
-
-    return ret.promise;
-}

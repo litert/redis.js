@@ -1,26 +1,28 @@
-/*
-   +----------------------------------------------------------------------+
-   | LiteRT Redis.js Library                                              |
-   +----------------------------------------------------------------------+
-   | Copyright (c) 2007-2018 Fenying Studio                               |
-   +----------------------------------------------------------------------+
-   | This source file is subject to version 2.0 of the Apache license,    |
-   | that is bundled with this package in the file LICENSE, and is        |
-   | available through the world-wide-web at the following url:           |
-   | https://github.com/litert/redis.js/blob/master/LICENSE               |
-   +----------------------------------------------------------------------+
-   | Authors: Angus Fenying <fenying@litert.org>                          |
-   +----------------------------------------------------------------------+
+/**
+ * Copyright 2019 Angus.Fenying <fenying@litert.org>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-import * as Abstracts from "./Abstract";
-import Exception from "./Exception";
-import * as Constants from "./Constants";
 
-import PROTO_DELIMITER = Constants.PROTO_DELIMITER;
-import PROTO_NULL = Constants.PROTO_NULL;
-import PROTO_DELIMITER_VALUE = Constants.PROTO_DELIMITER_VALUE;
+import * as A from "./Common";
+import * as E from "./Errors";
+import * as C from "./Constants";
 
-export class Encoder implements Abstracts.Encoder {
+import PROTO_DELIMITER = C.PROTO_DELIMITER;
+import PROTO_NULL = C.PROTO_NULL;
+import PROTO_DELIMITER_VALUE = C.PROTO_DELIMITER_VALUE;
+
+export class Encoder implements A.IEncoder {
 
     protected _getStringEncodedLength(val: string | Buffer): number {
 
@@ -61,10 +63,7 @@ export class Encoder implements Abstracts.Encoder {
         return PROTO_NULL.slice();
     }
 
-    public encodeCommand(
-        cmd: string | Buffer,
-        values?: Array<string | Buffer>
-    ): Buffer {
+    public encodeCommand(cmd: string | Buffer, values?: Array<string | Buffer>): Buffer {
 
         let ret: Buffer;
 
@@ -86,7 +85,7 @@ export class Encoder implements Abstracts.Encoder {
 
         length += this._getStringEncodedLength(cmd);
 
-        ret = Buffer.alloc(length);
+        ret = Buffer.allocUnsafe(length);
 
         let pos: number = 0;
 
@@ -120,7 +119,7 @@ export class Encoder implements Abstracts.Encoder {
 
     public encodeString(data: string | Buffer): Buffer {
 
-        let ret = Buffer.alloc(this._getStringEncodedLength(data));
+        let ret = Buffer.allocUnsafe(this._getStringEncodedLength(data));
 
         this._writeString(ret, data, 0);
 
@@ -132,15 +131,14 @@ export class Encoder implements Abstracts.Encoder {
         // @ts-ignore
         if (data.indexOf(PROTO_DELIMITER_VALUE) > -1) {
 
-            throw new Exception(
-                Constants.INVALID_FORMAT,
-                "CRLF is forbidden in MESSAGE."
-            );
+            throw new E.E_PROTOCOL_ERROR({
+                "message": "CRLF is forbidden in MESSAGE."
+            });
         }
 
         let length = Buffer.byteLength(data);
 
-        let ret = Buffer.alloc(length + 3);
+        let ret = Buffer.allocUnsafe(length + 3);
 
         ret[0] = 43;
 
@@ -160,18 +158,16 @@ export class Encoder implements Abstracts.Encoder {
 
     public encodeFailure(data: string | Buffer): Buffer {
 
-        // @ts-ignore
         if (data.indexOf(PROTO_DELIMITER_VALUE) > -1) {
 
-            throw new Exception(
-                Constants.INVALID_FORMAT,
-                "CRLF is forbidden in FAILURE."
-            );
+            throw new E.E_PROTOCOL_ERROR({
+                "message": "CRLF is forbidden in MESSAGE."
+            });
         }
 
         let length = Buffer.byteLength(data);
 
-        let ret = Buffer.alloc(length + 3);
+        let ret = Buffer.allocUnsafe(length + 3);
 
         ret[0] = 45;
 
@@ -195,7 +191,7 @@ export class Encoder implements Abstracts.Encoder {
 
         let len = Buffer.byteLength(data);
 
-        let ret = Buffer.alloc(3 + len);
+        let ret = Buffer.allocUnsafe(3 + len);
 
         ret[0] = 58;
 
@@ -206,7 +202,7 @@ export class Encoder implements Abstracts.Encoder {
         return ret;
     }
 
-    public encodeList(data: Abstracts.ListItem[]): Buffer {
+    public encodeList(data: A.ListItem[]): Buffer {
 
         let ret: Buffer[] = [
             Buffer.from(`*${data.length}`),
@@ -216,19 +212,19 @@ export class Encoder implements Abstracts.Encoder {
         for (let item of data) {
 
             switch (item[0]) {
-            case Abstracts.DataType.FAILURE:
+            case A.DataType.FAILURE:
                 ret.push(this.encodeString(item[1]));
                 break;
-            case Abstracts.DataType.MESSAGE:
+            case A.DataType.MESSAGE:
                 ret.push(this.encodeMessage(item[1]));
                 break;
-            case Abstracts.DataType.STRING:
+            case A.DataType.STRING:
                 ret.push(this.encodeString(item[1]));
                 break;
-            case Abstracts.DataType.INTEGER:
+            case A.DataType.INTEGER:
                 ret.push(this.encodeInteger(item[1]));
                 break;
-            case Abstracts.DataType.LIST:
+            case A.DataType.LIST:
                 ret.push(this.encodeList(item[1]));
                 break;
             }

@@ -8,40 +8,44 @@
             "type": "node",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceFolder}/sources/samples/debug.ts",
+            "program": "${workspaceFolder}/src/examples/debug.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
+                "${workspaceFolder}/lib/*.js",
+                "${workspaceFolder}/examples/*.js"
             ]
         },
         {
             "type": "node",
             "request": "launch",
             "name": "Auto Reconnection",
-            "program": "${workspaceFolder}/sources/samples/auto-reconnect.ts",
+            "program": "${workspaceFolder}/src/examples/auto-reconnect.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
+                "${workspaceFolder}/lib/*.js",
+                "${workspaceFolder}/examples/*.js"
             ]
         },
         {
             "type": "node",
             "request": "launch",
             "name": "Commands",
-            "program": "${workspaceFolder}/sources/samples/commands.ts",
+            "program": "${workspaceFolder}/src/examples/commands.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
+                "${workspaceFolder}/lib/*.js",
+                "${workspaceFolder}/examples/*.js"
             ]
         },
         {
             "type": "node",
             "request": "launch",
             "name": "Subscriber",
-            "program": "${workspaceFolder}/sources/samples/subscriber.ts",
+            "program": "${workspaceFolder}/src/examples/subscriber.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
+                "${workspaceFolder}/lib/*.js",
+                "${workspaceFolder}/examples/*.js"
             ]
         }
     ]

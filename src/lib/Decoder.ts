@@ -1,22 +1,23 @@
-/*
-   +----------------------------------------------------------------------+
-   | LiteRT Redis.js Library                                              |
-   +----------------------------------------------------------------------+
-   | Copyright (c) 2007-2018 Fenying Studio                               |
-   +----------------------------------------------------------------------+
-   | This source file is subject to version 2.0 of the Apache license,    |
-   | that is bundled with this package in the file LICENSE, and is        |
-   | available through the world-wide-web at the following url:           |
-   | https://github.com/litert/redis.js/blob/master/LICENSE               |
-   +----------------------------------------------------------------------+
-   | Authors: Angus Fenying <fenying@litert.org>                          |
-   +----------------------------------------------------------------------+
+/**
+ * Copyright 2019 Angus.Fenying <fenying@litert.org>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-import * as Core from "./Abstract";
-import Exception from "./Exception";
+
+import * as C from "./Common";
+import * as E from "./Errors";
 import * as Constants from "./Constants";
-import { EventEmitter } from "events";
-import { IDictionary } from "@litert/core";
+import * as $Events from "@litert/events";
 
 import PROTO_DELIMITER = Constants.PROTO_DELIMITER;
 
@@ -70,11 +71,11 @@ class DecodeContext {
      */
     public status: DecodeStatus;
 
-    public data: IDictionary<any>;
+    public data: Record<string, any>;
 
     public value: any;
 
-    public type!: Core.DataType;
+    public type!: C.DataType;
 
     public pos: number;
 
@@ -90,8 +91,8 @@ class DecodeContext {
 }
 
 export class Decoder
-extends EventEmitter
-implements Core.Decoder {
+extends $Events.EventEmitter<C.IDecoderEvents>
+implements C.IDecoder {
 
     protected _buf!: Buffer;
 
@@ -114,7 +115,7 @@ implements Core.Decoder {
 
         this._contextStack = [];
 
-        this._buf = Buffer.alloc(0);
+        this._buf = Buffer.allocUnsafe(0);
 
         this._cursor = 0;
 
@@ -150,11 +151,9 @@ implements Core.Decoder {
                     this._push(DecodeStatus.READING_INTEGER);
                     break;
                 default:
-                    this.emit("error", new Exception(
-                        Constants.INVALID_FORMAT,
-                        "Unrecognizable format of stream.",
-                        this._cursor + "/" + JSON.stringify(this._buf.toString())
-                    ));
+                    this.emit("error", new E.E_PROTOCOL_ERROR({
+                        "message": "Unrecognizable format of stream."
+                    }));
                     return this;
                 }
 
@@ -162,7 +161,7 @@ implements Core.Decoder {
 
             case DecodeStatus.READING_MESSAGE:
 
-                this._ctx.type = Core.DataType.MESSAGE;
+                this._ctx.type = C.DataType.MESSAGE;
 
                 end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
@@ -185,7 +184,7 @@ implements Core.Decoder {
 
             case DecodeStatus.READING_FAILURE:
 
-                this._ctx.type = Core.DataType.FAILURE;
+                this._ctx.type = C.DataType.FAILURE;
 
                 end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
@@ -208,7 +207,7 @@ implements Core.Decoder {
 
             case DecodeStatus.READING_INTEGER:
 
-                this._ctx.type = Core.DataType.INTEGER;
+                this._ctx.type = C.DataType.INTEGER;
 
                 end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
@@ -235,7 +234,7 @@ implements Core.Decoder {
 
                 if (end > -1) {
 
-                    this._ctx.type = Core.DataType.LIST;
+                    this._ctx.type = C.DataType.LIST;
 
                     this._ctx.value = [];
 
@@ -265,7 +264,7 @@ implements Core.Decoder {
 
             case DecodeStatus.READING_STRING_LENGTH:
 
-                this._ctx.type = Core.DataType.STRING;
+                this._ctx.type = C.DataType.STRING;
 
                 end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
@@ -278,7 +277,7 @@ implements Core.Decoder {
 
                     if (this._ctx.data.length === -1) {
 
-                        this._ctx.type = Core.DataType.NULL;
+                        this._ctx.type = C.DataType.NULL;
                         this._ctx.value = null;
                         this._pop(end + 2);
                     }
@@ -337,7 +336,7 @@ implements Core.Decoder {
 
         if (this._ctx.status === DecodeStatus.READING_LIST) {
 
-            this._ctx.value.push(<Core.ListItem> [
+            this._ctx.value.push(<C.ListItem> [
                 context.type,
                 context.value
             ]);

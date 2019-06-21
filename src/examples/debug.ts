@@ -5,9 +5,9 @@ import * as L from "@litert/core";
 
 (async () => {
 
-    try {
+    const cli = createProtocolClient("127.0.0.1", 6373);
 
-        const cli = createProtocolClient("127.0.0.1", 6373);
+    try {
 
         await cli.connect();
 
@@ -16,8 +16,12 @@ import * as L from "@litert/core";
 
         await L.Async.sleep(2000);
 
-        console.log(await cli.command("SET", ["a", "333"]));
+        let x = cli.command("SET", ["a", "333"]);
+
+        console.log(await x);
         console.log(await cli.command("INCR", ["a"]));
+
+        await L.Async.sleep(2000);
 
         await cli.shutdown();
     }
@@ -25,5 +29,7 @@ import * as L from "@litert/core";
 
         console.error(e);
     }
+
+    await cli.shutdown();
 
 })();

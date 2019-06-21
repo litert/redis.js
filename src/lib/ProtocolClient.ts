@@ -38,27 +38,23 @@ implements C.IProtocolClient {
 
             const cb = this._execQueue.shift() as C.ICallbackA;
 
-            if (type === C.DataType.FAILURE) {
-
-                cb(data.toString());
-            }
-            else {
-
-                switch (type) {
-                case C.DataType.INTEGER:
-                    cb(null, parseInt(data));
-                    break;
-                case C.DataType.MESSAGE:
-                    cb(null, data.toString());
-                    break;
-                case C.DataType.NULL:
-                    cb(null, null);
-                    break;
-                case C.DataType.LIST:
-                case C.DataType.STRING:
-                    cb(null, data);
-                    break;
-                }
+            switch (type) {
+            case C.DataType.FAILURE:
+                cb(new E.E_COMMAND_FAILURE({ "message": data.toString() }));
+                break;
+            case C.DataType.INTEGER:
+                cb(null, parseInt(data));
+                break;
+            case C.DataType.MESSAGE:
+                cb(null, data.toString());
+                break;
+            case C.DataType.NULL:
+                cb(null, null);
+                break;
+            case C.DataType.LIST:
+            case C.DataType.STRING:
+                cb(null, data);
+                break;
             }
         });
     }
@@ -115,8 +111,14 @@ implements C.IProtocolClient {
         case C.EClientStatus.CLOSING:
         case C.EClientStatus.IDLE:
             break;
-        case C.EClientStatus.CONNECTING:
         case C.EClientStatus.READY:
+        case C.EClientStatus.CONNECTING:
+
+            if (this._socket && !this._socket.writable) {
+
+                break;
+            }
+
             return;
         }
 
@@ -124,6 +126,8 @@ implements C.IProtocolClient {
             host: this.host,
             port: this.port
         });
+
+        this._status = C.EClientStatus.CONNECTING;
 
         // @ts-ignore
         this._socket.__uuid = ++this._uuidCounter;
@@ -165,10 +169,6 @@ implements C.IProtocolClient {
                 return;
             }
 
-            const prevSttus = this._status;
-
-            this._status = C.EClientStatus.IDLE;
-
             for (let x of this._sendingQueue) {
 
                 try {
@@ -196,14 +196,15 @@ implements C.IProtocolClient {
             this._sendingQueue = [];
             this._execQueue = [];
 
-            switch (prevSttus) {
-            case C.EClientStatus.CONNECTING:
+            switch (this._status) {
             case C.EClientStatus.IDLE:
             case C.EClientStatus.CLOSING:
-                delete this._socket;
+                this._status = C.EClientStatus.IDLE;
                 this.emit("close");
                 break;
             case C.EClientStatus.READY:
+                this._status = C.EClientStatus.CONNECTING;
+            case C.EClientStatus.CONNECTING:
                 this.emit("abort");
                 this._connect();
                 break;
@@ -265,7 +266,10 @@ implements C.IProtocolClient {
 
             const data = this._encoder.encodeCommand(cmd, args);
 
-            if (this._status !== C.EClientStatus.READY) {
+            if (
+                this._status !== C.EClientStatus.READY ||
+                !(this._socket && this._socket.writable)
+            ) {
 
                 this._waitingQueue.push({data, callback});
             }

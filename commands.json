@@ -1,0 +1,94 @@
+[
+    {
+        "name": "append",
+        "params": [
+            {
+                "name": "key",
+                "type": "string"
+            },
+            {
+                "name": "value",
+                "type": "string"
+            }
+        ],
+        "return": {
+            "type": "integer",
+            "validation": "none"
+        }
+    },
+    {
+        "name": "auth",
+        "params": [
+            {
+                "name": "password",
+                "type": "string"
+            }
+        ],
+        "return": {
+            "type": "message",
+            "validation": "none"
+        }
+    },
+    {
+        "name": "bgrewriteaof",
+        "params": [],
+        "return": {
+            "type": "message",
+            "validation": "none"
+        }
+    },
+    {
+        "name": "bgsave",
+        "params": [],
+        "return": {
+            "type": "message",
+            "validation": "none"
+        }
+    },
+    {
+        "name": "bitcount",
+        "params": [
+            {
+                "name": "key",
+                "type": "string"
+            },
+            {
+                "name": "start",
+                "type": "integer",
+                "group": "range"
+            },
+            {
+                "name": "end",
+                "type": "integer",
+                "group": "range"
+            }
+        ],
+        "return": {
+            "type": "integer",
+            "validation": "none"
+        }
+    },
+    {
+        "name": "bitcount",
+        "params": [
+            {
+                "name": "key",
+                "type": "string"
+            },
+            {
+                "name": "start",
+                "type": "integer",
+                "group": "range"
+            },
+            {
+                "name": "end",
+                "type": "integer",
+                "group": "range"
+            }
+        ],
+        "return": {
+            "type": "integer",
+            "validation": "none"
+        }
+    },
+]

@@ -30,7 +30,9 @@ implements C.IProtocolClient {
         public readonly host: string,
         public readonly port: number,
         private _decoder: C.IDecoder,
-        private _encoder: C.IEncoder
+        private _encoder: C.IEncoder,
+        private _subscribeMode: boolean = false
+
     ) {
         super();
 
@@ -52,6 +54,24 @@ implements C.IProtocolClient {
                 cb(null, null);
                 break;
             case C.DataType.LIST:
+
+                if (this._subscribeMode) {
+
+                    switch (data[0][1].toString()) {
+                    case "message":
+
+                        this.emit("message", data[1][1].toString(), data[2][1]);
+                        return;
+
+                    case "pmessage":
+
+                        this.emit("message", data[2][1].toString(), data[3][1], data[1][1].toString());
+                        return;
+
+                    default:
+                    }
+                }
+
             case C.DataType.STRING:
                 cb(null, data);
                 break;
@@ -144,7 +164,16 @@ implements C.IProtocolClient {
 
             this._socket.on("data", (data) =>  this._decoder.update(data));
 
-            this._onConnected((): void => {
+            this._onConnected((err: unknown): void => {
+
+                if (err) {
+
+                    this.emit("error", err);
+
+                    this._socket.destroy();
+
+                    return;
+                }
 
                 this._status = C.EClientStatus.READY;
 
@@ -287,9 +316,9 @@ implements C.IProtocolClient {
     }
 }
 
-function wrapPromise<R = any, E = any>(
-    process: (cb: C.ICallbackA<R, E>) => void,
-    callback?: C.ICallbackA<R, E>,
+function wrapPromise<R = any, W = any>(
+    process: (cb: C.ICallbackA<R, W>) => void,
+    callback?: C.ICallbackA<R, W>,
 ): Promise<any> | void {
 
     if (callback) {

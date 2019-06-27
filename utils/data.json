@@ -1,0 +1,4687 @@
+{
+  "append": {
+    "expression": "APPEND key value",
+    "description": "Append a value to a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "auth": {
+    "expression": "AUTH password",
+    "description": "Authenticate to the server",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "password"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "bgrewriteaof": {
+    "expression": "BGREWRITEAOF",
+    "description": "Asynchronously rewrite the append-only file",
+    "args": []
+  },
+  "bgsave": {
+    "expression": "BGSAVE",
+    "description": "Asynchronously save the dataset to disk",
+    "args": []
+  },
+  "bitcount": {
+    "expression": "BITCOUNT key [start end]",
+    "description": "Count set bits in a string",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "start",
+          "end"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "bitfield": {
+    "expression": "BITFIELD key [GET type offset] [SET type offset value] [INCRBY type offset increment] [OVERFLOW WRAP|SAT|FAIL]",
+    "description": "Perform arbitrary bitfield integer operations on strings",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "GET",
+          "type",
+          "offset"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "SET",
+          "type",
+          "offset",
+          "value"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "INCRBY",
+          "type",
+          "offset",
+          "increment"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "OVERFLOW",
+          "WRAP|SAT|FAIL"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "bitop": {
+    "expression": "BITOP operation destkey key [key ...]",
+    "description": "Perform bitwise operations between strings",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "operation"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "destkey"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "bitpos": {
+    "expression": "BITPOS key bit [start] [end]",
+    "description": "Find first bit set or clear in a string",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "bit"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "start"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "end"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "blpop": {
+    "expression": "BLPOP key [key ...] timeout",
+    "description": "Remove and get the first element in a list, or block until one is available",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "timeout"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "brpop": {
+    "expression": "BRPOP key [key ...] timeout",
+    "description": "Remove and get the last element in a list, or block until one is available",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "timeout"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "brpoplpush": {
+    "expression": "BRPOPLPUSH source destination timeout",
+    "description": "Pop a value from a list, push it to another list and return it; or block until one is available",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "source"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "destination"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "timeout"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "bzpopmin": {
+    "expression": "BZPOPMIN key [key ...] timeout",
+    "description": "Remove and return the member with the lowest score from one or more sorted sets, or block until one is available",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "timeout"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "bzpopmax": {
+    "expression": "BZPOPMAX key [key ...] timeout",
+    "description": "Remove and return the member with the highest score from one or more sorted sets, or block until one is available",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "timeout"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "client": {
+    "expression": "CLIENT UNBLOCK client-id [TIMEOUT|ERROR]",
+    "description": "Unblock a client blocked in a blocking command from a different connection",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "UNBLOCK"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "client-id"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "TIMEOUT|ERROR"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "cluster": {
+    "expression": "CLUSTER SLOTS",
+    "description": "Get array of Cluster slot to node mappings",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "SLOTS"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "command": {
+    "expression": "COMMAND INFO command-name [command-name ...]",
+    "description": "Get array of specific Redis command details",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "INFO"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "command-name"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "command-name",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "config": {
+    "expression": "CONFIG RESETSTAT",
+    "description": "Reset the stats returned by INFO",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "RESETSTAT"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "dbsize": {
+    "expression": "DBSIZE",
+    "description": "Return the number of keys in the selected database",
+    "args": []
+  },
+  "debug": {
+    "expression": "DEBUG SEGFAULT",
+    "description": "Make the server crash",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "SEGFAULT"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "decr": {
+    "expression": "DECR key",
+    "description": "Decrement the integer value of a key by one",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "decrby": {
+    "expression": "DECRBY key decrement",
+    "description": "Decrement the integer value of a key by the given number",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "decrement"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "del": {
+    "expression": "DEL key [key ...]",
+    "description": "Delete a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "discard": {
+    "expression": "DISCARD",
+    "description": "Discard all commands issued after MULTI",
+    "args": []
+  },
+  "dump": {
+    "expression": "DUMP key",
+    "description": "Return a serialized version of the value stored at the specified key.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "echo": {
+    "expression": "ECHO message",
+    "description": "Echo the given string",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "message"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "eval": {
+    "expression": "EVAL script numkeys key [key ...] arg [arg ...]",
+    "description": "Execute a Lua script server side",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "script"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "numkeys"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "arg"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "arg",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "evalsha": {
+    "expression": "EVALSHA sha1 numkeys key [key ...] arg [arg ...]",
+    "description": "Execute a Lua script server side",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "sha1"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "numkeys"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "arg"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "arg",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "exec": {
+    "expression": "EXEC",
+    "description": "Execute all commands issued after MULTI",
+    "args": []
+  },
+  "exists": {
+    "expression": "EXISTS key [key ...]",
+    "description": "Determine if a key exists",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "expire": {
+    "expression": "EXPIRE key seconds",
+    "description": "Set a key's time to live in seconds",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "seconds"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "expireat": {
+    "expression": "EXPIREAT key timestamp",
+    "description": "Set the expiration for a key as a UNIX timestamp",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "timestamp"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "flushall": {
+    "expression": "FLUSHALL [ASYNC]",
+    "description": "Remove all keys from all databases",
+    "args": [
+      {
+        "required": false,
+        "pieces": [
+          "ASYNC"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "flushdb": {
+    "expression": "FLUSHDB [ASYNC]",
+    "description": "Remove all keys from the current database",
+    "args": [
+      {
+        "required": false,
+        "pieces": [
+          "ASYNC"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "geoadd": {
+    "expression": "GEOADD key longitude latitude member [longitude latitude member ...]",
+    "description": "Add one or more geospatial items in the geospatial index represented using a sorted set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "longitude"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "latitude"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "longitude",
+          "latitude",
+          "member",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "geohash": {
+    "expression": "GEOHASH key member [member ...]",
+    "description": "Returns members of a geospatial index as standard geohash strings",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "member",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "geopos": {
+    "expression": "GEOPOS key member [member ...]",
+    "description": "Returns longitude and latitude of members of a geospatial index",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "member",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "geodist": {
+    "expression": "GEODIST key member1 member2 [unit]",
+    "description": "Returns the distance between two members of a geospatial index",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member1"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member2"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "unit"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "georadius": {
+    "expression": "GEORADIUS key longitude latitude radius m|km|ft|mi [WITHCOORD] [WITHDIST] [WITHHASH] [COUNT count] [ASC|DESC] [STORE key] [STOREDIST key]",
+    "description": "Query a sorted set representing a geospatial index to fetch members matching a given maximum distance from a point",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "longitude"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "latitude"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "radius"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "m"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "km"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "ft"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "mi"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WITHCOORD"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WITHDIST"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WITHHASH"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "COUNT",
+          "count"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "ASC|DESC"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "STORE",
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "STOREDIST",
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "georadiusbymember": {
+    "expression": "GEORADIUSBYMEMBER key member radius m|km|ft|mi [WITHCOORD] [WITHDIST] [WITHHASH] [COUNT count] [ASC|DESC] [STORE key] [STOREDIST key]",
+    "description": "Query a sorted set representing a geospatial index to fetch members matching a given maximum distance from a member",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "radius"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "m"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "km"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "ft"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "mi"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WITHCOORD"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WITHDIST"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WITHHASH"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "COUNT",
+          "count"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "ASC|DESC"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "STORE",
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "STOREDIST",
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "get": {
+    "expression": "GET key",
+    "description": "Get the value of a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "getbit": {
+    "expression": "GETBIT key offset",
+    "description": "Returns the bit value at offset in the string value stored at key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "offset"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "getrange": {
+    "expression": "GETRANGE key start end",
+    "description": "Get a substring of the string stored at a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "start"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "end"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "getset": {
+    "expression": "GETSET key value",
+    "description": "Set the string value of a key and return its old value",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hdel": {
+    "expression": "HDEL key field [field ...]",
+    "description": "Delete one or more hash fields",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "field",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hexists": {
+    "expression": "HEXISTS key field",
+    "description": "Determine if a hash field exists",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hget": {
+    "expression": "HGET key field",
+    "description": "Get the value of a hash field",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hgetall": {
+    "expression": "HGETALL key",
+    "description": "Get all the fields and values in a hash",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hincrby": {
+    "expression": "HINCRBY key field increment",
+    "description": "Increment the integer value of a hash field by the given number",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "increment"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hincrbyfloat": {
+    "expression": "HINCRBYFLOAT key field increment",
+    "description": "Increment the float value of a hash field by the given amount",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "increment"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hkeys": {
+    "expression": "HKEYS key",
+    "description": "Get all the fields in a hash",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hlen": {
+    "expression": "HLEN key",
+    "description": "Get the number of fields in a hash",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hmget": {
+    "expression": "HMGET key field [field ...]",
+    "description": "Get the values of all the given hash fields",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "field",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hmset": {
+    "expression": "HMSET key field value [field value ...]",
+    "description": "Set multiple hash fields to multiple values",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "field",
+          "value",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hset": {
+    "expression": "HSET key field value",
+    "description": "Set the string value of a hash field",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hsetnx": {
+    "expression": "HSETNX key field value",
+    "description": "Set the value of a hash field, only if the field does not exist",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hstrlen": {
+    "expression": "HSTRLEN key field",
+    "description": "Get the length of the value of a hash field",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hvals": {
+    "expression": "HVALS key",
+    "description": "Get all the values in a hash",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "incr": {
+    "expression": "INCR key",
+    "description": "Increment the integer value of a key by one",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "incrby": {
+    "expression": "INCRBY key increment",
+    "description": "Increment the integer value of a key by the given amount",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "increment"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "incrbyfloat": {
+    "expression": "INCRBYFLOAT key increment",
+    "description": "Increment the float value of a key by the given amount",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "increment"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "info": {
+    "expression": "INFO [section]",
+    "description": "Get information and statistics about the server",
+    "args": [
+      {
+        "required": false,
+        "pieces": [
+          "section"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "keys": {
+    "expression": "KEYS pattern",
+    "description": "Find all keys matching the given pattern",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "pattern"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "lastsave": {
+    "expression": "LASTSAVE",
+    "description": "Get the UNIX time stamp of the last successful save to disk",
+    "args": []
+  },
+  "lindex": {
+    "expression": "LINDEX key index",
+    "description": "Get an element from a list by its index",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "index"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "linsert": {
+    "expression": "LINSERT key BEFORE|AFTER pivot value",
+    "description": "Insert an element before or after another element in a list",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "BEFORE"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "AFTER"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "pivot"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "llen": {
+    "expression": "LLEN key",
+    "description": "Get the length of a list",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "lpop": {
+    "expression": "LPOP key",
+    "description": "Remove and get the first element in a list",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "lpush": {
+    "expression": "LPUSH key value [value ...]",
+    "description": "Prepend one or multiple values to a list",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "value",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "lpushx": {
+    "expression": "LPUSHX key value",
+    "description": "Prepend a value to a list, only if the list exists",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "lrange": {
+    "expression": "LRANGE key start stop",
+    "description": "Get a range of elements from a list",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "start"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "stop"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "lrem": {
+    "expression": "LREM key count value",
+    "description": "Remove elements from a list",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "count"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "lset": {
+    "expression": "LSET key index value",
+    "description": "Set the value of an element in a list by its index",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "index"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "ltrim": {
+    "expression": "LTRIM key start stop",
+    "description": "Trim a list to the specified range",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "start"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "stop"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "memory": {
+    "expression": "MEMORY USAGE key [SAMPLES count]",
+    "description": "Estimate the memory usage of a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "USAGE"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "SAMPLES",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "mget": {
+    "expression": "MGET key [key ...]",
+    "description": "Get the values of all the given keys",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "migrate": {
+    "expression": "MIGRATE host port key|\"\" destination-db timeout [COPY] [REPLACE] [KEYS key [key ...]]",
+    "description": "Atomically transfer a key from a Redis instance to another one.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "host"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "port"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "destination-db"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "timeout"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "COPY"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "REPLACE"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "KEYS",
+          "key",
+          "[key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "monitor": {
+    "expression": "MONITOR",
+    "description": "Listen for all requests received by the server in real time",
+    "args": []
+  },
+  "move": {
+    "expression": "MOVE key db",
+    "description": "Move a key to another database",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "db"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "mset": {
+    "expression": "MSET key value [key value ...]",
+    "description": "Set multiple keys to multiple values",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "value",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "msetnx": {
+    "expression": "MSETNX key value [key value ...]",
+    "description": "Set multiple keys to multiple values, only if none of the keys exist",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "value",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "multi": {
+    "expression": "MULTI",
+    "description": "Mark the start of a transaction block",
+    "args": []
+  },
+  "object": {
+    "expression": "OBJECT subcommand [arguments [arguments ...]]",
+    "description": "Inspect the internals of Redis objects",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "subcommand"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "arguments",
+          "[arguments",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "persist": {
+    "expression": "PERSIST key",
+    "description": "Remove the expiration from a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "pexpire": {
+    "expression": "PEXPIRE key milliseconds",
+    "description": "Set a key's time to live in milliseconds",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "milliseconds"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "pexpireat": {
+    "expression": "PEXPIREAT key milliseconds-timestamp",
+    "description": "Set the expiration for a key as a UNIX timestamp specified in milliseconds",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "milliseconds-timestamp"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "pfadd": {
+    "expression": "PFADD key element [element ...]",
+    "description": "Adds the specified elements to the specified HyperLogLog.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "element"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "element",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "pfcount": {
+    "expression": "PFCOUNT key [key ...]",
+    "description": "Return the approximated cardinality of the set(s) observed by the HyperLogLog at key(s).",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "pfmerge": {
+    "expression": "PFMERGE destkey sourcekey [sourcekey ...]",
+    "description": "Merge N different HyperLogLogs into a single one.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "destkey"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "sourcekey"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "sourcekey",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "ping": {
+    "expression": "PING [message]",
+    "description": "Ping the server",
+    "args": [
+      {
+        "required": false,
+        "pieces": [
+          "message"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "psetex": {
+    "expression": "PSETEX key milliseconds value",
+    "description": "Set the value and expiration in milliseconds of a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "milliseconds"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "psubscribe": {
+    "expression": "PSUBSCRIBE pattern [pattern ...]",
+    "description": "Listen for messages published to channels matching the given patterns",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "pattern"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "pattern",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "pubsub": {
+    "expression": "PUBSUB subcommand [argument [argument ...]]",
+    "description": "Inspect the state of the Pub/Sub subsystem",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "subcommand"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "argument",
+          "[argument",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "pttl": {
+    "expression": "PTTL key",
+    "description": "Get the time to live for a key in milliseconds",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "publish": {
+    "expression": "PUBLISH channel message",
+    "description": "Post a message to a channel",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "channel"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "message"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "punsubscribe": {
+    "expression": "PUNSUBSCRIBE [pattern [pattern ...]]",
+    "description": "Stop listening for messages posted to channels matching the given patterns",
+    "args": [
+      {
+        "required": false,
+        "pieces": [
+          "pattern",
+          "[pattern",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "quit": {
+    "expression": "QUIT",
+    "description": "Close the connection",
+    "args": []
+  },
+  "randomkey": {
+    "expression": "RANDOMKEY",
+    "description": "Return a random key from the keyspace",
+    "args": []
+  },
+  "readonly": {
+    "expression": "READONLY",
+    "description": "Enables read queries for a connection to a cluster replica node",
+    "args": []
+  },
+  "readwrite": {
+    "expression": "READWRITE",
+    "description": "Disables read queries for a connection to a cluster replica node",
+    "args": []
+  },
+  "rename": {
+    "expression": "RENAME key newkey",
+    "description": "Rename a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "newkey"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "renamenx": {
+    "expression": "RENAMENX key newkey",
+    "description": "Rename a key, only if the new key does not exist",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "newkey"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "restore": {
+    "expression": "RESTORE key ttl serialized-value [REPLACE] [ABSTTL] [IDLETIME seconds] [FREQ frequency]",
+    "description": "Create a key using the provided serialized value, previously obtained using DUMP.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "ttl"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "serialized-value"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "REPLACE"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "ABSTTL"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "IDLETIME",
+          "seconds"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "FREQ",
+          "frequency"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "role": {
+    "expression": "ROLE",
+    "description": "Return the role of the instance in the context of replication",
+    "args": []
+  },
+  "rpop": {
+    "expression": "RPOP key",
+    "description": "Remove and get the last element in a list",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "rpoplpush": {
+    "expression": "RPOPLPUSH source destination",
+    "description": "Remove the last element in a list, prepend it to another list and return it",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "source"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "destination"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "rpush": {
+    "expression": "RPUSH key value [value ...]",
+    "description": "Append one or multiple values to a list",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "value",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "rpushx": {
+    "expression": "RPUSHX key value",
+    "description": "Append a value to a list, only if the list exists",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sadd": {
+    "expression": "SADD key member [member ...]",
+    "description": "Add one or more members to a set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "member",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "save": {
+    "expression": "SAVE",
+    "description": "Synchronously save the dataset to disk",
+    "args": []
+  },
+  "scard": {
+    "expression": "SCARD key",
+    "description": "Get the number of members in a set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "script": {
+    "expression": "SCRIPT LOAD script",
+    "description": "Load the specified Lua script into the script cache.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "LOAD"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "script"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sdiff": {
+    "expression": "SDIFF key [key ...]",
+    "description": "Subtract multiple sets",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sdiffstore": {
+    "expression": "SDIFFSTORE destination key [key ...]",
+    "description": "Subtract multiple sets and store the resulting set in a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "destination"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "select": {
+    "expression": "SELECT index",
+    "description": "Change the selected database for the current connection",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "index"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "set": {
+    "expression": "SET key value [expiration EX seconds|PX milliseconds] [NX|XX]",
+    "description": "Set the string value of a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "expiration",
+          "EX",
+          "seconds|PX",
+          "milliseconds"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "NX|XX"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "setbit": {
+    "expression": "SETBIT key offset value",
+    "description": "Sets or clears the bit at offset in the string value stored at key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "offset"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "setex": {
+    "expression": "SETEX key seconds value",
+    "description": "Set the value and expiration of a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "seconds"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "setnx": {
+    "expression": "SETNX key value",
+    "description": "Set the value of a key, only if the key does not exist",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "setrange": {
+    "expression": "SETRANGE key offset value",
+    "description": "Overwrite part of a string at key starting at the specified offset",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "offset"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "value"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "shutdown": {
+    "expression": "SHUTDOWN [NOSAVE|SAVE]",
+    "description": "Synchronously save the dataset to disk and then shut down the server",
+    "args": [
+      {
+        "required": false,
+        "pieces": [
+          "NOSAVE|SAVE"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sinter": {
+    "expression": "SINTER key [key ...]",
+    "description": "Intersect multiple sets",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sinterstore": {
+    "expression": "SINTERSTORE destination key [key ...]",
+    "description": "Intersect multiple sets and store the resulting set in a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "destination"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sismember": {
+    "expression": "SISMEMBER key member",
+    "description": "Determine if a given value is a member of a set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "slaveof": {
+    "expression": "SLAVEOF host port",
+    "description": "Make the server a replica of another instance, or promote it as master. Deprecated starting with Redis 5. Use REPLICAOF instead.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "host"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "port"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "replicaof": {
+    "expression": "REPLICAOF host port",
+    "description": "Make the server a replica of another instance, or promote it as master.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "host"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "port"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "slowlog": {
+    "expression": "SLOWLOG subcommand [argument]",
+    "description": "Manages the Redis slow queries log",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "subcommand"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "argument"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "smembers": {
+    "expression": "SMEMBERS key",
+    "description": "Get all the members in a set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "smove": {
+    "expression": "SMOVE source destination member",
+    "description": "Move a member from one set to another",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "source"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "destination"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sort": {
+    "expression": "SORT key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA] [STORE destination]",
+    "description": "Sort the elements in a list, set or sorted set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "BY",
+          "pattern"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "LIMIT",
+          "offset",
+          "count"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "GET",
+          "pattern",
+          "[GET",
+          "pattern",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "ASC|DESC"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "ALPHA"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "STORE",
+          "destination"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "spop": {
+    "expression": "SPOP key [count]",
+    "description": "Remove and return one or multiple random members from a set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "srandmember": {
+    "expression": "SRANDMEMBER key [count]",
+    "description": "Get one or multiple random members from a set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "srem": {
+    "expression": "SREM key member [member ...]",
+    "description": "Remove one or more members from a set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "member",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "strlen": {
+    "expression": "STRLEN key",
+    "description": "Get the length of the value stored in a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "subscribe": {
+    "expression": "SUBSCRIBE channel [channel ...]",
+    "description": "Listen for messages published to the given channels",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "channel"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "channel",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sunion": {
+    "expression": "SUNION key [key ...]",
+    "description": "Add multiple sets",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sunionstore": {
+    "expression": "SUNIONSTORE destination key [key ...]",
+    "description": "Add multiple sets and store the resulting set in a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "destination"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "swapdb": {
+    "expression": "SWAPDB index index",
+    "description": "Swaps two Redis databases",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "index"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "index"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sync": {
+    "expression": "SYNC",
+    "description": "Internal command used for replication",
+    "args": []
+  },
+  "time": {
+    "expression": "TIME",
+    "description": "Return the current server time",
+    "args": []
+  },
+  "touch": {
+    "expression": "TOUCH key [key ...]",
+    "description": "Alters the last access time of a key(s). Returns the number of existing keys specified.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "ttl": {
+    "expression": "TTL key",
+    "description": "Get the time to live for a key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "type": {
+    "expression": "TYPE key",
+    "description": "Determine the type stored at key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "unsubscribe": {
+    "expression": "UNSUBSCRIBE [channel [channel ...]]",
+    "description": "Stop listening for messages posted to the given channels",
+    "args": [
+      {
+        "required": false,
+        "pieces": [
+          "channel",
+          "[channel",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "unlink": {
+    "expression": "UNLINK key [key ...]",
+    "description": "Delete a key asynchronously in another thread. Otherwise it is just as DEL, but non blocking.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "unwatch": {
+    "expression": "UNWATCH",
+    "description": "Forget about all watched keys",
+    "args": []
+  },
+  "wait": {
+    "expression": "WAIT numreplicas timeout",
+    "description": "Wait for the synchronous replication of all the write commands sent in the context of the current connection",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "numreplicas"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "timeout"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "watch": {
+    "expression": "WATCH key [key ...]",
+    "description": "Watch the given keys to determine execution of the MULTI/EXEC block",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zadd": {
+    "expression": "ZADD key [NX|XX] [CH] [INCR] score member [score member ...]",
+    "description": "Add one or more members to a sorted set, or update its score if it already exists",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "NX|XX"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "CH"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "INCR"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "score"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "score",
+          "member",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zcard": {
+    "expression": "ZCARD key",
+    "description": "Get the number of members in a sorted set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zcount": {
+    "expression": "ZCOUNT key min max",
+    "description": "Count the members in a sorted set with scores within the given values",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "min"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "max"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zincrby": {
+    "expression": "ZINCRBY key increment member",
+    "description": "Increment the score of a member in a sorted set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "increment"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zinterstore": {
+    "expression": "ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX]",
+    "description": "Intersect multiple sorted sets and store the resulting sorted set in a new key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "destination"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "numkeys"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WEIGHTS",
+          "weight",
+          "[weight",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "AGGREGATE",
+          "SUM|MIN|MAX"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zlexcount": {
+    "expression": "ZLEXCOUNT key min max",
+    "description": "Count the number of members in a sorted set between a given lexicographical range",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "min"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "max"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zpopmax": {
+    "expression": "ZPOPMAX key [count]",
+    "description": "Remove and return members with the highest scores in a sorted set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zpopmin": {
+    "expression": "ZPOPMIN key [count]",
+    "description": "Remove and return members with the lowest scores in a sorted set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zrange": {
+    "expression": "ZRANGE key start stop [WITHSCORES]",
+    "description": "Return a range of members in a sorted set, by index",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "start"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "stop"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WITHSCORES"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zrangebylex": {
+    "expression": "ZRANGEBYLEX key min max [LIMIT offset count]",
+    "description": "Return a range of members in a sorted set, by lexicographical range",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "min"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "max"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "LIMIT",
+          "offset",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zrevrangebylex": {
+    "expression": "ZREVRANGEBYLEX key max min [LIMIT offset count]",
+    "description": "Return a range of members in a sorted set, by lexicographical range, ordered from higher to lower strings.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "max"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "min"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "LIMIT",
+          "offset",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zrangebyscore": {
+    "expression": "ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT offset count]",
+    "description": "Return a range of members in a sorted set, by score",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "min"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "max"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WITHSCORES"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "LIMIT",
+          "offset",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zrank": {
+    "expression": "ZRANK key member",
+    "description": "Determine the index of a member in a sorted set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zrem": {
+    "expression": "ZREM key member [member ...]",
+    "description": "Remove one or more members from a sorted set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "member",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zremrangebylex": {
+    "expression": "ZREMRANGEBYLEX key min max",
+    "description": "Remove all members in a sorted set between the given lexicographical range",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "min"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "max"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zremrangebyrank": {
+    "expression": "ZREMRANGEBYRANK key start stop",
+    "description": "Remove all members in a sorted set within the given indexes",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "start"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "stop"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zremrangebyscore": {
+    "expression": "ZREMRANGEBYSCORE key min max",
+    "description": "Remove all members in a sorted set within the given scores",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "min"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "max"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zrevrange": {
+    "expression": "ZREVRANGE key start stop [WITHSCORES]",
+    "description": "Return a range of members in a sorted set, by index, with scores ordered from high to low",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "start"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "stop"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WITHSCORES"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zrevrangebyscore": {
+    "expression": "ZREVRANGEBYSCORE key max min [WITHSCORES] [LIMIT offset count]",
+    "description": "Return a range of members in a sorted set, by score, with scores ordered from high to low",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "max"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "min"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WITHSCORES"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "LIMIT",
+          "offset",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zrevrank": {
+    "expression": "ZREVRANK key member",
+    "description": "Determine the index of a member in a sorted set, with scores ordered from high to low",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zscore": {
+    "expression": "ZSCORE key member",
+    "description": "Get the score associated with the given member in a sorted set",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "member"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zunionstore": {
+    "expression": "ZUNIONSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX]",
+    "description": "Add multiple sorted sets and store the resulting sorted set in a new key",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "destination"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "numkeys"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "WEIGHTS",
+          "weight",
+          "[weight",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "AGGREGATE",
+          "SUM|MIN|MAX"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "scan": {
+    "expression": "SCAN cursor [MATCH pattern] [COUNT count]",
+    "description": "Incrementally iterate the keys space",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "cursor"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "MATCH",
+          "pattern"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "COUNT",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "sscan": {
+    "expression": "SSCAN key cursor [MATCH pattern] [COUNT count]",
+    "description": "Incrementally iterate Set elements",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "cursor"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "MATCH",
+          "pattern"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "COUNT",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "hscan": {
+    "expression": "HSCAN key cursor [MATCH pattern] [COUNT count]",
+    "description": "Incrementally iterate hash fields and associated values",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "cursor"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "MATCH",
+          "pattern"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "COUNT",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "zscan": {
+    "expression": "ZSCAN key cursor [MATCH pattern] [COUNT count]",
+    "description": "Incrementally iterate sorted sets elements and associated scores",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "cursor"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "MATCH",
+          "pattern"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "COUNT",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xinfo": {
+    "expression": "XINFO [CONSUMERS key groupname] [GROUPS key] [STREAM key] [HELP]",
+    "description": "Get information on streams and consumer groups",
+    "args": [
+      {
+        "required": false,
+        "pieces": [
+          "CONSUMERS",
+          "key",
+          "groupname"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "GROUPS",
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "STREAM",
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "HELP"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xadd": {
+    "expression": "XADD key ID field string [field string ...]",
+    "description": "Appends a new entry to a stream",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "ID"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "field"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "string"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "field",
+          "string",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xtrim": {
+    "expression": "XTRIM key MAXLEN [~] count",
+    "description": "Trims the stream to (approximately if '~' is passed) a certain size",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "MAXLEN"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "~"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xdel": {
+    "expression": "XDEL key ID [ID ...]",
+    "description": "Removes the specified entries from the stream. Returns the number of items actually deleted, that may be different from the number of IDs passed in case certain IDs do not exist.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "ID"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "ID",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xrange": {
+    "expression": "XRANGE key start end [COUNT count]",
+    "description": "Return a range of elements in a stream, with IDs matching the specified IDs interval",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "start"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "end"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "COUNT",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xrevrange": {
+    "expression": "XREVRANGE key end start [COUNT count]",
+    "description": "Return a range of elements in a stream, with IDs matching the specified IDs interval, in reverse order (from greater to smaller IDs) compared to XRANGE",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "end"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "start"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "COUNT",
+          "count"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xlen": {
+    "expression": "XLEN key",
+    "description": "Return the number of entires in a stream",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xread": {
+    "expression": "XREAD [COUNT count] [BLOCK milliseconds] STREAMS key [key ...] ID [ID ...]",
+    "description": "Return never seen elements in multiple streams, with IDs greater than the ones reported by the caller for each stream. Can block.",
+    "args": [
+      {
+        "required": false,
+        "pieces": [
+          "COUNT",
+          "count"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "BLOCK",
+          "milliseconds"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "STREAMS"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "ID"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "ID",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xgroup": {
+    "expression": "XGROUP [CREATE key groupname id-or-$] [SETID key groupname id-or-$] [DESTROY key groupname] [DELCONSUMER key groupname consumername]",
+    "description": "Create, destroy, and manage consumer groups.",
+    "args": [
+      {
+        "required": false,
+        "pieces": [
+          "CREATE",
+          "key",
+          "groupname",
+          "id-or-$"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "SETID",
+          "key",
+          "groupname",
+          "id-or-$"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "DESTROY",
+          "key",
+          "groupname"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "DELCONSUMER",
+          "key",
+          "groupname",
+          "consumername"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xreadgroup": {
+    "expression": "XREADGROUP GROUP group consumer [COUNT count] [BLOCK milliseconds] [NOACK] STREAMS key [key ...] ID [ID ...]",
+    "description": "Return new entries from a stream using a consumer group, or access the history of the pending entries for a given consumer. Can block.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "GROUP"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "group"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "consumer"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "COUNT",
+          "count"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "BLOCK",
+          "milliseconds"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "NOACK"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "STREAMS"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "key",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "ID"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "ID",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xack": {
+    "expression": "XACK key group ID [ID ...]",
+    "description": "Marks a pending message as correctly processed, effectively removing it from the pending entries list of the consumer group. Return value of the command is the number of messages successfully acknowledged, that is, the IDs we were actually able to resolve in the PEL.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "group"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "ID"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "ID",
+          "..."
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xclaim": {
+    "expression": "XCLAIM key group consumer min-idle-time ID [ID ...] [IDLE ms] [TIME ms-unix-time] [RETRYCOUNT count] [FORCE] [JUSTID]",
+    "description": "Changes (or acquires) ownership of a message in a consumer group, as if the message was delivered to the specified consumer.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "group"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "consumer"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "min-idle-time"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "ID"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "ID",
+          "..."
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "IDLE",
+          "ms"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "TIME",
+          "ms-unix-time"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "RETRYCOUNT",
+          "count"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "FORCE"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "JUSTID"
+        ],
+        "array": false
+      }
+    ]
+  },
+  "xpending": {
+    "expression": "XPENDING key group [start end count] [consumer]",
+    "description": "Return information and entries from a stream consumer group pending entries list, that are messages fetched but never acknowledged.",
+    "args": [
+      {
+        "required": true,
+        "pieces": [
+          "key"
+        ],
+        "array": false
+      },
+      {
+        "required": true,
+        "pieces": [
+          "group"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "start",
+          "end",
+          "count"
+        ],
+        "array": false
+      },
+      {
+        "required": false,
+        "pieces": [
+          "consumer"
+        ],
+        "array": false
+      }
+    ]
+  }
+}

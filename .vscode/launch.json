@@ -47,6 +47,12 @@
                 "${workspaceFolder}/lib/*.js",
                 "${workspaceFolder}/examples/*.js"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "generate-interfac",
+            "program": "${workspaceFolder}/utils/generate-interface.js"
         }
     ]
 }

@@ -63,7 +63,7 @@ export class Encoder implements A.IEncoder {
         return PROTO_NULL.slice();
     }
 
-    public encodeCommand(cmd: string | Buffer, values?: Array<string | Buffer>): Buffer {
+    public encodeCommand(cmd: string | Buffer, values?: Array<string | Buffer | number>): Buffer {
 
         let ret: Buffer;
 
@@ -71,11 +71,19 @@ export class Encoder implements A.IEncoder {
 
         if (values) {
 
+            for (let i = 0; i < values.length; i++) {
+
+                if (typeof values[i] === "number") {
+
+                    values[i] = values[i].toString();
+                }
+            }
+
             length += (1 + values.length).toString().length;
 
             for (let el of values) {
 
-                length += this._getStringEncodedLength(el);
+                length += this._getStringEncodedLength(el as string);
             }
         }
         else {
@@ -108,7 +116,7 @@ export class Encoder implements A.IEncoder {
 
                 pos = this._writeString(
                     ret,
-                    el,
+                    el as string,
                     pos
                 );
             }

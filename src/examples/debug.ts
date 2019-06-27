@@ -10,14 +10,19 @@ import * as L from "@litert/core";
 
     try {
 
-        await cli.connect();
         await sub.connect();
 
-        await cli.auth("hello");
         await sub.auth("hello");
+
+        sub.on("message", function(c, d, p): void {
+
+            console.log(`Channel: ${c}, Data: ${d.toString()}`);
+        });
 
         await sub.subscribe(["hello"]);
 
+        await cli.connect();
+        await cli.auth("hello");
         console.log(await cli.set("a", "123"));
         console.log(await cli.get("a"));
         console.log(await cli.mGet(["a", "sada"]));
@@ -44,6 +49,7 @@ import * as L from "@litert/core";
         await L.Async.sleep(2000);
 
         await cli.shutdown();
+        await sub.shutdown();
     }
     catch (e) {
 

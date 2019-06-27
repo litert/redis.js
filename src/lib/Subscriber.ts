@@ -17,7 +17,7 @@ implements C.ISubscriberClient {
         _encoder: C.IEncoder
     ) {
 
-        super(host, port, _decoder, _encoder);
+        super(host, port, _decoder, _encoder, true);
     }
 
     protected _onConnected(callback: C.ICallbackA): void {

@@ -1,5 +1,6 @@
 // tslint:disable: no-unused-expression
 import * as C from "./Common";
+import * as U from "./Utils";
 import { BaseClient } from "./BaseClient";
 
 export class RedisCommandClient
@@ -28,31 +29,29 @@ implements C.ICommandClient {
 
     public async incr(k: string, step: number = 1): Promise<number> {
 
-        if (Number.isInteger(step)) {
+        return this.command("INCRBY", [k, step]);
+    }
 
-            return this.command("INCRBY", [k, step]);
-        }
-        else {
+    public async incrByFloat(k: string, s: number): Promise<number> {
 
-            return parseFloat(await this.command("INCRBYFLOAT", [k, step.toString()]));
-        }
+        return parseFloat(await this.command("INCRBYFLOAT", [k, s]));
     }
 
     public async decr(k: string, step: number = 1): Promise<number> {
 
-        if (Number.isInteger(step)) {
-
-            return this.command("DECRBY", [k, step]);
-        }
-        else {
-
-            return parseFloat(await this.command("INCRBYFLOAT", [k, (-step).toString()]));
-        }
+        return this.command("DECRBY", [k, step]);
     }
 
-    public ping(text?: string): Promise<string> {
+    public async decrByFloat(k: string, step: number): Promise<number> {
 
-        return this.command("PING", [text]);
+        return parseFloat(await this.command("INCRBYFLOAT", [k, -step]));
+    }
+
+    public async ping(text?: string): Promise<string> {
+
+        const ret = await this.command("PING", text ? [text] : []);
+
+        return (typeof ret === "string") ? ret : ret.toString();
     }
 
     public del(k: string[]): Promise<number> {
@@ -213,6 +212,16 @@ implements C.ICommandClient {
         return this.command("HGET", [k, f]);
     }
 
+    public async hGetAll(k: string): Promise<Record<string, string | null>> {
+
+        return U.pairList2NullableStringDict(await this.command("HGETALL", [k]));
+    }
+
+    public async hGetAll$(k: string): Promise<Record<string, Buffer | null>> {
+
+        return U.pairList2NullableBufferDict(await this.command("HGETALL", [k]));
+    }
+
     public async hSet(k: string, f: string, v: string | Buffer): Promise<boolean> {
 
         return 1 === await this.command("HSET", [k, f, v]);
@@ -317,20 +326,20 @@ implements C.ICommandClient {
 
     public async hIncr(k: string, f: string, s: number = 1): Promise<number> {
 
-        if (Number.isInteger(s)) {
+        return this.command("HINCRBY", [k, f, s]);
+    }
 
-            return this.command("HINCRBY", [k, f, s]);
-        }
+    public async hIncrByFloat(k: string, f: string, s: number): Promise<number> {
 
         return parseFloat(await this.command("HINCRBYFLOAT", [k, f, s]));
     }
 
     public async hDecr(k: string, f: string, s: number = 1): Promise<number> {
 
-        if (Number.isInteger(s)) {
+        return this.command("HINCRBY", [k, f, -s]);
+    }
 
-            return this.command("HINCRBY", [k, f, -s]);
-        }
+    public async hDecrByFloat(k: string, f: string, s: number = 1): Promise<number> {
 
         return parseFloat(await this.command("HINCRBYFLOAT", [k, f, -s]));
     }
@@ -402,12 +411,12 @@ implements C.ICommandClient {
 
     public async scan(cur: number, p?: string, cn?: number): Promise<C.IScanResult<string>> {
 
-        const req: any[] = [cur];
+        const args: any[] = [cur];
 
-        p && req.push("MATCH", p);
-        cn && req.push("COUNT", cn);
+        p && args.push("MATCH", p);
+        cn && args.push("COUNT", cn);
 
-        const data = await this.command("SCAN", req);
+        const data = await this.command("SCAN", args);
 
         return {
             "nextCursor": parseInt(data[0][1].toString()),

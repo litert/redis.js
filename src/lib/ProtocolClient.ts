@@ -289,6 +289,14 @@ implements C.IProtocolClient {
         }, cb);
     }
 
+    protected _sendOnly(cmd: string, args: any[]): Promise<void> {
+
+        return new Promise((resolve, reject) => this._socket.write(
+            this._encoder.encodeCommand(cmd, args),
+            (e) => e ? reject(e) : resolve(e)
+        ));
+    }
+
     public command(cmd: string, args: any[], cb?: C.ICallbackA): any {
 
         return wrapPromise((callback): void => {

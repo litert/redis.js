@@ -196,10 +196,22 @@ export interface ICommandAPIs {
     incr(key: string, step?: number): Promise<number>;
 
     /**
+     * Command: incrByFloat
+     * @see https://redis.io/commands/incrByFloat
+     */
+    incrByFloat(key: string, step: number): Promise<number>;
+
+    /**
      * Command: decr
      * @see https://redis.io/commands/decr
      */
     decr(key: string, step?: number): Promise<number>;
+
+    /**
+     * Command: incrByFloat
+     * @see https://redis.io/commands/incrByFloat
+     */
+    decrByFloat(key: string, step: number): Promise<number>;
 
     /**
      * Command: del
@@ -464,16 +476,26 @@ export interface ICommandAPIs {
     /**
      * Command: hIncr
      * @see https://redis.io/commands/hincrby
-     * @see https://redis.io/commands/hincrbyfloat
      */
     hIncr(key: string, field: string, step?: number): Promise<number>;
 
     /**
      * Command: hIncr
-     * @see https://redis.io/commands/hincrby
      * @see https://redis.io/commands/hincrbyfloat
      */
+    hIncrByFloat(key: string, field: string, step: number): Promise<number>;
+
+    /**
+     * Command: hIncr
+     * @see https://redis.io/commands/hincrby
+     */
     hDecr(key: string, field: string, step?: number): Promise<number>;
+
+    /**
+     * Command: hIncr
+     * @see https://redis.io/commands/hincrbyfloat
+     */
+    hDecrByFloat(key: string, field: string, step: number): Promise<number>;
 
     /**
      * Command: hKeys
@@ -504,6 +526,18 @@ export interface ICommandAPIs {
      * @see https://redis.io/commands/hMGet
      */
     hMGet(key: string, fields: NonEmptyArray<string>): Promise<Record<string, string | null>>;
+
+    /**
+     * Command: hGetAll
+     * @see https://redis.io/commands/hGetAll
+     */
+    hGetAll(key: string): Promise<Record<string, string | null>>;
+
+    /**
+     * Command: hGetAll
+     * @see https://redis.io/commands/hGetAll
+     */
+    hGetAll$(key: string): Promise<Record<string, Buffer | null>>;
 
     /**
      * Command: hMGet
@@ -847,14 +881,64 @@ export interface ICommandAPIs {
      */
     publish(channel: string, data: Buffer | string): Promise<number>;
 
+    /**
+     * Command: pubsub
+     * @see https://redis.io/commands/pubsub
+     */
     pubSubChannels(patterns?: string): Promise<string[]>;
 
+    /**
+     * Command: pubsub
+     * @see https://redis.io/commands/pubsub
+     */
     pubSubNumSub(channels: [string, ...string[]]): Promise<Record<string, number>>;
 
+    /**
+     * Command: pubsub
+     * @see https://redis.io/commands/pubsub
+     */
     pubSubNumPat(): Promise<number>;
 }
 
 export interface ICommandClient extends IProtocolClient, ICommandAPIs {}
+
+export type IPipelineCommandAPIs = {
+
+    [K in keyof ICommandAPIs]: (...args: Parameters<ICommandAPIs[K]>) => Promise<void>;
+};
+
+export interface IPipelineClient extends IProtocolClient, IPipelineCommandAPIs {
+
+    /**
+     * Command: watch
+     * @see https://redis.io/commands/watch
+     */
+    watch(keys: string[]): Promise<void>;
+
+    /**
+     * Command: unwatch
+     * @see https://redis.io/commands/unwatch
+     */
+    unwatch(): Promise<void>;
+
+    /**
+     * Command: multi
+     * @see https://redis.io/commands/multi
+     */
+    multi(): Promise<void>;
+
+    /**
+     * Command: discard
+     * @see https://redis.io/commands/discard
+     */
+    discard(): Promise<void>;
+
+    /**
+     * Command: exec
+     * @see https://redis.io/commands/exec
+     */
+    exec<T extends any[]>(): Promise<T>;
+}
 
 export interface ISubscriberClient extends IProtocolClient {
 

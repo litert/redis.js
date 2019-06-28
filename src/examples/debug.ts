@@ -23,7 +23,9 @@ import * as L from "@litert/core";
 
         await cli.connect();
         await cli.auth("hello");
+        console.log(await cli.ping(""));
         console.log(await cli.set("a", "123"));
+        console.log(await cli.incr("a", 23.4));
         console.log(await cli.get("a"));
         console.log(await cli.mGet(["a", "sada"]));
 

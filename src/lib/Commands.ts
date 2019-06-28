@@ -13,7 +13,7 @@ export type TProcessor = null | ((data: any, args: any[]) => any);
 
 export interface ICommand {
 
-    prepare?(...args: any[]): IPrepareResult;
+    prepare(...args: any[]): IPrepareResult;
 
     process?: TProcessor;
 }

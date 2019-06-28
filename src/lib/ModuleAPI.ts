@@ -1,7 +1,7 @@
 import { Decoder } from "./Decoder";
 import { Encoder } from "./Encoder";
 import { ProtocolClient } from "./ProtocolClient";
-import { RedisCommandClient } from "./RedisClient";
+import { CommandClient } from "./CommandClient";
 import { SubscriberClient } from "./Subscriber";
 import * as C from "./Common";
 import { DEFUALT_PORT } from "./Constants";
@@ -23,7 +23,7 @@ export function createCommandClient(
     encoder: C.IEncoder = createEncoder()
 ): C.ICommandClient {
 
-    return new RedisCommandClient(
+    return new CommandClient(
         host,
         port,
         decoder,

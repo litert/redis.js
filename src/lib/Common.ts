@@ -900,7 +900,13 @@ export interface ICommandAPIs {
     pubSubNumPat(): Promise<number>;
 }
 
-export interface ICommandClient extends IProtocolClient, ICommandAPIs {}
+export interface ICommandClient extends IProtocolClient, ICommandAPIs {
+
+    /**
+     * Create a client for multi-exec transaction.
+     */
+    pipeline(): Promise<IPipelineClient>;
+}
 
 export type IPipelineCommandAPIs = {
 

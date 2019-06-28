@@ -4,7 +4,7 @@ import { ProtocolClient } from "./ProtocolClient";
 export abstract class BaseClient
 extends ProtocolClient {
 
-    private _password!: string;
+    protected _password!: string;
 
     public constructor(
         host: string,

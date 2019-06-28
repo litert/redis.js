@@ -29,8 +29,8 @@ implements C.IProtocolClient {
     public constructor(
         public readonly host: string,
         public readonly port: number,
-        private _decoder: C.IDecoder,
-        private _encoder: C.IEncoder,
+        protected _decoder: C.IDecoder,
+        protected _encoder: C.IEncoder,
         private _subscribeMode: boolean = false
 
     ) {

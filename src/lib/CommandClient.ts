@@ -2,8 +2,9 @@
 import * as C from "./Common";
 import * as U from "./Utils";
 import { BaseClient } from "./BaseClient";
+import { PipelineClient } from "./PipelineClient";
 
-export class RedisCommandClient
+export class CommandClient
 extends BaseClient
 implements C.ICommandClient {
 
@@ -817,5 +818,17 @@ implements C.ICommandClient {
     public pubSubNumPat(): Promise<number> {
 
         return this.command("PUBSUB", ["NUMPAT"]);
+    }
+
+    public async pipeline(): Promise<C.IPipelineClient> {
+
+        const cli = new PipelineClient(this.host, this.port, this._decoder, this._encoder);
+
+        if (this._password) {
+
+            await cli.auth(this._password);
+        }
+
+        return cli;
     }
 }

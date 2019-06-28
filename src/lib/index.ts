@@ -16,3 +16,4 @@ export * from "./ModuleAPI";
 
 export * from "./Common";
 
+export * from "./Errors";

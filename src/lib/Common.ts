@@ -549,7 +549,7 @@ export interface ICommandAPIs {
      * Command: hMSet
      * @see https://redis.io/commands/hMSet
      */
-    hMSet(key: string, kv: Record<string, string | Buffer>): Promise<void>;
+    hMSet(key: string, kv: Record<string, string | Buffer | number>): Promise<void>;
 
     /**
      * Command: hStrLen
@@ -978,3 +978,7 @@ export interface ISubscriberClient extends IProtocolClient {
      */
     pUnsubscribe(patterns: NonEmptyArray<string>): Promise<void>;
 }
+
+export type TEncoderFactory = () => IEncoder;
+
+export type TDecoderFactory = () => IDecoder;

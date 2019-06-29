@@ -20,7 +20,7 @@ export interface ICommand {
 
 function isStringOK(data: any): boolean {
 
-    return "OK" === data;
+    return "OK" === (data && data.toString());
 }
 
 function isIntegerOne(data: any): boolean {
@@ -542,7 +542,10 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 args: keys
             };
         },
-        process: U.pairList2NullableStringDict
+        process(data, args) {
+
+            return U.list2NullableStringDict(args, data);
+        }
     },
 
     /**
@@ -556,7 +559,10 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 args: keys
             };
         },
-        process: U.pairList2NullableBufferDict
+        process(data, args) {
+
+            return U.list2NullableBufferDict(args, data);
+        }
     },
 
     /**

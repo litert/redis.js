@@ -53,3 +53,9 @@ export const E_SUBSCRIBE_FAILURE = ErrorHub.define(
     "E_SUBSCRIBE_FAILURE",
     "Failed to subscribe subjects."
 );
+
+export const E_PIPELINING = ErrorHub.define(
+    null,
+    "E_PIPELINING",
+    "Some commands queued in pipeline, can not use MULTI."
+);

@@ -19,8 +19,8 @@ export function createEncoder(): C.IEncoder {
 export function createCommandClient(
     host: string,
     port: number = DEFUALT_PORT,
-    decoder: C.IDecoder = createDecoder(),
-    encoder: C.IEncoder = createEncoder()
+    decoder: C.TDecoderFactory = createDecoder,
+    encoder: C.TEncoderFactory = createEncoder
 ): C.ICommandClient {
 
     return new CommandClient(
@@ -34,8 +34,8 @@ export function createCommandClient(
 export function createProtocolClient(
     host: string,
     port: number = DEFUALT_PORT,
-    decoder: C.IDecoder = createDecoder(),
-    encoder: C.IEncoder = createEncoder()
+    decoder: C.TDecoderFactory = createDecoder,
+    encoder: C.TEncoderFactory = createEncoder
 ): C.IProtocolClient {
 
     return new ProtocolClient(
@@ -49,8 +49,8 @@ export function createProtocolClient(
 export function createSubscriberClient(
     host: string,
     port: number = DEFUALT_PORT,
-    decoder: C.IDecoder = createDecoder(),
-    encoder: C.IEncoder = createEncoder()
+    decoder: C.TDecoderFactory = createDecoder,
+    encoder: C.TEncoderFactory = createEncoder
 ): C.ISubscriberClient {
 
     return new SubscriberClient(

@@ -1,5 +1,6 @@
 // tslint:disable: no-unused-expression
 import * as C from "./Common";
+import * as E from "./Errors";
 import { BaseClient } from "./BaseClient";
 
 export class SubscriberClient
@@ -13,11 +14,11 @@ implements C.ISubscriberClient {
     public constructor(
         host: string,
         port: number,
-        _decoder: C.IDecoder,
-        _encoder: C.IEncoder
+        decoder: C.TDecoderFactory,
+        encoder: C.TEncoderFactory
     ) {
 
-        super(host, port, _decoder, _encoder, true);
+        super(host, port, decoder, encoder, true);
     }
 
     protected _onConnected(callback: C.ICallbackA): void {
@@ -38,7 +39,7 @@ implements C.ISubscriberClient {
                 }
                 catch (e) {
 
-                    return callback(e);
+                    return callback(new E.E_SUBSCRIBE_FAILURE({ metadata: { origin: e } }));
                 }
 
                 callback();

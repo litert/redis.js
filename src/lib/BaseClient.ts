@@ -9,12 +9,13 @@ extends ProtocolClient {
     public constructor(
         host: string,
         port: number,
-        decoder: C.IDecoder,
-        encoder: C.IEncoder,
-        subscribeMode?: boolean
+        decoder: C.TDecoderFactory,
+        encoder: C.TEncoderFactory,
+        subscribeMode?: boolean,
+        pipeline?: boolean
     ) {
 
-        super(host, port, decoder, encoder, subscribeMode);
+        super(host, port, decoder, encoder, subscribeMode, pipeline);
     }
 
     protected _onConnected(callback: C.ICallbackA): void {

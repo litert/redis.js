@@ -21,6 +21,7 @@ import * as L from "@litert/core";
 
     await cli.connect();
     await cli.auth("hello");
+
     console.log(await cli.ping(""));
     console.log(await cli.set("a", "123"));
     console.log(await cli.incr("a", 23));
@@ -48,6 +49,53 @@ import * as L from "@litert/core";
     console.log(await cli.publish("hello", "test"));
 
     await L.Async.sleep(2000);
+
+    const pipeline = await cli.pipeline();
+
+    // Multi Mode
+    await pipeline.multi();
+    await pipeline.get("a");
+
+    await pipeline.set("ccc", "g");
+
+    await pipeline.mGet(["a", "ccc"]);
+
+    await pipeline.hSet("h", "name", "Mick");
+    await pipeline.hMSet("h", {
+        "age": 123,
+        "title": "Mr."
+    });
+
+    await pipeline.hMGet("h", ["age", "title"]);
+    await pipeline.hGetAll("h");
+    console.log(JSON.stringify(await pipeline.scan(0), null, 2));
+
+    await pipeline.incr("a", 123);
+
+    console.log(JSON.stringify(await pipeline.exec(), null, 2));
+
+    // Pipeline Mode
+    await pipeline.get("a");
+
+    await pipeline.set("ccc", "g");
+
+    await pipeline.mGet(["a", "ccc"]);
+
+    await pipeline.hSet("h", "name", "Mick");
+    await pipeline.hMSet("h", {
+        "age": 123,
+        "title": "Mr."
+    });
+
+    await pipeline.hMGet("h", ["age", "title"]);
+    await pipeline.hGetAll("h");
+    console.log(JSON.stringify(await pipeline.scan(0), null, 2));
+
+    await pipeline.incr("a", 123);
+
+    console.log(JSON.stringify(await pipeline.exec(), null, 2));
+
+    await pipeline.shutdown();
 
     await cli.shutdown();
     await sub.shutdown();

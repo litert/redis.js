@@ -3,11 +3,18 @@ import * as $Events from "@litert/events";
 import * as $Net from "net";
 import * as E from "./Errors";
 
-interface IWaitQueueItem {
-
-    data: Buffer;
+interface IQueueItem {
 
     callback: C.ICallbackA;
+
+    count: number;
+
+    result: any[];
+}
+
+interface IPendingQueueItem extends IQueueItem {
+
+    data: Buffer;
 }
 
 export class ProtocolClient
@@ -20,63 +27,134 @@ implements C.IProtocolClient {
 
     private _uuidCounter: number = 0;
 
-    private _waitingQueue: IWaitQueueItem[] = [];
+    private _pendingQueue: IPendingQueueItem[] = [];
 
-    private _execQueue: C.ICallbackA[] = [];
+    private _executingQueue: IQueueItem[] = [];
 
-    private _sendingQueue: C.ICallbackA[] = [];
+    private _sendingQueue: IQueueItem[] = [];
+
+    private _decoder: C.IDecoder;
+
+    private _encoder: C.IEncoder;
 
     public constructor(
         public readonly host: string,
         public readonly port: number,
-        protected _decoder: C.IDecoder,
-        protected _encoder: C.IEncoder,
-        private _subscribeMode: boolean = false
+        createDecoder: C.TDecoderFactory,
+        createEncoder: C.TEncoderFactory,
+        private _subscribeMode: boolean = false,
+        private _pipeline: boolean = false
 
     ) {
         super();
 
-        this._decoder.on("data", (type, data): void => {
+        this._decoder = createDecoder();
 
-            const cb = this._execQueue.shift() as C.ICallbackA;
+        this._encoder = createEncoder();
 
-            switch (type) {
-            case C.DataType.FAILURE:
-                cb(new E.E_COMMAND_FAILURE({ "message": data.toString() }));
-                break;
-            case C.DataType.INTEGER:
-                cb(null, parseInt(data));
-                break;
-            case C.DataType.MESSAGE:
-                cb(null, data.toString());
-                break;
-            case C.DataType.NULL:
-                cb(null, null);
-                break;
-            case C.DataType.LIST:
+        if (this._subscribeMode) {
 
-                if (this._subscribeMode) {
+            this._decoder.on("data", (type, data): void => {
 
-                    switch (data[0][1].toString()) {
-                    case "message":
+                const it = this._executingQueue.shift() as IQueueItem;
 
-                        this.emit("message", data[1][1].toString(), data[2][1]);
-                        return;
+                switch (type) {
+                case C.DataType.FAILURE:
+                    it.callback(new E.E_COMMAND_FAILURE({ "message": data.toString() }));
+                    break;
+                case C.DataType.INTEGER:
+                    it.callback(null, parseInt(data));
+                    break;
+                case C.DataType.MESSAGE:
+                    it.callback(null, data.toString());
+                    break;
+                case C.DataType.NULL:
+                    it.callback(null, null);
+                    break;
+                case C.DataType.LIST:
 
-                    case "pmessage":
+                    if (this._subscribeMode) {
 
-                        this.emit("message", data[2][1].toString(), data[3][1], data[1][1].toString());
-                        return;
+                        switch (data[0][1].toString()) {
+                        case "message":
 
-                    default:
+                            this.emit("message", data[1][1].toString(), data[2][1]);
+                            return;
+
+                        case "pmessage":
+
+                            this.emit("message", data[2][1].toString(), data[3][1], data[1][1].toString());
+                            return;
+
+                        default:
+                        }
                     }
+
+                case C.DataType.STRING:
+                    it.callback(null, data);
+                    break;
+                }
+            });
+        }
+        else if (this._pipeline) {
+
+            this._decoder.on("data", (type, data): void => {
+
+                const item = this._executingQueue[0];
+
+                switch (type) {
+                case C.DataType.FAILURE:
+                    item.result.push(new E.E_COMMAND_FAILURE({ "message": data.toString() }));
+                    break;
+                case C.DataType.INTEGER:
+                    item.result.push(parseInt(data));
+                    break;
+                case C.DataType.MESSAGE:
+                    item.result.push(data.toString());
+                    break;
+                case C.DataType.NULL:
+                    item.result.push(null);
+                    break;
+                case C.DataType.LIST:
+                case C.DataType.STRING:
+                    item.result.push(data);
+                    break;
                 }
 
-            case C.DataType.STRING:
-                cb(null, data);
-                break;
-            }
-        });
+                if (item.result.length === item.count) {
+
+                    this._executingQueue.shift();
+                    item.callback(null, item.result);
+                }
+            });
+        }
+        else {
+
+            this._decoder.on("data", (type, data): void => {
+
+                const cb = this._executingQueue.shift() as IQueueItem;
+
+                switch (type) {
+                case C.DataType.FAILURE:
+                    cb.callback(new E.E_COMMAND_FAILURE({ "message": data.toString() }));
+                    break;
+                case C.DataType.INTEGER:
+                    cb.callback(null, parseInt(data));
+                    break;
+                case C.DataType.MESSAGE:
+                    cb.callback(null, data.toString());
+                    break;
+                case C.DataType.NULL:
+                    cb.callback(null, null);
+                    break;
+                case C.DataType.LIST:
+                case C.DataType.STRING:
+                    cb.callback(null, data);
+                    break;
+                }
+            });
+        }
+
     }
 
     public get status(): C.EClientStatus {
@@ -104,19 +182,19 @@ implements C.IProtocolClient {
 
     protected _onConnected(callback: C.ICallbackA): void {
 
-        const queue = this._waitingQueue;
+        const queue = this._pendingQueue;
 
-        this._waitingQueue = [];
+        this._pendingQueue = [];
 
         for (let x of queue) {
 
             if (this._socket.writable) {
 
-                this._sendingQueue.push(x.callback);
+                this._sendingQueue.push(x);
 
                 this._socket.write(
                     x.data,
-                    (e) => e ? callback(e) : this._execQueue.push(this._sendingQueue.shift() as any)
+                    (e) => e ? callback(e) : this._executingQueue.push(this._sendingQueue.shift() as any)
                 );
             }
         }
@@ -202,7 +280,7 @@ implements C.IProtocolClient {
 
                 try {
 
-                    x(new E.E_CONN_LOST());
+                    x.callback(new E.E_CONN_LOST());
                 }
                 catch (e) {
 
@@ -210,11 +288,11 @@ implements C.IProtocolClient {
                 }
             }
 
-            for (let x of this._execQueue) {
+            for (let x of this._executingQueue) {
 
                 try {
 
-                    x(new E.E_CONN_LOST());
+                    x.callback(new E.E_CONN_LOST());
                 }
                 catch (e) {
 
@@ -223,7 +301,7 @@ implements C.IProtocolClient {
             }
 
             this._sendingQueue = [];
-            this._execQueue = [];
+            this._executingQueue = [];
 
             switch (this._status) {
             case C.EClientStatus.IDLE:
@@ -279,11 +357,11 @@ implements C.IProtocolClient {
 
             const data = this._encoder.encodeCommand(cmd, args);
 
-            this._sendingQueue.push(callback);
+            this._sendingQueue.push({ callback, count: 1, result: [] });
 
             this._socket.write(
                 data,
-                (e) => e ? callback(e) : this._execQueue.push(this._sendingQueue.shift() as any)
+                (e) => e ? callback(e) : this._executingQueue.push(this._sendingQueue.shift() as any)
             );
 
         }, cb);
@@ -293,11 +371,19 @@ implements C.IProtocolClient {
 
         return new Promise((resolve, reject) => this._socket.write(
             this._encoder.encodeCommand(cmd, args),
-            (e) => e ? reject(e) : resolve(e)
+            (e) => {
+
+                return e ? reject(e) : resolve(e);
+            }
         ));
     }
 
     public command(cmd: string, args: any[], cb?: C.ICallbackA): any {
+
+        if (this._status === C.EClientStatus.IDLE) {
+
+            throw new E.E_NO_CONN();
+        }
 
         return wrapPromise((callback): void => {
 
@@ -308,15 +394,46 @@ implements C.IProtocolClient {
                 !(this._socket && this._socket.writable)
             ) {
 
-                this._waitingQueue.push({data, callback});
+                this._pendingQueue.push({data, callback, count: 1, result: []});
             }
             else {
 
-                this._sendingQueue.push(callback);
+                this._sendingQueue.push({ callback, count: 1, result: [] });
 
                 this._socket.write(
                     data,
-                    (e) => e ? callback(e) : this._execQueue.push(this._sendingQueue.shift() as any)
+                    (e) => e ? callback(e) : this._executingQueue.push(this._sendingQueue.shift() as any)
+                );
+            }
+
+        }, cb);
+    }
+
+    protected _bulkCommands(cmds: Array<{ cmd: string; args: any[]; }>, cb?: C.ICallbackA): any {
+
+        if (this._status === C.EClientStatus.IDLE) {
+
+            throw new E.E_NO_CONN();
+        }
+
+        return wrapPromise((callback): void => {
+
+            const data = Buffer.concat(cmds.map((x) => this._encoder.encodeCommand(x.cmd, x.args)));
+
+            if (
+                this._status !== C.EClientStatus.READY ||
+                !(this._socket && this._socket.writable)
+            ) {
+
+                this._pendingQueue.push({data, callback, count: cmds.length, result: []});
+            }
+            else {
+
+                this._sendingQueue.push({ callback, count: cmds.length, result: [] });
+
+                this._socket.write(
+                    data,
+                    (e) => e ? callback(e) : this._executingQueue.push(this._sendingQueue.shift() as any)
                 );
             }
 

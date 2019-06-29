@@ -11,11 +11,11 @@ implements C.ICommandClient {
     public constructor(
         host: string,
         port: number,
-        _decoder: C.IDecoder,
-        _encoder: C.IEncoder
+        private _createDecoder: C.TDecoderFactory,
+        private _createEncoder: C.TEncoderFactory
     ) {
 
-        super(host, port, _decoder, _encoder);
+        super(host, port, _createDecoder, _createEncoder);
     }
 
     public strLen(k: string): Promise<number> {
@@ -822,7 +822,14 @@ implements C.ICommandClient {
 
     public async pipeline(): Promise<C.IPipelineClient> {
 
-        const cli = new PipelineClient(this.host, this.port, this._decoder, this._encoder);
+        const cli: C.IPipelineClient = new PipelineClient(
+            this.host,
+            this.port,
+            this._createDecoder,
+            this._createEncoder
+        );
+
+        await cli.connect();
 
         if (this._password) {
 

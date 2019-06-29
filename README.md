@@ -10,7 +10,6 @@ A redis protocol implement for Node.js.
 
 ## Features
 
-- [x] Support both promise and callback style.
 - [x] Support read/write separation.
 - [x] Support pipeline.
 - [x] Support multi and exec.

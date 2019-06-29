@@ -380,6 +380,11 @@ implements C.IProtocolClient {
 
     public command(cmd: string, args: any[], cb?: C.ICallbackA): any {
 
+        return this._command(cmd, args, cb);
+    }
+
+    protected _command(cmd: string, args: any[], cb?: C.ICallbackA): any {
+
         if (this._status === C.EClientStatus.IDLE) {
 
             throw new E.E_NO_CONN();

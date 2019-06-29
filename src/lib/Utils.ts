@@ -94,7 +94,7 @@ export function list2NullableStringDict(keys: string[], data: Array<[number, Buf
 
     for (let i = 0; i < data.length; i++) {
 
-        ret[keys[i]] = data[i][1].toString();
+        ret[keys[i]] = data[i][1] ? data[i][1].toString() : null;
     }
 
     return ret;

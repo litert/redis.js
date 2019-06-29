@@ -21,6 +21,7 @@ import * as L from "@litert/core";
 
     await cli.connect();
     await cli.auth("hello");
+    await cli.flushAll();
 
     console.log(await cli.ping(""));
     console.log(await cli.set("a", "123"));
@@ -72,6 +73,8 @@ import * as L from "@litert/core";
 
     await pipeline.incr("a", 123);
 
+    await pipeline.command("HGETALL", ["h"]);
+
     console.log(JSON.stringify(await pipeline.exec(), null, 2));
 
     // Pipeline Mode
@@ -92,6 +95,8 @@ import * as L from "@litert/core";
     console.log(JSON.stringify(await pipeline.scan(0), null, 2));
 
     await pipeline.incr("a", 123);
+
+    await pipeline.command("HGETALL", ["h"]);
 
     console.log(JSON.stringify(await pipeline.exec(), null, 2));
 

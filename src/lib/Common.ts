@@ -376,6 +376,18 @@ export interface ICommandAPIs {
     select(db: number): Promise<void>;
 
     /**
+     * Command: flushDb
+     * @see https://redis.io/commands/flushDb
+     */
+    flushDb(async?: boolean): Promise<void>;
+
+    /**
+     * Command: flushAll
+     * @see https://redis.io/commands/flushAll
+     */
+    flushAll(async?: boolean): Promise<void>;
+
+    /**
      * Command: hDel
      * @see https://redis.io/commands/hDel
      */
@@ -900,7 +912,7 @@ export interface ICommandAPIs {
     pubSubNumPat(): Promise<number>;
 }
 
-export interface ICommandClient extends IProtocolClient, ICommandAPIs {
+export interface ICommandClientBase {
 
     /**
      * Create a client for multi-exec transaction.
@@ -908,12 +920,15 @@ export interface ICommandClient extends IProtocolClient, ICommandAPIs {
     pipeline(): Promise<IPipelineClient>;
 }
 
+export interface ICommandClient
+extends IProtocolClient, ICommandAPIs, ICommandClientBase {}
+
 export type IPipelineCommandAPIs = {
 
     [K in keyof ICommandAPIs]: (...args: Parameters<ICommandAPIs[K]>) => Promise<void>;
 };
 
-export interface IPipelineClient extends IProtocolClient, IPipelineCommandAPIs {
+export interface IPipelineClientBase {
 
     /**
      * Command: watch
@@ -945,6 +960,9 @@ export interface IPipelineClient extends IProtocolClient, IPipelineCommandAPIs {
      */
     exec<T extends any[]>(): Promise<T>;
 }
+
+export interface IPipelineClient
+extends IProtocolClient, IPipelineCommandAPIs, IPipelineClientBase {}
 
 export interface ISubscriberClient extends IProtocolClient {
 

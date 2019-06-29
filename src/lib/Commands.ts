@@ -74,7 +74,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
 
             return {
                 "cmd": "INCRBY",
-                "args": [key, step]
+                "args": [key, step || 1]
             };
         }
     },
@@ -405,6 +405,34 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
     },
 
     /**
+     * Command: flushDb
+     * @see https://redis.io/commands/flushDb
+     */
+    "flushDb": {
+        prepare(async: boolean = false): IPrepareResult {
+            return {
+                cmd: "FLUSHDB",
+                args: async ? ["ASYNC"] : []
+            };
+        },
+        process: null
+    },
+
+    /**
+     * Command: flushAll
+     * @see https://redis.io/commands/flushAll
+     */
+    "flushAll": {
+        prepare(async: boolean = false): IPrepareResult {
+            return {
+                cmd: "FLUSHALL",
+                args: async ? ["ASYNC"] : []
+            };
+        },
+        process: null
+    },
+
+    /**
      * Command: hDel
      * @see https://redis.io/commands/hDel
      */
@@ -483,7 +511,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: restore
      * @see https://redis.io/commands/restore
      */
-    restore: {
+    "restore": {
 
         prepare(
             key: string,
@@ -636,7 +664,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         prepare(key: string, field: string, step: number): IPrepareResult {
             return {
                 cmd: "HINCRBY",
-                args: [key, field, -step]
+                args: [key, field, -(step || 1)]
             };
         }
     },
@@ -1449,7 +1477,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
     },
 
     "pubSubNumSub": {
-        prepare(channels: [string, ...string[]]): IPrepareResult {
+        prepare(channels: string[]): IPrepareResult {
 
             return {
                 args: ["NUMSUB", ...channels],
@@ -1469,7 +1497,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         }
     },
 
-    pubSubNumPat: {
+    "pubSubNumPat": {
 
         prepare(): IPrepareResult {
 

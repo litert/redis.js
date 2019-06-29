@@ -38,7 +38,7 @@ extends ProtocolClient {
 
     public async auth(k: string): Promise<void> {
 
-        await this.command("AUTH", [k]);
+        await this._command("AUTH", [k]);
 
         this._password = k;
     }

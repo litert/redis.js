@@ -2,6 +2,7 @@ import { Decoder } from "./Decoder";
 import { Encoder } from "./Encoder";
 import { ProtocolClient } from "./ProtocolClient";
 import { CommandClient } from "./CommandClient";
+import { PipelineClient } from "./PipelineClient";
 import { SubscriberClient } from "./Subscriber";
 import * as C from "./Common";
 import { DEFUALT_PORT } from "./Constants";
@@ -28,7 +29,22 @@ export function createCommandClient(
         port,
         decoder,
         encoder
-    );
+    ) as any as C.ICommandClient;
+}
+
+export function createPipelineClient(
+    host: string,
+    port: number = DEFUALT_PORT,
+    decoder: C.TDecoderFactory = createDecoder,
+    encoder: C.TEncoderFactory = createEncoder
+): C.IPipelineClient {
+
+    return new PipelineClient(
+        host,
+        port,
+        decoder,
+        encoder
+    ) as any as C.IPipelineClient;
 }
 
 export function createProtocolClient(

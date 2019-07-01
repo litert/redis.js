@@ -1,3 +1,19 @@
+/**
+ * Copyright 2019 Angus.Fenying <fenying@litert.org>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as C from "./Common";
 import * as $Events from "@litert/events";
 import * as $Net from "net";
@@ -37,20 +53,41 @@ implements C.IProtocolClient {
 
     private _encoder: C.IEncoder;
 
-    public constructor(
-        public readonly host: string,
-        public readonly port: number,
-        createDecoder: C.TDecoderFactory,
-        createEncoder: C.TEncoderFactory,
-        private _subscribeMode: boolean = false,
-        private _pipeline: boolean = false
+    private _ready: boolean = false;
 
-    ) {
+    private _subscribeMode: boolean;
+
+    private _pipelineMode: boolean;
+
+    public readonly host: string;
+
+    public readonly port: number;
+
+    protected _connectTimeout: number;
+
+    protected _commandTimeout: number;
+
+    private _timeoutLocked: boolean = false;
+
+    public constructor(opts: C.IProtocolClientOptions) {
+
         super();
 
-        this._decoder = createDecoder();
+        this._decoder = opts.decoderFactory();
 
-        this._encoder = createEncoder();
+        this._encoder = opts.encoderFactory();
+
+        this._connectTimeout = opts.connectTimeout;
+
+        this._commandTimeout = opts.commandTimeout;
+
+        this._subscribeMode = opts.subscribeMode;
+
+        this._pipelineMode = opts.pipelineMode;
+
+        this.host = opts.host;
+
+        this.port = opts.port;
 
         if (this._subscribeMode) {
 
@@ -94,9 +131,14 @@ implements C.IProtocolClient {
                     it.callback(null, data);
                     break;
                 }
+
+                if (!this._executingQueue.length && this._commandTimeout) {
+
+                    this._socket.setTimeout(0);
+                }
             });
         }
-        else if (this._pipeline) {
+        else if (this._pipelineMode) {
 
             this._decoder.on("data", (type, data): void => {
 
@@ -126,6 +168,11 @@ implements C.IProtocolClient {
                     this._executingQueue.shift();
                     item.callback(null, item.result);
                 }
+
+                if (!this._executingQueue.length && this._commandTimeout) {
+
+                    this._socket.setTimeout(0);
+                }
             });
         }
         else {
@@ -152,6 +199,11 @@ implements C.IProtocolClient {
                     cb.callback(null, data);
                     break;
                 }
+
+                if (!this._executingQueue.length && this._commandTimeout) {
+
+                    this._socket.setTimeout(0);
+                }
             });
         }
 
@@ -173,7 +225,16 @@ implements C.IProtocolClient {
                 return;
             }
 
-            this.once("ready", callback as any);
+            const helper = function(this: ProtocolClient): void {
+
+                this.removeListener("ready", callback);
+                this.removeListener("ready", helper);
+                this.removeListener("error", callback);
+                this.removeListener("error", helper);
+            };
+
+            this.once("ready", callback as any).once("ready", helper);
+            this.once("error", callback).once("error", helper);
 
             this._connect();
 
@@ -212,7 +273,7 @@ implements C.IProtocolClient {
         case C.EClientStatus.READY:
         case C.EClientStatus.CONNECTING:
 
-            if (this._socket && !this._socket.writable) {
+            if (this._socket && this._ready) {
 
                 break;
             }
@@ -230,6 +291,16 @@ implements C.IProtocolClient {
         // @ts-ignore
         this._socket.__uuid = ++this._uuidCounter;
 
+        this._timeoutLocked = false;
+
+        if (this._connectTimeout) {
+
+            this._socket.setTimeout(
+                this._connectTimeout,
+                () => this._socket.destroy(new E.E_REQUEST_TIMEOUT())
+            );
+        }
+
         this._socket.on("connect", () => {
 
             // @ts-ignore
@@ -238,9 +309,13 @@ implements C.IProtocolClient {
                 return;
             }
 
+            this._socket.setTimeout(0);
+
             this._decoder.reset();
 
-            this._socket.on("data", (data) =>  this._decoder.update(data));
+            this._socket.on("data", (data) => this._decoder.update(data));
+
+            this._ready = true;
 
             this._onConnected((err: unknown): void => {
 
@@ -272,6 +347,13 @@ implements C.IProtocolClient {
 
             // @ts-ignore
             if (this._socket.__uuid !== this._uuidCounter) {
+
+                return;
+            }
+
+            if (!this._ready) {
+
+                this.emit("close");
 
                 return;
             }
@@ -338,6 +420,8 @@ implements C.IProtocolClient {
 
     private _close() {
 
+        this._ready = false;
+
         switch (this._status) {
 
         case C.EClientStatus.IDLE:
@@ -361,7 +445,16 @@ implements C.IProtocolClient {
 
             this._socket.write(
                 data,
-                (e) => e ? callback(e) : this._executingQueue.push(this._sendingQueue.shift() as any)
+                (e) => {
+
+                    if (e) {
+                        callback(e);
+                    }
+                    else {
+                        this._executingQueue.push(this._sendingQueue.shift() as any);
+                        this._setTimeout();
+                    }
+                }
             );
 
         }, cb);
@@ -373,7 +466,14 @@ implements C.IProtocolClient {
             this._encoder.encodeCommand(cmd, args),
             (e) => {
 
-                return e ? reject(e) : resolve(e);
+                if (e) {
+                    reject(e);
+                }
+                else {
+
+                    this._setTimeout();
+                    resolve();
+                }
             }
         ));
     }
@@ -407,7 +507,16 @@ implements C.IProtocolClient {
 
                 this._socket.write(
                     data,
-                    (e) => e ? callback(e) : this._executingQueue.push(this._sendingQueue.shift() as any)
+                    (e) => {
+
+                        if (e) {
+                            callback(e);
+                        }
+                        else {
+                            this._executingQueue.push(this._sendingQueue.shift() as any);
+                            this._setTimeout();
+                        }
+                    }
                 );
             }
 
@@ -438,11 +547,29 @@ implements C.IProtocolClient {
 
                 this._socket.write(
                     data,
-                    (e) => e ? callback(e) : this._executingQueue.push(this._sendingQueue.shift() as any)
+                    (e) => {
+
+                        if (e) {
+                            callback(e);
+                        }
+                        else {
+                            this._executingQueue.push(this._sendingQueue.shift() as any);
+                            this._setTimeout();
+                        }
+                    }
                 );
             }
 
         }, cb);
+    }
+
+    private _setTimeout(): void {
+
+        if (this._commandTimeout && !this._timeoutLocked) {
+
+            this._timeoutLocked = true;
+            this._socket.setTimeout(this._commandTimeout, () => this._socket.destroy(new E.E_REQUEST_TIMEOUT()));
+        }
     }
 }
 

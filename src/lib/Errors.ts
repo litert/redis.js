@@ -59,3 +59,9 @@ export const E_PIPELINING = ErrorHub.define(
     "E_PIPELINING",
     "Some commands queued in pipeline, can not use MULTI."
 );
+
+export const E_REQUEST_TIMEOUT = ErrorHub.define(
+    null,
+    "E_REQUEST_TIMEOUT",
+    "There was no response for commands sent in time ."
+);

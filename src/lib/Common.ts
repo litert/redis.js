@@ -1,3 +1,19 @@
+/**
+ * Copyright 2019 Angus.Fenying <fenying@litert.org>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as $Events from "@litert/events";
 
 export type TStringValue = string | Buffer;
@@ -21,7 +37,6 @@ export interface IProtocolClientEvents extends $Events.ICallbackDefinitions {
     close(): void;
 
     message(channel: string, data: Buffer, pattern?: string): void;
-
 }
 
 export interface ICallbackA<R = any, E = any> {
@@ -1000,3 +1015,35 @@ export interface ISubscriberClient extends IProtocolClient {
 export type TEncoderFactory = () => IEncoder;
 
 export type TDecoderFactory = () => IDecoder;
+
+export interface IClientOptions {
+
+    host: string;
+
+    port: number;
+
+    encoderFactory: TEncoderFactory;
+
+    decoderFactory: TDecoderFactory;
+
+    /**
+     * The timeout for connecting to server.
+     *
+     * @default 5000ms
+     */
+    connectTimeout: number;
+
+    /**
+     * How long will a command request timeout.
+     *
+     * @default 3000ms
+     */
+    commandTimeout: number;
+}
+
+export interface IProtocolClientOptions extends IClientOptions {
+
+    subscribeMode: boolean;
+
+    pipelineMode: boolean;
+}

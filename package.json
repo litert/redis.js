@@ -10,7 +10,7 @@
     "rebuild": "npm run clean && npm run lint && npm run build",
     "clean": "rm -rf lib examples test",
     "lint": "tslint -p . -c tslint.json",
-    "test": "mocha"
+    "test": "echo No tests yet."
   },
   "keywords": [
     "litert",
@@ -35,9 +35,7 @@
     "@litert/events": "^0.2.0"
   },
   "devDependencies": {
-    "@types/mocha": "^5.2.7",
     "@types/node": "^12.0.8",
-    "mocha": "^6.1.4",
     "tslint": "^5.17.0",
     "typescript": "^3.5.2"
   },

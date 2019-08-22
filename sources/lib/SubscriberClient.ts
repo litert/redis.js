@@ -34,8 +34,6 @@ implements Abstract.ProtocolClient {
 
     protected _password: string;
 
-    private _keepAlive: any;
-
     public constructor(
         connection: Net.Socket,
         host: string,
@@ -45,14 +43,6 @@ implements Abstract.ProtocolClient {
         password: string
     ) {
         super(connection, host, port, createDecoder, createEncoder);
-
-        this._keepAlive = setInterval(() => {
-
-            if (this._status === Abstract.ClientStatus.NORMAL) {
-
-                this.executeNow("PING").catch((e) => this.emit("error", e));
-            }
-        }, 5000);
 
         this._subjects = [];
         this._patterns = [];
@@ -328,8 +318,6 @@ implements Abstract.ProtocolClient {
     }
 
     public async close(): Promise<void> {
-
-        clearInterval(this._keepAlive);
 
         return super.close();
     }

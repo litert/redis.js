@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v0.1.8
+
+- Removed KEEP-ALIVE.
+
 ## v0.1.7
 
 - Added keep-alive for clients.

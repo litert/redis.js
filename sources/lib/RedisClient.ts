@@ -35,8 +35,6 @@ implements Abstract.RedisClient {
 
     private _listeners!: Dict<Array<Abstract.SubscriptionCallback | Readable>>;
 
-    private _keepAlive: any;
-
     public constructor(
         connection: Net.Socket,
         host: string,
@@ -46,14 +44,6 @@ implements Abstract.RedisClient {
     ) {
 
         super(connection, host, port, createDecoder, createEncoder);
-
-        this._keepAlive = setInterval(() => {
-
-            if (this._status === Abstract.ClientStatus.NORMAL) {
-
-                this.executeNow("PING").catch((e) => this.emit("error", e));
-            }
-        }, 5000);
 
         this._database = 0;
     }
@@ -1322,8 +1312,6 @@ implements Abstract.RedisClient {
             await Promise.all([super.close(), this._subscriber.close()]);
             delete this._subscriber;
         }
-
-        clearInterval(this._keepAlive);
 
         return super.close();
     }

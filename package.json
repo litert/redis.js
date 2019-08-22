@@ -1,6 +1,6 @@
 {
   "name": "@litert/redis",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "A redis protocol implement for Node.js.",
   "main": "./dist/index.js",
   "scripts": {

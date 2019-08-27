@@ -208,7 +208,12 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/set
      */
     "set": {
-        prepare: createDefaultPreparer("SET"),
+        prepare(k: string, v: string | Buffer, ttl?: number): IPrepareResult {
+            return {
+                cmd: "SET",
+                args: ttl ? [k, v, "EX", ttl] : [k, v]
+            };
+        },
         process: isStringOK
     },
 

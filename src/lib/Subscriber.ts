@@ -63,9 +63,19 @@ implements C.ISubscriberClient {
         });
     }
 
-    public async subscribe(channels: string[]): Promise<void> {
+    public async subscribe(channels: string | string[]): Promise<void> {
 
         let cs: string[] = [];
+
+        if (!Array.isArray(channels)) {
+
+            channels = [channels];
+        }
+
+        if (!channels.length) {
+
+            throw new E.E_INVALID_PARAM();
+        }
 
         for (const c of channels) {
 
@@ -90,9 +100,19 @@ implements C.ISubscriberClient {
         }
     }
 
-    public async unsubscribe(channels: string[]): Promise<void> {
+    public async unsubscribe(channels: string | string[]): Promise<void> {
 
         let cs: string[] = [];
+
+        if (!Array.isArray(channels)) {
+
+            channels = [channels];
+        }
+
+        if (!channels.length) {
+
+            throw new E.E_INVALID_PARAM();
+        }
 
         for (const c of channels) {
 
@@ -117,9 +137,19 @@ implements C.ISubscriberClient {
         }
     }
 
-    public async pSubscribe(patterns: string[]): Promise<void> {
+    public async pSubscribe(patterns: string | string[]): Promise<void> {
 
         let ps: string[] = [];
+
+        if (!Array.isArray(patterns)) {
+
+            patterns = [patterns];
+        }
+
+        if (!patterns.length) {
+
+            throw new E.E_INVALID_PARAM();
+        }
 
         for (const p of patterns) {
 
@@ -144,9 +174,19 @@ implements C.ISubscriberClient {
         }
     }
 
-    public async pUnsubscribe(patterns: string[]): Promise<void> {
+    public async pUnsubscribe(patterns: string | string[]): Promise<void> {
 
         let ps: string[] = [];
+
+        if (!Array.isArray(patterns)) {
+
+            patterns = [patterns];
+        }
+
+        if (!patterns.length) {
+
+            throw new E.E_INVALID_PARAM();
+        }
 
         for (const p of patterns) {
 

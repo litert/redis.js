@@ -17,6 +17,7 @@
 // tslint:disable: no-unused-expression
 import * as C from "./Common";
 import * as U from "./Utils";
+import * as E from "./Errors";
 
 export interface IPrepareResult {
 
@@ -148,10 +149,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/del
      */
     "del": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "DEL",
+                    args: keys
+                };
+            }
+
             return {
-                "cmd": "DEL",
-                "args": keys
+                cmd: "DEL",
+                args: [keys]
             };
         }
     },
@@ -161,10 +176,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/unlink
      */
     "unlink": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "UNLINK",
+                    args: keys
+                };
+            }
+
             return {
-                "cmd": "UNLINK",
-                "args": keys
+                cmd: "UNLINK",
+                args: [keys]
             };
         }
     },
@@ -458,10 +487,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/hDel
      */
     "hDel": {
-        prepare(key: string, fields: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(key: string, fields: string | string[]): IPrepareResult {
+
+            if (Array.isArray(fields)) {
+
+                if (!fields.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "HDEL",
+                    args: [key, ...fields]
+                };
+            }
+
             return {
                 cmd: "HDEL",
-                args: [key, ...fields]
+                args: [key, fields]
             };
         }
     },
@@ -572,10 +615,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/touch
      */
     "touch": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "TOUCH",
+                    args: keys
+                };
+            }
+
             return {
                 cmd: "TOUCH",
-                args: keys
+                args: [keys]
             };
         }
     },
@@ -585,10 +642,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/mGet
      */
     "mGet": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "MGET",
+                    args: keys
+                };
+            }
+
             return {
                 cmd: "MGET",
-                args: keys
+                args: [keys]
             };
         },
         process(data, args) {
@@ -602,10 +673,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/mGet
      */
     "mGet$": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "MGET",
+                    args: keys
+                };
+            }
+
             return {
                 cmd: "MGET",
-                args: keys
+                args: [keys]
             };
         },
         process(data, args) {
@@ -744,10 +829,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/hMGet
      */
     "hMGet": {
-        prepare(key: string, fields: string[]): IPrepareResult {
+        prepare(key: string, fields: string | string[]): IPrepareResult {
+
+            if (Array.isArray(fields)) {
+
+                if (!fields.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "HMGET",
+                    args: [key, ...fields]
+                };
+            }
+
             return {
                 cmd: "HMGET",
-                args: [key, ...fields]
+                args: [key, fields]
             };
         },
         process(data, args) {
@@ -761,10 +860,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/hMGet
      */
     "hMGet$": {
-        prepare(key: string, fields: string[]): IPrepareResult {
+        prepare(key: string, fields: string | string[]): IPrepareResult {
+
+            if (Array.isArray(fields)) {
+
+                if (!fields.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "HMGET",
+                    args: [key, ...fields]
+                };
+            }
+
             return {
                 cmd: "HMGET",
-                args: [key, ...fields]
+                args: [key, fields]
             };
         },
         process(data, args) {
@@ -900,11 +1013,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/sDiff
      */
     "sDiff": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "SDIFF",
+                    args: keys
+                };
+            }
 
             return {
                 cmd: "SDIFF",
-                args: keys
+                args: [keys]
             };
         },
         process: U.list2StringList
@@ -915,11 +1041,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/sDiff
      */
     "sDiff$": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "SDIFF",
+                    args: keys
+                };
+            }
 
             return {
                 cmd: "SDIFF",
-                args: keys
+                args: [keys]
             };
         },
         process: U.list2BufferList
@@ -930,11 +1069,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/sDiffStore
      */
     "sDiffStore": {
-        prepare(keys: C.NonEmptyArray<string>, target: string): IPrepareResult {
+        prepare(keys: string | string[], target: string): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "SDIFFSTORE",
+                    args: keys
+                };
+            }
 
             return {
                 cmd: "SDIFFSTORE",
-                args: [target, ...keys]
+                args: [keys]
             };
         }
     },
@@ -944,11 +1096,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/sInter
      */
     "sInter": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "SINTER",
+                    args: keys
+                };
+            }
 
             return {
                 cmd: "SINTER",
-                args: keys
+                args: [keys]
             };
         },
         process: U.list2StringList
@@ -959,11 +1124,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/sInter
      */
     "sInter$": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "SINTER",
+                    args: keys
+                };
+            }
 
             return {
                 cmd: "SINTER",
-                args: keys
+                args: [keys]
             };
         },
         process: U.list2BufferList
@@ -974,11 +1152,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/sInterStore
      */
     "sInterStore": {
-        prepare(keys: C.NonEmptyArray<string>, target: string): IPrepareResult {
+        prepare(keys: string | string[], target: string): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "SINTERSTORE",
+                    args: keys
+                };
+            }
 
             return {
                 cmd: "SINTERSTORE",
-                args: [target, ...keys]
+                args: [keys]
             };
         }
     },
@@ -988,11 +1179,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/sUnion
      */
     "sUnion": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "SUNION",
+                    args: keys
+                };
+            }
 
             return {
                 cmd: "SUNION",
-                args: keys
+                args: [keys]
             };
         },
         process: U.list2StringList
@@ -1003,11 +1207,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/sUnion
      */
     "sUnion$": {
-        prepare(keys: C.NonEmptyArray<string>): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "SUNION",
+                    args: keys
+                };
+            }
 
             return {
                 cmd: "SUNION",
-                args: keys
+                args: [keys]
             };
         },
         process: U.list2BufferList
@@ -1018,11 +1235,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/sUnionStore
      */
     "sUnionStore": {
-        prepare(keys: C.NonEmptyArray<string>, target: string): IPrepareResult {
+        prepare(keys: string | string[]): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "SUNIONSTORE",
+                    args: keys
+                };
+            }
 
             return {
                 cmd: "SUNIONSTORE",
-                args: [target, ...keys]
+                args: [keys]
             };
         }
     },
@@ -1164,11 +1394,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/bLPop
      */
     "bLPop": {
-        prepare(keys: C.NonEmptyArray<string>, timeout: number): IPrepareResult {
+        prepare(keys: string | string[], timeout: number): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "BLPOP",
+                    args: [...keys, timeout]
+                };
+            }
 
             return {
                 cmd: "BLPOP",
-                args: [...keys, timeout]
+                args: [keys, timeout]
             };
         },
         process: U.pairList2StringDict
@@ -1179,11 +1422,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/bLPop
      */
     "bLPop$": {
-        prepare(keys: C.NonEmptyArray<string>, timeout: number): IPrepareResult {
+        prepare(keys: string | string[], timeout: number): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "BLPOP",
+                    args: [...keys, timeout]
+                };
+            }
 
             return {
                 cmd: "BLPOP",
-                args: [...keys, timeout]
+                args: [keys, timeout]
             };
         },
         process: U.pairList2BufferDict
@@ -1194,11 +1450,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/bRPop
      */
     "bRPop": {
-        prepare(keys: C.NonEmptyArray<string>, timeout: number): IPrepareResult {
+        prepare(keys: string | string[], timeout: number): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "BRPOP",
+                    args: [...keys, timeout]
+                };
+            }
 
             return {
                 cmd: "BRPOP",
-                args: [...keys, timeout]
+                args: [keys, timeout]
             };
         },
         process: U.pairList2StringDict
@@ -1209,11 +1478,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/bRPop
      */
     "bRPop$": {
-        prepare(keys: C.NonEmptyArray<string>, timeout: number): IPrepareResult {
+        prepare(keys: string | string[], timeout: number): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "BRPOP",
+                    args: [...keys, timeout]
+                };
+            }
 
             return {
                 cmd: "BRPOP",
-                args: [...keys, timeout]
+                args: [keys, timeout]
             };
         },
         process: U.pairList2BufferDict
@@ -1468,11 +1750,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/pfMerge
      */
     "pfMerge": {
-        prepare(keys: C.NonEmptyArray<string>, target: string): IPrepareResult {
+        prepare(keys: string | string[], target: string): IPrepareResult {
+
+            if (Array.isArray(keys)) {
+
+                if (!keys.length) {
+
+                    throw new E.E_INVALID_PARAM();
+                }
+
+                return {
+                    cmd: "PFMERGE",
+                    args: [target, ...keys]
+                };
+            }
 
             return {
-                args: [target, ...keys],
-                cmd: "PFMERGE"
+                cmd: "PFMERGE",
+                args: [target, keys]
             };
         },
         process: null

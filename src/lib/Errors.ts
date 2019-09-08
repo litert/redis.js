@@ -73,3 +73,10 @@ export const E_REQUEST_TIMEOUT = ErrorHub.define(
     "There was no response for commands sent in time .",
     {}
 );
+
+export const E_INVALID_PARAM = ErrorHub.define(
+    null,
+    "E_INVALID_PARAM",
+    "The parameters passed to the command is unacceptable.",
+    {}
+);

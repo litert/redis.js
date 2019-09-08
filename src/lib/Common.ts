@@ -18,8 +18,6 @@ import * as $Events from "@litert/events";
 
 export type TStringValue = string | Buffer;
 
-export type NonEmptyArray<T> = [T, ...T[]];
-
 export type TResponseType<
     T extends "list" | "string" | "integer" | "message",
     E
@@ -232,13 +230,13 @@ export interface ICommandAPIs {
      * Command: del
      * @see https://redis.io/commands/del
      */
-    del(keys: NonEmptyArray<string>): Promise<number>;
+    del(keys: string | string[]): Promise<number>;
 
     /**
      * Command: unlink
      * @see https://redis.io/commands/unlink
      */
-    unlink(keys: NonEmptyArray<string>): Promise<number>;
+    unlink(keys: string | string[]): Promise<number>;
 
     /**
      * Command: get
@@ -406,7 +404,7 @@ export interface ICommandAPIs {
      * Command: hDel
      * @see https://redis.io/commands/hDel
      */
-    hDel(key: string, fields: NonEmptyArray<string>): Promise<number>;
+    hDel(key: string, fields: string | string[]): Promise<number>;
 
     /**
      * Command: hGet
@@ -474,19 +472,19 @@ export interface ICommandAPIs {
      * Command: touch
      * @see https://redis.io/commands/touch
      */
-    touch(keys: NonEmptyArray<string>): Promise<number>;
+    touch(keys: string | string[]): Promise<number>;
 
     /**
      * Command: mGet
      * @see https://redis.io/commands/mGet
      */
-    mGet(keys: NonEmptyArray<string>): Promise<Record<string, string | null>>;
+    mGet(keys: string | string[]): Promise<Record<string, string | null>>;
 
     /**
      * Command: mGet
      * @see https://redis.io/commands/mGet
      */
-    mGet$(key: NonEmptyArray<string>): Promise<Record<string, Buffer | null>>;
+    mGet$(key: string | string[]): Promise<Record<string, Buffer | null>>;
 
     /**
      * Command: mSet
@@ -552,7 +550,7 @@ export interface ICommandAPIs {
      * Command: hMGet
      * @see https://redis.io/commands/hMGet
      */
-    hMGet(key: string, fields: NonEmptyArray<string>): Promise<Record<string, string | null>>;
+    hMGet(key: string, fields: string | string[]): Promise<Record<string, string | null>>;
 
     /**
      * Command: hGetAll
@@ -570,7 +568,7 @@ export interface ICommandAPIs {
      * Command: hMGet
      * @see https://redis.io/commands/hMGet
      */
-    hMGet$(key: string, fields: NonEmptyArray<string>): Promise<Record<string, Buffer | null>>;
+    hMGet$(key: string, fields: string | string[]): Promise<Record<string, Buffer | null>>;
 
     /**
      * Command: hMSet
@@ -612,55 +610,55 @@ export interface ICommandAPIs {
      * Command: sDiff
      * @see https://redis.io/commands/sDiff
      */
-    sDiff(key: NonEmptyArray<string>): Promise<string[]>;
+    sDiff(key: string | string[]): Promise<string[]>;
 
     /**
      * Command: sDiff
      * @see https://redis.io/commands/sDiff
      */
-    sDiff$(key: NonEmptyArray<string>): Promise<Buffer[]>;
+    sDiff$(key: string | string[]): Promise<Buffer[]>;
 
     /**
      * Command: sDiffStore
      * @see https://redis.io/commands/sDiffStore
      */
-    sDiffStore(key: NonEmptyArray<string>, target: string): Promise<number>;
+    sDiffStore(key: string | string[], target: string): Promise<number>;
 
     /**
      * Command: sInter
      * @see https://redis.io/commands/sInter
      */
-    sInter(key: NonEmptyArray<string>): Promise<string[]>;
+    sInter(key: string | string[]): Promise<string[]>;
 
     /**
      * Command: sInter
      * @see https://redis.io/commands/sInter
      */
-    sInter$(key: NonEmptyArray<string>): Promise<Buffer[]>;
+    sInter$(key: string | string[]): Promise<Buffer[]>;
 
     /**
      * Command: sInterStore
      * @see https://redis.io/commands/sInterStore
      */
-    sInterStore(key: NonEmptyArray<string>, target: string): Promise<number>;
+    sInterStore(key: string | string[], target: string): Promise<number>;
 
     /**
      * Command: sUnion
      * @see https://redis.io/commands/sUnion
      */
-    sUnion(key: NonEmptyArray<string>): Promise<string[]>;
+    sUnion(key: string | string[]): Promise<string[]>;
 
     /**
      * Command: sUnion
      * @see https://redis.io/commands/sUnion
      */
-    sUnion$(key: NonEmptyArray<string>): Promise<Buffer[]>;
+    sUnion$(key: string | string[]): Promise<Buffer[]>;
 
     /**
      * Command: sUnionStore
      * @see https://redis.io/commands/sUnionStore
      */
-    sUnionStore(key: NonEmptyArray<string>, target: string): Promise<number>;
+    sUnionStore(key: string | string[], target: string): Promise<number>;
 
     /**
      * Command: sIsMember
@@ -732,25 +730,25 @@ export interface ICommandAPIs {
      * Command: bLPop
      * @see https://redis.io/commands/bLPop
      */
-    bLPop(keys: NonEmptyArray<string>, timeout: number): Promise<Record<string, string>>;
+    bLPop(keys: string | string[], timeout: number): Promise<Record<string, string>>;
 
     /**
      * Command: bLPop
      * @see https://redis.io/commands/bLPop
      */
-    bLPop$(keys: NonEmptyArray<string>, timeout: number): Promise<Record<string, Buffer>>;
+    bLPop$(keys: string | string[], timeout: number): Promise<Record<string, Buffer>>;
 
     /**
      * Command: bRPop
      * @see https://redis.io/commands/bRPop
      */
-    bRPop(keys: NonEmptyArray<string>, timeout: number): Promise<Record<string, string>>;
+    bRPop(keys: string | string[], timeout: number): Promise<Record<string, string>>;
 
     /**
      * Command: bRPop
      * @see https://redis.io/commands/bRPop
      */
-    bRPop$(keys: NonEmptyArray<string>, timeout: number): Promise<Record<string, Buffer>>;
+    bRPop$(keys: string | string[], timeout: number): Promise<Record<string, Buffer>>;
 
     /**
      * Command: bRPopLPush
@@ -900,7 +898,7 @@ export interface ICommandAPIs {
      * Command: pfMerge
      * @see https://redis.io/commands/pfMerge
      */
-    pfMerge(keys: NonEmptyArray<string>, target: string): Promise<void>;
+    pfMerge(keys: string | string[], target: string): Promise<void>;
 
     /**
      * Command: publish
@@ -991,25 +989,25 @@ export interface ISubscriberClient extends IProtocolClient {
      * Command: subscribe
      * @see https://redis.io/commands/subscribe
      */
-    subscribe(channels: NonEmptyArray<string>): Promise<void>;
+    subscribe(channels: string | string[]): Promise<void>;
 
     /**
      * Command: unsubscribe
      * @see https://redis.io/commands/unsubscribe
      */
-    unsubscribe(channels: NonEmptyArray<string>): Promise<void>;
+    unsubscribe(channels: string | string[]): Promise<void>;
 
     /**
      * Command: psubscribe
      * @see https://redis.io/commands/psubscribe
      */
-    pSubscribe(patterns: NonEmptyArray<string>): Promise<void>;
+    pSubscribe(patterns: string | string[]): Promise<void>;
 
     /**
      * Command: punsubscribe
      * @see https://redis.io/commands/punsubscribe
      */
-    pUnsubscribe(patterns: NonEmptyArray<string>): Promise<void>;
+    pUnsubscribe(patterns: string | string[]): Promise<void>;
 }
 
 export type TEncoderFactory = () => IEncoder;

@@ -401,7 +401,7 @@ implements C.IProtocolClient {
         });
     }
 
-    public shutdown(cb?: C.ICallbackA<void>): any {
+    public close(cb?: C.ICallbackA<void>): any {
 
         return wrapPromise((callback): void => {
 

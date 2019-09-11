@@ -58,14 +58,26 @@ export interface IProtocolClient extends $Events.IObservable<IProtocolClientEven
 
     readonly status: EClientStatus;
 
+    /**
+     * Start a connection to remote server..
+     */
     connect(): Promise<void>;
 
     connect(callback: ICallbackA<void>): void;
 
-    shutdown(): Promise<void>;
+    /**
+     * Close the connection to remote server..
+     */
+    close(): Promise<void>;
 
-    shutdown(callback: ICallbackA<void>): void;
+    close(callback: ICallbackA<void>): void;
 
+    /**
+     * Send a command to remote server.
+     *
+     * @param cmd   The command
+     * @param args  The arguments of the command.
+     */
     command(cmd: string, args: TStringValue[]): Promise<any>;
 
     command(cmd: string, args: TStringValue[], callback: ICallbackA): void;
@@ -104,9 +116,7 @@ export enum DataType {
     NULL
 }
 
-export type ListItem<T = any> = [
-    DataType, T
-];
+export type ListItem<T = any> = [ DataType, T ];
 
 /**
  * This interface describes the structure of a Redis protocol encoder.

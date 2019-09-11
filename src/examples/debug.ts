@@ -116,9 +116,9 @@ import * as L from "@litert/core";
 
     console.log(JSON.stringify(await pipeline.exec(), null, 2));
 
-    await pipeline.shutdown();
+    await pipeline.close();
 
-    await cli.shutdown();
-    await sub.shutdown();
+    await cli.close();
+    await sub.close();
 
 })();

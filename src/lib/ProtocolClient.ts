@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Angus.Fenying <fenying@litert.org>
+ * Copyright 2020 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 import * as C from "./Common";
-import * as $Events from "@litert/events";
+import { Events } from "@litert/observable";
 import * as $Net from "net";
 import * as E from "./Errors";
 
@@ -34,7 +34,7 @@ interface IPendingQueueItem extends IQueueItem {
 }
 
 export class ProtocolClient
-extends $Events.EventEmitter<C.IProtocolClientEvents>
+extends Events.EventEmitter<C.IProtocolClientEvents>
 implements C.IProtocolClient {
 
     private _socket!: $Net.Socket;

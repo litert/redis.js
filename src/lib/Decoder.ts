@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Angus.Fenying <fenying@litert.org>
+ * Copyright 2020 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 import * as C from "./Common";
 import * as E from "./Errors";
 import * as Constants from "./Constants";
-import * as $Events from "@litert/events";
+import { Events } from "@litert/observable";
 
 import PROTO_DELIMITER = Constants.PROTO_DELIMITER;
 
@@ -91,7 +91,7 @@ class DecodeContext {
 }
 
 export class Decoder
-extends $Events.EventEmitter<C.IDecoderEvents>
+extends Events.EventEmitter<C.IDecoderEvents>
 implements C.IDecoder {
 
     protected _buf!: Buffer;

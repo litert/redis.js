@@ -1,5 +1,13 @@
 # Changes Logs
 
+## v1.0.2
+
+- Migrate deps from `@litert/events` to `@litert/observable`.
+
+## v1.0.1
+
+- Refactored the code to improve the performance and maintainability.
+
 ## v0.1.8
 
 - Removed KEEP-ALIVE.

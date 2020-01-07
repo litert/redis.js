@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Angus.Fenying <fenying@litert.org>
+ * Copyright 2020 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as $Events from "@litert/events";
+import { Events } from "@litert/observable";
 
 export type TStringValue = string | Buffer;
 
@@ -26,7 +26,7 @@ export type TResponseType<
     T extends "string" ? string | Buffer :
     T extends "integer" ? number : string;
 
-export interface IProtocolClientEvents extends $Events.ICallbackDefinitions {
+export interface IProtocolClientEvents extends Events.ICallbackDefinitions {
 
     aborted(e: unknown): void;
 
@@ -54,7 +54,7 @@ export enum EClientStatus {
  * The client only provides the basic connection and communication over Redis
  * protocol.
  */
-export interface IProtocolClient extends $Events.IObservable<IProtocolClientEvents> {
+export interface IProtocolClient extends Events.IObservable<IProtocolClientEvents> {
 
     readonly status: EClientStatus;
 
@@ -165,12 +165,12 @@ export interface IEncoder {
     encodeList(data: ListItem[]): Buffer;
 }
 
-export interface IDecoderEvents extends $Events.ICallbackDefinitions {
+export interface IDecoderEvents extends Events.ICallbackDefinitions {
 
     data(type: DataType, data: any): void;
 }
 
-export interface IDecoder extends $Events.IObservable<IDecoderEvents> {
+export interface IDecoder extends Events.IObservable<IDecoderEvents> {
 
     /**
      * Reset the decoder.

@@ -58,6 +58,11 @@ implements C.ICommandClientBase {
             await cli.auth(this._password);
         }
 
+        if (this._db) {
+
+            await cli.select(this._db);
+        }
+
         return cli;
     }
 }
@@ -68,7 +73,7 @@ implements C.ICommandClientBase {
 
     for (name in CMD.COMMANDS) {
 
-        if (name === "auth") {
+        if (name === "auth" || name === "select") {
 
             continue;
         }

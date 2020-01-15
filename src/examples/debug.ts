@@ -21,12 +21,12 @@ import * as L from "@litert/core";
 
 (async () => {
 
-    const cli = Redis.createCommandClient({port: 6373});
-    const sub = Redis.createSubscriberClient({port: 6373});
+    const cli = Redis.createCommandClient({});
+    const sub = Redis.createSubscriberClient({});
 
     await sub.connect();
 
-    await sub.auth("hello");
+    // await sub.auth("hello");
 
     sub.on("message", function(c, d, p): void {
 
@@ -36,7 +36,7 @@ import * as L from "@litert/core";
     await sub.subscribe(["hello"]);
 
     await cli.connect();
-    await cli.auth("hello");
+    // await cli.auth("hello");
     await cli.flushAll();
 
     console.log(await cli.ping(""));

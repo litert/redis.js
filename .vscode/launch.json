@@ -18,8 +18,8 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Auto Reconnection",
-            "program": "${workspaceFolder}/src/examples/auto-reconnect.ts",
+            "name": "MULTI Mode",
+            "program": "${workspaceFolder}/src/examples/multi.ts",
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceFolder}/lib/*.js",
@@ -29,30 +29,13 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Commands",
-            "program": "${workspaceFolder}/src/examples/commands.ts",
+            "name": "Pipeline Mode",
+            "program": "${workspaceFolder}/src/examples/pipeline.ts",
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceFolder}/lib/*.js",
                 "${workspaceFolder}/examples/*.js"
             ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Subscriber",
-            "program": "${workspaceFolder}/src/examples/subscriber.ts",
-            "sourceMaps": true,
-            "outFiles": [
-                "${workspaceFolder}/lib/*.js",
-                "${workspaceFolder}/examples/*.js"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "generate-interfac",
-            "program": "${workspaceFolder}/utils/generate-interface.js"
         }
     ]
 }

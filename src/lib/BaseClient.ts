@@ -22,6 +22,8 @@ extends ProtocolClient {
 
     protected _password!: string;
 
+    protected _db: number = 0;
+
     public constructor(opts: C.IProtocolClientOptions) {
 
         super(opts);
@@ -41,7 +43,15 @@ extends ProtocolClient {
                 return callback(err);
             }
 
-            super._onConnected(callback);
+            this._send("SELECT", [this._db], (err2: any): void => {
+
+                if (err2) {
+
+                    return callback(err2);
+                }
+
+                super._onConnected(callback);
+            });
         });
     }
 
@@ -50,5 +60,12 @@ extends ProtocolClient {
         await this._command("AUTH", [k]);
 
         this._password = k;
+    }
+
+    public async select(db: number): Promise<void> {
+
+        await this._command("SELECT", [db]);
+
+        this._db = db;
     }
 }

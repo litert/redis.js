@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v1.0.3
+
+- Fixed: The pipeline doesn't switch database following the parent client.
+
 ## v1.0.2
 
 - Migrate deps from `@litert/events` to `@litert/observable`.

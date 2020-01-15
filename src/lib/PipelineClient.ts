@@ -165,7 +165,7 @@ implements C.IPipelineClientBase {
 
     for (name in CMD.COMMANDS) {
 
-        if (name === "auth") {
+        if (name === "auth" || name === "select") {
 
             continue;
         }

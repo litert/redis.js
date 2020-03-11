@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-// tslint:disable: no-console
-
-import * as Redis from "../lib";
+import * as Redis from '../lib';
 
 (async () => {
 
@@ -30,19 +28,26 @@ import * as Redis from "../lib";
 
     const pipeline = await cli.pipeline();
 
-    // Multi Mode
-    pipeline.set("ccc", "g");
+    pipeline.set('ccc', 'g');
 
-    pipeline.hSet("h", "age", "ggg");
+    pipeline.hSet('h', 'age', 'ggg');
 
-    pipeline.command("HGET", ["h", "age"]);
+    pipeline.hGet('h', 'age');
+
+    console.log(JSON.stringify(await pipeline.exec(), null, 2));
+
+    pipeline.set('ccc', 'a');
+
+    pipeline.hSet('h', 'age', 'xxx');
+
+    pipeline.hGet('h', 'age');
 
     console.log(JSON.stringify(await pipeline.exec(), null, 2));
 
     await pipeline.close();
 
-    console.log(await cli.get("ccc"));
+    console.log(await cli.get('ccc'));
 
     await cli.close();
 
-})();
+})().catch((e) => console.error(e));

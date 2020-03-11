@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import * as C from "./Common";
-import { ProtocolClient } from "./ProtocolClient";
+import * as C from './Common';
+import { ProtocolClient } from './ProtocolClient';
 
 export abstract class BaseClient
-extends ProtocolClient {
+    extends ProtocolClient {
 
     protected _password!: string;
 
@@ -36,14 +36,14 @@ extends ProtocolClient {
             return super._onConnected(callback);
         }
 
-        this._send("AUTH", [this._password], (err: any): void => {
+        this._send('AUTH', [this._password], (err: any): void => {
 
             if (err) {
 
                 return callback(err);
             }
 
-            this._send("SELECT", [this._db], (err2: any): void => {
+            this._send('SELECT', [this._db], (err2: any): void => {
 
                 if (err2) {
 
@@ -57,14 +57,14 @@ extends ProtocolClient {
 
     public async auth(k: string): Promise<void> {
 
-        await this._command("AUTH", [k]);
+        await this._command('AUTH', [k]);
 
         this._password = k;
     }
 
     public async select(db: number): Promise<void> {
 
-        await this._command("SELECT", [db]);
+        await this._command('SELECT', [db]);
 
         this._db = db;
     }

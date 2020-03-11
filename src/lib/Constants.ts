@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export const PROTO_DELIMITER_VALUE: string = "\r\n";
+export const PROTO_DELIMITER_VALUE: string = '\r\n';
 
 export const PROTO_DELIMITER: Buffer = Buffer.from(PROTO_DELIMITER_VALUE);
 
@@ -22,7 +22,7 @@ export const PROTO_NULL: Buffer = Buffer.from(`$-1${PROTO_DELIMITER_VALUE}`);
 
 export const DEFUALT_PORT = 6379;
 
-export const DEFUALT_HOST = "127.0.0.1";
+export const DEFUALT_HOST = '127.0.0.1';
 
 export const DEFAULT_COMMAND_TIMEOUT = 3000;
 

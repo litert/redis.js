@@ -14,69 +14,76 @@
  * limitations under the License.
  */
 
-import * as Core from "@litert/core";
+import * as Core from '@litert/core';
 
-export const ErrorHub = Core.createErrorHub("@litert/redis");
+export const ErrorHub = Core.createErrorHub('@litert/redis');
 
 export const E_PROTOCOL_ERROR = ErrorHub.define(
     null,
-    "E_PROTOCOL_ERROR",
-    "Malformed data received from remote server.",
+    'E_PROTOCOL_ERROR',
+    'Malformed data received from remote server.',
     {}
 );
 
 export const E_CAN_NOT_CONNECT = ErrorHub.define(
     null,
-    "E_CAN_NOT_CONNECT",
-    "Can not connect to remote server.",
+    'E_CAN_NOT_CONNECT',
+    'Can not connect to remote server.',
     {}
 );
 
 export const E_COMMAND_FAILURE = ErrorHub.define(
     null,
-    "E_COMMAND_FAILURE",
-    "Recieved a failure response of command execution from remote server.",
+    'E_COMMAND_FAILURE',
+    'Recieved a failure response of command execution from remote server.',
     {}
 );
 
 export const E_CONN_LOST = ErrorHub.define(
     null,
-    "E_CONN_LOST",
-    "Lost the connection to remote server.",
+    'E_CONN_LOST',
+    'Lost the connection to remote server.',
     {}
 );
 
 export const E_NO_CONN = ErrorHub.define(
     null,
-    "E_NO_CONN",
-    "The connection is not ready yet.",
+    'E_NO_CONN',
+    'The connection is not ready yet.',
     {}
 );
 
 export const E_SUBSCRIBE_FAILURE = ErrorHub.define(
     null,
-    "E_SUBSCRIBE_FAILURE",
-    "Failed to subscribe subjects.",
+    'E_SUBSCRIBE_FAILURE',
+    'Failed to subscribe subjects.',
     {}
 );
 
 export const E_PIPELINING = ErrorHub.define(
     null,
-    "E_PIPELINING",
-    "Some commands queued in pipeline, can not use MULTI.",
+    'E_PIPELINING',
+    'Some commands queued in pipeline, can not use MULTI.',
     {}
 );
 
 export const E_REQUEST_TIMEOUT = ErrorHub.define(
     null,
-    "E_REQUEST_TIMEOUT",
-    "There was no response for commands sent in time .",
+    'E_REQUEST_TIMEOUT',
+    'There was no response for commands sent in time .',
     {}
 );
 
 export const E_INVALID_PARAM = ErrorHub.define(
     null,
-    "E_INVALID_PARAM",
-    "The parameters passed to the command is unacceptable.",
+    'E_INVALID_PARAM',
+    'The parameters passed to the command is unacceptable.',
+    {}
+);
+
+export const E_NOT_MULTI_MODE = ErrorHub.define(
+    null,
+    'E_NOT_MULTI_MODE',
+    'The client is not under multi mode, please call multi method first.',
     {}
 );

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-export * from "./ModuleAPI";
+export * from './ModuleAPI';
 
-export * from "./Common";
+export * from './Common';
 
-export * from "./Errors";
+export * from './Errors';

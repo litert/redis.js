@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import * as C from "./Common";
-import { Events } from "@litert/observable";
-import * as $Net from "net";
-import * as E from "./Errors";
+import * as C from './Common';
+import { Events } from '@litert/observable';
+import * as $Net from 'net';
+import * as E from './Errors';
 
 interface IQueueItem {
 
@@ -33,9 +33,28 @@ interface IPendingQueueItem extends IQueueItem {
     data: Buffer;
 }
 
+function wrapPromise<R = any, W = any>(
+    process: (cb: C.ICallbackA<R, W>) => void,
+    callback?: C.ICallbackA<R, W>,
+): Promise<any> | void {
+
+    if (callback) {
+
+        process(callback);
+    }
+    else {
+
+        return new Promise(
+            (resolve, reject) => process(
+                (e: any, r?: any) => e ? reject(e) : resolve(r)
+            )
+        );
+    }
+}
+
 export class ProtocolClient
-extends Events.EventEmitter<C.IProtocolClientEvents>
-implements C.IProtocolClient {
+    extends Events.EventEmitter<C.IProtocolClientEvents>
+    implements C.IProtocolClient {
 
     private _socket!: $Net.Socket;
 
@@ -91,45 +110,45 @@ implements C.IProtocolClient {
 
         if (this._subscribeMode) {
 
-            this._decoder.on("data", (type, data): void => {
+            this._decoder.on('data', (type, data): void => {
 
                 const it = this._executingQueue.shift() as IQueueItem;
 
                 switch (type) {
-                case C.DataType.FAILURE:
-                    it.callback(new E.E_COMMAND_FAILURE({ "message": data.toString() }));
-                    break;
-                case C.DataType.INTEGER:
-                    it.callback(null, parseInt(data));
-                    break;
-                case C.DataType.MESSAGE:
-                    it.callback(null, data.toString());
-                    break;
-                case C.DataType.NULL:
-                    it.callback(null, null);
-                    break;
-                case C.DataType.LIST:
+                    case C.DataType.FAILURE:
+                        it.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
+                        break;
+                    case C.DataType.INTEGER:
+                        it.callback(null, parseInt(data));
+                        break;
+                    case C.DataType.MESSAGE:
+                        it.callback(null, data.toString());
+                        break;
+                    case C.DataType.NULL:
+                        it.callback(null, null);
+                        break;
+                    case C.DataType.LIST:
 
-                    if (this._subscribeMode) {
+                        if (this._subscribeMode) {
 
-                        switch (data[0][1].toString()) {
-                        case "message":
+                            switch (data[0][1].toString()) {
+                                case 'message':
 
-                            this.emit("message", data[1][1].toString(), data[2][1]);
-                            return;
+                                    this.emit('message', data[1][1].toString(), data[2][1]);
+                                    return;
 
-                        case "pmessage":
+                                case 'pmessage':
 
-                            this.emit("message", data[2][1].toString(), data[3][1], data[1][1].toString());
-                            return;
+                                    this.emit('message', data[2][1].toString(), data[3][1], data[1][1].toString());
+                                    return;
 
-                        default:
+                                default:
+                            }
                         }
-                    }
 
-                case C.DataType.STRING:
-                    it.callback(null, data);
-                    break;
+                    case C.DataType.STRING:
+                        it.callback(null, data);
+                        break;
                 }
 
                 if (!this._executingQueue.length && this._commandTimeout) {
@@ -140,27 +159,27 @@ implements C.IProtocolClient {
         }
         else if (this._pipelineMode) {
 
-            this._decoder.on("data", (type, data): void => {
+            this._decoder.on('data', (type, data): void => {
 
                 const item = this._executingQueue[0];
 
                 switch (type) {
-                case C.DataType.FAILURE:
-                    item.result.push(new E.E_COMMAND_FAILURE({ "message": data.toString() }));
-                    break;
-                case C.DataType.INTEGER:
-                    item.result.push(parseInt(data));
-                    break;
-                case C.DataType.MESSAGE:
-                    item.result.push(data.toString());
-                    break;
-                case C.DataType.NULL:
-                    item.result.push(null);
-                    break;
-                case C.DataType.LIST:
-                case C.DataType.STRING:
-                    item.result.push(data);
-                    break;
+                    case C.DataType.FAILURE:
+                        item.result.push(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
+                        break;
+                    case C.DataType.INTEGER:
+                        item.result.push(parseInt(data));
+                        break;
+                    case C.DataType.MESSAGE:
+                        item.result.push(data.toString());
+                        break;
+                    case C.DataType.NULL:
+                        item.result.push(null);
+                        break;
+                    case C.DataType.LIST:
+                    case C.DataType.STRING:
+                        item.result.push(data);
+                        break;
                 }
 
                 if (item.result.length === item.count) {
@@ -177,27 +196,27 @@ implements C.IProtocolClient {
         }
         else {
 
-            this._decoder.on("data", (type, data): void => {
+            this._decoder.on('data', (type, data): void => {
 
                 const cb = this._executingQueue.shift() as IQueueItem;
 
                 switch (type) {
-                case C.DataType.FAILURE:
-                    cb.callback(new E.E_COMMAND_FAILURE({ "message": data.toString() }));
-                    break;
-                case C.DataType.INTEGER:
-                    cb.callback(null, parseInt(data));
-                    break;
-                case C.DataType.MESSAGE:
-                    cb.callback(null, data.toString());
-                    break;
-                case C.DataType.NULL:
-                    cb.callback(null, null);
-                    break;
-                case C.DataType.LIST:
-                case C.DataType.STRING:
-                    cb.callback(null, data);
-                    break;
+                    case C.DataType.FAILURE:
+                        cb.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
+                        break;
+                    case C.DataType.INTEGER:
+                        cb.callback(null, parseInt(data));
+                        break;
+                    case C.DataType.MESSAGE:
+                        cb.callback(null, data.toString());
+                        break;
+                    case C.DataType.NULL:
+                        cb.callback(null, null);
+                        break;
+                    case C.DataType.LIST:
+                    case C.DataType.STRING:
+                        cb.callback(null, data);
+                        break;
                 }
 
                 if (!this._executingQueue.length && this._commandTimeout) {
@@ -227,14 +246,14 @@ implements C.IProtocolClient {
 
             const helper = function(this: ProtocolClient): void {
 
-                this.removeListener("ready", callback);
-                this.removeListener("ready", helper);
-                this.removeListener("error", callback);
-                this.removeListener("error", helper);
+                this.removeListener('ready', callback);
+                this.removeListener('ready', helper);
+                this.removeListener('error', callback);
+                this.removeListener('error', helper);
             };
 
-            this.once("ready", callback as any).once("ready", helper);
-            this.once("error", callback).once("error", helper);
+            this.once('ready', callback as any).once('ready', helper);
+            this.once('error', callback).once('error', helper);
 
             this._connect();
 
@@ -267,18 +286,18 @@ implements C.IProtocolClient {
 
         switch (this._status) {
 
-        case C.EClientStatus.CLOSING:
-        case C.EClientStatus.IDLE:
-            break;
-        case C.EClientStatus.READY:
-        case C.EClientStatus.CONNECTING:
-
-            if (this._socket && this._ready) {
-
+            case C.EClientStatus.CLOSING:
+            case C.EClientStatus.IDLE:
                 break;
-            }
+            case C.EClientStatus.READY:
+            case C.EClientStatus.CONNECTING:
 
-            return;
+                if (this._socket && this._ready) {
+
+                    break;
+                }
+
+                return;
         }
 
         this._socket = $Net.connect({
@@ -301,7 +320,7 @@ implements C.IProtocolClient {
             );
         }
 
-        this._socket.on("connect", () => {
+        this._socket.on('connect', () => {
 
             // @ts-ignore
             if (this._socket.__uuid !== this._uuidCounter) {
@@ -313,7 +332,7 @@ implements C.IProtocolClient {
 
             this._decoder.reset();
 
-            this._socket.on("data", (data) => this._decoder.update(data));
+            this._socket.on('data', (data) => this._decoder.update(data));
 
             this._ready = true;
 
@@ -321,7 +340,7 @@ implements C.IProtocolClient {
 
                 if (err) {
 
-                    this.emit("error", err);
+                    this.emit('error', err);
 
                     this._socket.destroy();
 
@@ -330,75 +349,75 @@ implements C.IProtocolClient {
 
                 this._status = C.EClientStatus.READY;
 
-                this.emit("ready");
+                this.emit('ready');
             });
         })
-        .on("error", (e: any) => {
+            .on('error', (e: any) => {
 
-            // @ts-ignore
-            if (this._socket.__uuid !== this._uuidCounter) {
+                // @ts-ignore
+                if (this._socket.__uuid !== this._uuidCounter) {
 
-                return;
-            }
-
-            this.emit("error", e);
-        })
-        .on("close", () => {
-
-            // @ts-ignore
-            if (this._socket.__uuid !== this._uuidCounter) {
-
-                return;
-            }
-
-            if (!this._ready) {
-
-                this.emit("close");
-
-                return;
-            }
-
-            for (let x of this._sendingQueue) {
-
-                try {
-
-                    x.callback(new E.E_CONN_LOST());
+                    return;
                 }
-                catch (e) {
 
-                    this.emit("error", e);
+                this.emit('error', e);
+            })
+            .on('close', () => {
+
+                // @ts-ignore
+                if (this._socket.__uuid !== this._uuidCounter) {
+
+                    return;
                 }
-            }
 
-            for (let x of this._executingQueue) {
+                if (!this._ready) {
 
-                try {
+                    this.emit('close');
 
-                    x.callback(new E.E_CONN_LOST());
+                    return;
                 }
-                catch (e) {
 
-                    this.emit("error", e);
+                for (let x of this._sendingQueue) {
+
+                    try {
+
+                        x.callback(new E.E_CONN_LOST());
+                    }
+                    catch (e) {
+
+                        this.emit('error', e);
+                    }
                 }
-            }
 
-            this._sendingQueue = [];
-            this._executingQueue = [];
+                for (let x of this._executingQueue) {
 
-            switch (this._status) {
-            case C.EClientStatus.IDLE:
-            case C.EClientStatus.CLOSING:
-                this._status = C.EClientStatus.IDLE;
-                this.emit("close");
-                break;
-            case C.EClientStatus.READY:
-                this._status = C.EClientStatus.CONNECTING;
-            case C.EClientStatus.CONNECTING:
-                this.emit("abort");
-                this._connect();
-                break;
-            }
-        });
+                    try {
+
+                        x.callback(new E.E_CONN_LOST());
+                    }
+                    catch (e) {
+
+                        this.emit('error', e);
+                    }
+                }
+
+                this._sendingQueue = [];
+                this._executingQueue = [];
+
+                switch (this._status) {
+                    case C.EClientStatus.IDLE:
+                    case C.EClientStatus.CLOSING:
+                        this._status = C.EClientStatus.IDLE;
+                        this.emit('close');
+                        break;
+                    case C.EClientStatus.READY:
+                        this._status = C.EClientStatus.CONNECTING;
+                    case C.EClientStatus.CONNECTING:
+                        this.emit('abort');
+                        this._connect();
+                        break;
+                }
+            });
     }
 
     public close(cb?: C.ICallbackA<void>): any {
@@ -411,27 +430,27 @@ implements C.IProtocolClient {
                 return;
             }
 
-            this.once("close", callback as any);
+            this.once('close', callback as any);
 
             this._close();
 
         }, cb);
     }
 
-    private _close() {
+    private _close(): void {
 
         this._ready = false;
 
         switch (this._status) {
 
-        case C.EClientStatus.IDLE:
-        case C.EClientStatus.CLOSING:
-            break;
-        case C.EClientStatus.CONNECTING:
-        case C.EClientStatus.READY:
-            this._socket.end();
-            this._status = C.EClientStatus.CLOSING;
-            break;
+            case C.EClientStatus.IDLE:
+            case C.EClientStatus.CLOSING:
+                break;
+            case C.EClientStatus.CONNECTING:
+            case C.EClientStatus.READY:
+                this._socket.end();
+                this._status = C.EClientStatus.CLOSING;
+                break;
         }
     }
 
@@ -570,24 +589,5 @@ implements C.IProtocolClient {
             this._timeoutLocked = true;
             this._socket.setTimeout(this._commandTimeout, () => this._socket.destroy(new E.E_REQUEST_TIMEOUT()));
         }
-    }
-}
-
-function wrapPromise<R = any, W = any>(
-    process: (cb: C.ICallbackA<R, W>) => void,
-    callback?: C.ICallbackA<R, W>,
-): Promise<any> | void {
-
-    if (callback) {
-
-        process(callback);
-    }
-    else {
-
-        return new Promise(
-            (resolve, reject) => process(
-                (e: any, r?: any) => e ? reject(e) : resolve(r)
-            )
-        );
     }
 }

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import * as A from "./Common";
-import * as E from "./Errors";
-import * as C from "./Constants";
+import * as A from './Common';
+import * as E from './Errors';
+import * as C from './Constants';
 
 import PROTO_DELIMITER = C.PROTO_DELIMITER;
 import PROTO_NULL = C.PROTO_NULL;
@@ -44,7 +44,7 @@ export class Encoder implements A.IEncoder {
 
         pos += PROTO_DELIMITER.copy(target, pos);
 
-        if (typeof val === "string") {
+        if (typeof val === 'string') {
 
             pos += target.write(val, pos);
         }
@@ -73,7 +73,7 @@ export class Encoder implements A.IEncoder {
 
             for (let i = 0; i < values.length; i++) {
 
-                if (typeof values[i] === "number") {
+                if (typeof values[i] === 'number') {
 
                     values[i] = values[i].toString();
                 }
@@ -140,7 +140,7 @@ export class Encoder implements A.IEncoder {
         if (data.indexOf(PROTO_DELIMITER_VALUE) > -1) {
 
             throw new E.E_PROTOCOL_ERROR({
-                "message": "CRLF is forbidden in MESSAGE."
+                'message': 'CRLF is forbidden in MESSAGE.'
             });
         }
 
@@ -150,7 +150,7 @@ export class Encoder implements A.IEncoder {
 
         ret[0] = 43;
 
-        if (typeof data === "string") {
+        if (typeof data === 'string') {
 
             ret.write(data, 1);
         }
@@ -169,7 +169,7 @@ export class Encoder implements A.IEncoder {
         if (data.indexOf(PROTO_DELIMITER_VALUE) > -1) {
 
             throw new E.E_PROTOCOL_ERROR({
-                "message": "CRLF is forbidden in MESSAGE."
+                'message': 'CRLF is forbidden in MESSAGE.'
             });
         }
 
@@ -179,7 +179,7 @@ export class Encoder implements A.IEncoder {
 
         ret[0] = 45;
 
-        if (typeof data === "string") {
+        if (typeof data === 'string') {
 
             ret.write(data, 1);
         }
@@ -220,21 +220,21 @@ export class Encoder implements A.IEncoder {
         for (let item of data) {
 
             switch (item[0]) {
-            case A.DataType.FAILURE:
-                ret.push(this.encodeString(item[1]));
-                break;
-            case A.DataType.MESSAGE:
-                ret.push(this.encodeMessage(item[1]));
-                break;
-            case A.DataType.STRING:
-                ret.push(this.encodeString(item[1]));
-                break;
-            case A.DataType.INTEGER:
-                ret.push(this.encodeInteger(item[1]));
-                break;
-            case A.DataType.LIST:
-                ret.push(this.encodeList(item[1]));
-                break;
+                case A.DataType.FAILURE:
+                    ret.push(this.encodeString(item[1]));
+                    break;
+                case A.DataType.MESSAGE:
+                    ret.push(this.encodeMessage(item[1]));
+                    break;
+                case A.DataType.STRING:
+                    ret.push(this.encodeString(item[1]));
+                    break;
+                case A.DataType.INTEGER:
+                    ret.push(this.encodeInteger(item[1]));
+                    break;
+                case A.DataType.LIST:
+                    ret.push(this.encodeList(item[1]));
+                    break;
             }
         }
 

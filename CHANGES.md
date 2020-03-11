@@ -1,5 +1,10 @@
 # Changes Logs
 
+## v1.1.0
+
+- Fixed the watch mode with a new `WatchClient` class.
+- Replaced TSLint with ESLint.
+
 ## v1.0.3
 
 - Fixed: The pipeline doesn't switch database following the parent client.

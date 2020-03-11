@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-// tslint:disable: no-unused-expression
-import * as C from "./Common";
-import * as E from "./Errors";
-import { BaseClient } from "./BaseClient";
+import * as C from './Common';
+import * as E from './Errors';
+import { BaseClient } from './BaseClient';
 
 export class SubscriberClient
-extends BaseClient
-implements C.ISubscriberClient {
+    extends BaseClient
+    implements C.ISubscriberClient {
 
     private _channels: Record<string, boolean> = {};
 
@@ -49,8 +48,15 @@ implements C.ISubscriberClient {
 
                 try {
 
-                    Object.keys(this._channels).length && await this._send("SUBSCRIBE", Object.keys(this._channels));
-                    Object.keys(this._patterns).length && await this._send("PSUBSCRIBE", Object.keys(this._patterns));
+                    if (Object.keys(this._channels).length) {
+
+                        await this._send('SUBSCRIBE', Object.keys(this._channels));
+                    }
+
+                    if (Object.keys(this._patterns).length) {
+
+                        await this._send('PSUBSCRIBE', Object.keys(this._patterns));
+                    }
                 }
                 catch (e) {
 
@@ -59,7 +65,7 @@ implements C.ISubscriberClient {
 
                 callback();
 
-            })();
+            })().catch(() => null);
         });
     }
 
@@ -92,7 +98,7 @@ implements C.ISubscriberClient {
             return Promise.resolve();
         }
 
-        await this.command("SUBSCRIBE", cs);
+        await this.command('SUBSCRIBE', cs);
 
         for (let c of cs) {
 
@@ -129,7 +135,7 @@ implements C.ISubscriberClient {
             return Promise.resolve();
         }
 
-        await this.command("UNSUBSCRIBE", cs);
+        await this.command('UNSUBSCRIBE', cs);
 
         for (let c of cs) {
 
@@ -166,7 +172,7 @@ implements C.ISubscriberClient {
             return Promise.resolve();
         }
 
-        await this.command("PSUBSCRIBE", ps);
+        await this.command('PSUBSCRIBE', ps);
 
         for (let p of ps) {
 
@@ -203,7 +209,7 @@ implements C.ISubscriberClient {
             return Promise.resolve();
         }
 
-        await this.command("PUNSUBSCRIBE", ps);
+        await this.command('PUNSUBSCRIBE', ps);
 
         for (let p of ps) {
 

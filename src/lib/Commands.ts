@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-// tslint:disable: no-unused-expression
-import * as C from "./Common";
-import * as U from "./Utils";
-import * as E from "./Errors";
+import * as C from './Common';
+import * as U from './Utils';
+import * as E from './Errors';
 
 export interface IPrepareResult {
 
-    "cmd": string;
+    'cmd': string;
 
-    "args": Array<string | Buffer | number>;
+    'args': Array<string | Buffer | number>;
 }
 
 export type TProcessor = null | ((data: any, args: any[]) => any);
@@ -37,7 +36,7 @@ export interface ICommand {
 
 function isStringOK(data: any): boolean {
 
-    return "OK" === (data && data.toString());
+    return 'OK' === (data?.toString());
 }
 
 function isIntegerOne(data: any): boolean {
@@ -45,7 +44,7 @@ function isIntegerOne(data: any): boolean {
     return 1 === data;
 }
 
-function createDefaultPreparer(cmd: string): Required<ICommand>["prepare"] {
+function createDefaultPreparer(cmd: string): Required<ICommand>['prepare'] {
 
     return (...args: Array<string | Buffer>) => ({args, cmd});
 }
@@ -56,27 +55,27 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: append
      * @see https://redis.io/commands/append
      */
-    "append": { "prepare": createDefaultPreparer("APPEND") },
+    'append': { 'prepare': createDefaultPreparer('APPEND') },
 
     /**
      * Command: auth
      * @see https://redis.io/commands/auth
      */
-    "auth": { "prepare": createDefaultPreparer("AUTH") },
+    'auth': { 'prepare': createDefaultPreparer('AUTH') },
 
     /**
      * Command: ping
      * @see https://redis.io/commands/ping
      */
-    "ping": {
+    'ping': {
         prepare(text?: string): IPrepareResult {
 
             return {
-                "cmd": "PING",
-                "args": text ? [text] : []
+                'cmd': 'PING',
+                'args': text ? [text] : []
             };
         },
-        process(data: any, args: any[]): string {
+        process(data: Buffer | string): string {
 
             return data instanceof Buffer ? data.toString() : data;
         }
@@ -86,12 +85,12 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: incr
      * @see https://redis.io/commands/incr
      */
-    "incr": {
+    'incr': {
         prepare(key: string, step: number): IPrepareResult {
 
             return {
-                "cmd": "INCRBY",
-                "args": [key, step || 1]
+                'cmd': 'INCRBY',
+                'args': [key, step || 1]
             };
         }
     },
@@ -100,16 +99,16 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: incrByFloat
      * @see https://redis.io/commands/incrByFloat
      */
-    "incrByFloat": {
+    'incrByFloat': {
         prepare(key: string, step: number): IPrepareResult {
 
             return {
-                "cmd": "INCRBYFLOAT",
-                "args": [key, step]
+                'cmd': 'INCRBYFLOAT',
+                'args': [key, step]
             };
         },
-        process(data: any, args: any[]): number {
-            return parseFloat(data);
+        process(data: Buffer | string): number {
+            return parseFloat(data as string);
         }
     },
 
@@ -117,12 +116,12 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: decr
      * @see https://redis.io/commands/decr
      */
-    "decr": {
+    'decr': {
         prepare(key: string, step: number): IPrepareResult {
 
             return {
-                "cmd": "DECRBY",
-                "args": [key, step]
+                'cmd': 'DECRBY',
+                'args': [key, step]
             };
         }
     },
@@ -131,16 +130,16 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: incrByFloat
      * @see https://redis.io/commands/incrByFloat
      */
-    "decrByFloat": {
+    'decrByFloat': {
         prepare(key: string, step: number): IPrepareResult {
 
             return {
-                "cmd": "INCRBYFLOAT",
-                "args": [key, -step]
+                'cmd': 'INCRBYFLOAT',
+                'args': [key, -step]
             };
         },
-        process(data: any, args: any[]): number {
-            return parseFloat(data);
+        process(data: string | Buffer): number {
+            return parseFloat(data as string);
         }
     },
 
@@ -148,7 +147,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: del
      * @see https://redis.io/commands/del
      */
-    "del": {
+    'del': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -159,13 +158,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "DEL",
+                    cmd: 'DEL',
                     args: keys
                 };
             }
 
             return {
-                cmd: "DEL",
+                cmd: 'DEL',
                 args: [keys]
             };
         }
@@ -175,7 +174,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: unlink
      * @see https://redis.io/commands/unlink
      */
-    "unlink": {
+    'unlink': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -186,13 +185,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "UNLINK",
+                    cmd: 'UNLINK',
                     args: keys
                 };
             }
 
             return {
-                cmd: "UNLINK",
+                cmd: 'UNLINK',
                 args: [keys]
             };
         }
@@ -202,8 +201,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: get
      * @see https://redis.io/commands/get
      */
-    "get": {
-        prepare: createDefaultPreparer("GET"),
+    'get': {
+        prepare: createDefaultPreparer('GET'),
         process: U.nullableBuffer2String
     },
 
@@ -211,16 +210,16 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: get
      * @see https://redis.io/commands/get
      */
-    "get$": {
-        prepare: createDefaultPreparer("GET"),
+    'get$': {
+        prepare: createDefaultPreparer('GET'),
     },
 
     /**
      * Command: getSet
      * @see https://redis.io/commands/getSet
      */
-    "getSet": {
-        prepare: createDefaultPreparer("GETSET"),
+    'getSet': {
+        prepare: createDefaultPreparer('GETSET'),
         process: U.nullableBuffer2String
     },
 
@@ -228,19 +227,19 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: getSet
      * @see https://redis.io/commands/getSet
      */
-    "getSet$": {
-        prepare: createDefaultPreparer("GETSET"),
+    'getSet$': {
+        prepare: createDefaultPreparer('GETSET'),
     },
 
     /**
      * Command: set
      * @see https://redis.io/commands/set
      */
-    "set": {
+    'set': {
         prepare(k: string, v: string | Buffer, ttl?: number): IPrepareResult {
             return {
-                cmd: "SET",
-                args: ttl ? [k, v, "EX", ttl] : [k, v]
+                cmd: 'SET',
+                args: ttl ? [k, v, 'EX', ttl] : [k, v]
             };
         },
         process: isStringOK
@@ -250,11 +249,11 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: setNX
      * @see https://redis.io/commands/setNX
      */
-    "setNX": {
+    'setNX': {
         prepare(k: string, v: string | Buffer, ttl?: number): IPrepareResult {
             return {
-                cmd: "SET",
-                args: ttl ? [k, v, "EX", ttl, "NX"] : [k, v, "NX"]
+                cmd: 'SET',
+                args: ttl ? [k, v, 'EX', ttl, 'NX'] : [k, v, 'NX']
             };
         },
         process: isStringOK
@@ -264,11 +263,11 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: setEX
      * @see https://redis.io/commands/setEX
      */
-    "setEX": {
+    'setEX': {
         prepare(key: string, value: string | Buffer, ttl: number): IPrepareResult {
             return {
-                cmd: "SET",
-                args: [key, value, "EX", ttl]
+                cmd: 'SET',
+                args: [key, value, 'EX', ttl]
             };
         },
         process: isStringOK
@@ -278,11 +277,11 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: pSetNX
      * @see https://redis.io/commands/pSetNX
      */
-    "pSetNX": {
+    'pSetNX': {
         prepare(key: string, value: string | Buffer, ttl: number): IPrepareResult {
             return {
-                cmd: "SET",
-                args: [key, value, "PX", ttl, "NX"]
+                cmd: 'SET',
+                args: [key, value, 'PX', ttl, 'NX']
             };
         },
         process: isStringOK
@@ -292,11 +291,11 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: pSetEx
      * @see https://redis.io/commands/pSetEx
      */
-    "pSetEx": {
+    'pSetEx': {
         prepare(key: string, value: string | Buffer, ttl: number): IPrepareResult {
             return {
-                cmd: "SET",
-                args: [key, value, "PX", ttl]
+                cmd: 'SET',
+                args: [key, value, 'PX', ttl]
             };
         },
         process: isStringOK
@@ -306,11 +305,11 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: replace
      * @see https://redis.io/commands/replace
      */
-    "replace": {
+    'replace': {
         prepare(key: string, value: string | Buffer, ttl?: number): IPrepareResult {
             return {
-                cmd: "SET",
-                args: ttl ? [key, value, "EX", ttl, "XX"] : [key, value, "XX"]
+                cmd: 'SET',
+                args: ttl ? [key, value, 'EX', ttl, 'XX'] : [key, value, 'XX']
             };
         },
         process: isStringOK
@@ -320,11 +319,11 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: pReplace
      * @see https://redis.io/commands/pReplace
      */
-    "pReplace": {
+    'pReplace': {
         prepare(key: string, value: string | Buffer, ttl?: number): IPrepareResult {
             return {
-                cmd: "SET",
-                args: ttl ? [key, value, "PX", ttl, "XX"] : [key, value, "XX"]
+                cmd: 'SET',
+                args: ttl ? [key, value, 'PX', ttl, 'XX'] : [key, value, 'XX']
             };
         },
         process: isStringOK
@@ -334,24 +333,24 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: ttl
      * @see https://redis.io/commands/ttl
      */
-    "ttl": {
-        prepare: createDefaultPreparer("TTL")
+    'ttl': {
+        prepare: createDefaultPreparer('TTL')
     },
 
     /**
      * Command: pTTL
      * @see https://redis.io/commands/pTTL
      */
-    "pTTL": {
-        prepare: createDefaultPreparer("PTTL")
+    'pTTL': {
+        prepare: createDefaultPreparer('PTTL')
     },
 
     /**
      * Command: expire
      * @see https://redis.io/commands/expire
      */
-    "expire": {
-        prepare: createDefaultPreparer("EXPIRE"),
+    'expire': {
+        prepare: createDefaultPreparer('EXPIRE'),
         process: isIntegerOne
     },
 
@@ -359,8 +358,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: pExpire
      * @see https://redis.io/commands/pExpire
      */
-    "pExpire": {
-        prepare: createDefaultPreparer("PEXPIRE"),
+    'pExpire': {
+        prepare: createDefaultPreparer('PEXPIRE'),
         process: isIntegerOne
     },
 
@@ -368,8 +367,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: expireAt
      * @see https://redis.io/commands/expireAt
      */
-    "expireAt": {
-        prepare: createDefaultPreparer("EXPIREAT"),
+    'expireAt': {
+        prepare: createDefaultPreparer('EXPIREAT'),
         process: isIntegerOne
     },
 
@@ -377,8 +376,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: pExpireAt
      * @see https://redis.io/commands/pExpireAt
      */
-    "pExpireAt": {
-        prepare: createDefaultPreparer("PEXPIREAT"),
+    'pExpireAt': {
+        prepare: createDefaultPreparer('PEXPIREAT'),
         process: isIntegerOne
     },
 
@@ -386,8 +385,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: persist
      * @see https://redis.io/commands/persist
      */
-    "persist": {
-        prepare: createDefaultPreparer("PERSIST"),
+    'persist': {
+        prepare: createDefaultPreparer('PERSIST'),
         process: isIntegerOne
     },
 
@@ -395,8 +394,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: exists
      * @see https://redis.io/commands/exists
      */
-    "exists": {
-        prepare: createDefaultPreparer("EXISTS"),
+    'exists': {
+        prepare: createDefaultPreparer('EXISTS'),
         process: isIntegerOne
     },
 
@@ -404,8 +403,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: type
      * @see https://redis.io/commands/type
      */
-    "type": {
-        prepare: createDefaultPreparer("TYPE"),
+    'type': {
+        prepare: createDefaultPreparer('TYPE'),
         process: U.buffer2String
     },
 
@@ -413,8 +412,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: move
      * @see https://redis.io/commands/move
      */
-    "move": {
-        prepare: createDefaultPreparer("EXISTS"),
+    'move': {
+        prepare: createDefaultPreparer('EXISTS'),
         process: isIntegerOne
     },
 
@@ -422,8 +421,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: randomKey
      * @see https://redis.io/commands/randomKey
      */
-    "randomKey": {
-        prepare: createDefaultPreparer("RANDOMKEY"),
+    'randomKey': {
+        prepare: createDefaultPreparer('RANDOMKEY'),
         process: U.buffer2String
     },
 
@@ -431,8 +430,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: rename
      * @see https://redis.io/commands/rename
      */
-    "rename": {
-        prepare: createDefaultPreparer("RENAME"),
+    'rename': {
+        prepare: createDefaultPreparer('RENAME'),
         process: null
     },
 
@@ -440,8 +439,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: renameNX
      * @see https://redis.io/commands/renameNX
      */
-    "renameNX": {
-        prepare: createDefaultPreparer("RENAMENX"),
+    'renameNX': {
+        prepare: createDefaultPreparer('RENAMENX'),
         process: isIntegerOne
     },
 
@@ -449,8 +448,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: select
      * @see https://redis.io/commands/select
      */
-    "select": {
-        prepare: createDefaultPreparer("SELECT"),
+    'select': {
+        prepare: createDefaultPreparer('SELECT'),
         process: null
     },
 
@@ -458,11 +457,11 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: flushDb
      * @see https://redis.io/commands/flushDb
      */
-    "flushDb": {
+    'flushDb': {
         prepare(async: boolean = false): IPrepareResult {
             return {
-                cmd: "FLUSHDB",
-                args: async ? ["ASYNC"] : []
+                cmd: 'FLUSHDB',
+                args: async ? ['ASYNC'] : []
             };
         },
         process: null
@@ -472,11 +471,11 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: flushAll
      * @see https://redis.io/commands/flushAll
      */
-    "flushAll": {
+    'flushAll': {
         prepare(async: boolean = false): IPrepareResult {
             return {
-                cmd: "FLUSHALL",
-                args: async ? ["ASYNC"] : []
+                cmd: 'FLUSHALL',
+                args: async ? ['ASYNC'] : []
             };
         },
         process: null
@@ -486,7 +485,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hDel
      * @see https://redis.io/commands/hDel
      */
-    "hDel": {
+    'hDel': {
         prepare(key: string, fields: string | string[]): IPrepareResult {
 
             if (Array.isArray(fields)) {
@@ -497,13 +496,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "HDEL",
+                    cmd: 'HDEL',
                     args: [key, ...fields]
                 };
             }
 
             return {
-                cmd: "HDEL",
+                cmd: 'HDEL',
                 args: [key, fields]
             };
         }
@@ -513,8 +512,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hGet
      * @see https://redis.io/commands/hGet
      */
-    "hGet": {
-        prepare: createDefaultPreparer("HGET"),
+    'hGet': {
+        prepare: createDefaultPreparer('HGET'),
         process: U.nullableBuffer2String
     },
 
@@ -522,16 +521,16 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hGet
      * @see https://redis.io/commands/hGet
      */
-    "hGet$": {
-        prepare: createDefaultPreparer("HGET")
+    'hGet$': {
+        prepare: createDefaultPreparer('HGET')
     },
 
     /**
      * Command: hSet
      * @see https://redis.io/commands/hSet
      */
-    "hSet": {
-        prepare: createDefaultPreparer("HSET"),
+    'hSet': {
+        prepare: createDefaultPreparer('HSET'),
         process: isIntegerOne
     },
 
@@ -539,8 +538,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hSetNX
      * @see https://redis.io/commands/hSetNX
      */
-    "hSetNX": {
-        prepare: createDefaultPreparer("HSETNX"),
+    'hSetNX': {
+        prepare: createDefaultPreparer('HSETNX'),
         process: isIntegerOne
     },
 
@@ -548,9 +547,9 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hExists
      * @see https://redis.io/commands/hExists
      */
-    "hExists": {
+    'hExists': {
 
-        prepare: createDefaultPreparer("HEXISTS"),
+        prepare: createDefaultPreparer('HEXISTS'),
         process: isIntegerOne
     },
 
@@ -558,8 +557,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: keys
      * @see https://redis.io/commands/keys
      */
-    "keys": {
-        prepare: createDefaultPreparer("KEYS"),
+    'keys': {
+        prepare: createDefaultPreparer('KEYS'),
         process: U.list2StringList
     },
 
@@ -567,15 +566,15 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: dump
      * @see https://redis.io/commands/dump
      */
-    "dump": {
-        prepare: createDefaultPreparer("DUMP")
+    'dump': {
+        prepare: createDefaultPreparer('DUMP')
     },
 
     /**
      * Command: restore
      * @see https://redis.io/commands/restore
      */
-    "restore": {
+    'restore': {
 
         prepare(
             key: string,
@@ -589,13 +588,28 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
 
             const args: any[] = [key, ttl, value];
 
-            replace && args.push("REPLACE");
-            absTTL && args.push("ABSTTL");
-            idleTime && args.push("IDLETIME", idleTime);
-            freq && args.push("FREQ", freq);
+            if (replace) {
+
+                args.push('REPLACE');
+            }
+
+            if (absTTL) {
+
+                args.push('ABSTTL');
+            }
+
+            if (idleTime) {
+
+                args.push('IDLETIME', idleTime);
+            }
+
+            if (freq) {
+
+                args.push('FREQ', freq);
+            }
 
             return {
-                cmd: "RESTORE",
+                cmd: 'RESTORE',
                 args
             };
         },
@@ -606,15 +620,15 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: strLen
      * @see https://redis.io/commands/strLen
      */
-    "strLen": {
-        prepare: createDefaultPreparer("STRLEN")
+    'strLen': {
+        prepare: createDefaultPreparer('STRLEN')
     },
 
     /**
      * Command: touch
      * @see https://redis.io/commands/touch
      */
-    "touch": {
+    'touch': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -625,13 +639,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "TOUCH",
+                    cmd: 'TOUCH',
                     args: keys
                 };
             }
 
             return {
-                cmd: "TOUCH",
+                cmd: 'TOUCH',
                 args: [keys]
             };
         }
@@ -641,7 +655,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: mGet
      * @see https://redis.io/commands/mGet
      */
-    "mGet": {
+    'mGet': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -652,17 +666,17 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "MGET",
+                    cmd: 'MGET',
                     args: keys
                 };
             }
 
             return {
-                cmd: "MGET",
+                cmd: 'MGET',
                 args: [keys]
             };
         },
-        process(data, args) {
+        process(data: Array<[number, Buffer]>, args: any[]): any {
 
             return U.list2NullableStringDict(args, data);
         }
@@ -672,7 +686,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: mGet
      * @see https://redis.io/commands/mGet
      */
-    "mGet$": {
+    'mGet$': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -683,17 +697,17 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "MGET",
+                    cmd: 'MGET',
                     args: keys
                 };
             }
 
             return {
-                cmd: "MGET",
+                cmd: 'MGET',
                 args: [keys]
             };
         },
-        process(data, args) {
+        process(data: Array<[number, Buffer]>, args: any[]): any {
 
             return U.list2NullableBufferDict(args, data);
         }
@@ -703,7 +717,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: mSet
      * @see https://redis.io/commands/mSet
      */
-    "mSet": {
+    'mSet': {
         prepare(kv: Record<string, string | Buffer>): IPrepareResult {
 
             const args: any[] = [];
@@ -715,7 +729,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
 
             return {
 
-                cmd: "MSET",
+                cmd: 'MSET',
                 args
             };
         },
@@ -726,7 +740,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: mSetNX
      * @see https://redis.io/commands/mSetNX
      */
-    "mSetNX": {
+    'mSetNX': {
         prepare(kv: Record<string, string | Buffer>): IPrepareResult {
 
             const args: any[] = [];
@@ -738,7 +752,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
 
             return {
 
-                cmd: "MSETNX",
+                cmd: 'MSETNX',
                 args
             };
         },
@@ -749,16 +763,16 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hIncr
      * @see https://redis.io/commands/hincrby
      */
-    "hIncr": {
-        prepare: createDefaultPreparer("HINCRBY")
+    'hIncr': {
+        prepare: createDefaultPreparer('HINCRBY')
     },
 
     /**
      * Command: hIncrByFloat
      * @see https://redis.io/commands/hIncrByFloat
      */
-    "hIncrByFloat": {
-        prepare: createDefaultPreparer("HINCRBYFLOAT"),
+    'hIncrByFloat': {
+        prepare: createDefaultPreparer('HINCRBYFLOAT'),
         process: parseFloat
     },
 
@@ -766,10 +780,10 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hIncr
      * @see https://redis.io/commands/hincrby
      */
-    "hDecr": {
+    'hDecr': {
         prepare(key: string, field: string, step: number): IPrepareResult {
             return {
-                cmd: "HINCRBY",
+                cmd: 'HINCRBY',
                 args: [key, field, -(step || 1)]
             };
         }
@@ -779,10 +793,10 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hIncrByFloat
      * @see https://redis.io/commands/hIncrByFloat
      */
-    "hDecrByFloat": {
+    'hDecrByFloat': {
         prepare(key: string, field: string, step: number): IPrepareResult {
             return {
-                cmd: "HINCRBYFLOAT",
+                cmd: 'HINCRBYFLOAT',
                 args: [key, field, -step]
             };
         },
@@ -793,8 +807,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hKeys
      * @see https://redis.io/commands/hKeys
      */
-    "hKeys": {
-        prepare: createDefaultPreparer("HKEYS"),
+    'hKeys': {
+        prepare: createDefaultPreparer('HKEYS'),
         process: U.list2StringList
     },
 
@@ -802,8 +816,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hVals
      * @see https://redis.io/commands/hVals
      */
-    "hVals": {
-        prepare: createDefaultPreparer("HVALS"),
+    'hVals': {
+        prepare: createDefaultPreparer('HVALS'),
         process: U.list2StringList
     },
 
@@ -811,8 +825,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hVals
      * @see https://redis.io/commands/hVals
      */
-    "hVals$": {
-        prepare: createDefaultPreparer("HVALS"),
+    'hVals$': {
+        prepare: createDefaultPreparer('HVALS'),
         process: U.list2BufferList
     },
 
@@ -820,15 +834,15 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hLen
      * @see https://redis.io/commands/hLen
      */
-    "hLen": {
-        prepare: createDefaultPreparer("HLEN")
+    'hLen': {
+        prepare: createDefaultPreparer('HLEN')
     },
 
     /**
      * Command: hMGet
      * @see https://redis.io/commands/hMGet
      */
-    "hMGet": {
+    'hMGet': {
         prepare(key: string, fields: string | string[]): IPrepareResult {
 
             if (Array.isArray(fields)) {
@@ -839,17 +853,17 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "HMGET",
+                    cmd: 'HMGET',
                     args: [key, ...fields]
                 };
             }
 
             return {
-                cmd: "HMGET",
+                cmd: 'HMGET',
                 args: [key, fields]
             };
         },
-        process(data, args) {
+        process(data: Array<[number, Buffer]>, args: any[]): any {
 
             return U.list2NullableStringDict(args[1], data);
         }
@@ -859,7 +873,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hMGet
      * @see https://redis.io/commands/hMGet
      */
-    "hMGet$": {
+    'hMGet$': {
         prepare(key: string, fields: string | string[]): IPrepareResult {
 
             if (Array.isArray(fields)) {
@@ -870,17 +884,17 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "HMGET",
+                    cmd: 'HMGET',
                     args: [key, ...fields]
                 };
             }
 
             return {
-                cmd: "HMGET",
+                cmd: 'HMGET',
                 args: [key, fields]
             };
         },
-        process(data, args) {
+        process(data: Array<[number, Buffer]>, args: any[]): any {
 
             return U.list2NullableBufferDict(args[1], data);
         }
@@ -890,8 +904,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hGetAll
      * @see https://redis.io/commands/hGetAll
      */
-    "hGetAll": {
-        prepare: createDefaultPreparer("HGETALL"),
+    'hGetAll': {
+        prepare: createDefaultPreparer('HGETALL'),
         process: U.pairList2NullableStringDict
     },
 
@@ -899,8 +913,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hGetAll
      * @see https://redis.io/commands/hGetAll
      */
-    "hGetAll$": {
-        prepare: createDefaultPreparer("HGETALL"),
+    'hGetAll$': {
+        prepare: createDefaultPreparer('HGETALL'),
         process: U.pairList2NullableBufferDict
     },
 
@@ -908,7 +922,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hMSet
      * @see https://redis.io/commands/hMSet
      */
-    "hMSet": {
+    'hMSet': {
         prepare(k: string, fv: Record<string, string | Buffer>): IPrepareResult {
 
             const args: any[] = [k];
@@ -919,7 +933,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
             }
 
             return {
-                cmd: "HMSET",
+                cmd: 'HMSET',
                 args
             };
         },
@@ -930,32 +944,38 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hStrLen
      * @see https://redis.io/commands/hStrLen
      */
-    "hStrLen": {
-        prepare: createDefaultPreparer("HSTRLEN")
+    'hStrLen': {
+        prepare: createDefaultPreparer('HSTRLEN')
     },
 
     /**
      * Command: scan
      * @see https://redis.io/commands/scan
      */
-    "scan": {
+    'scan': {
         prepare(cur: number, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [cur];
 
-            p && args.push("MATCH", p);
-            cn && args.push("COUNT", cn);
+            if (p) {
+
+                args.push('MATCH', p);
+            }
+            if (cn) {
+
+                args.push('COUNT', cn);
+            }
 
             return {
-                cmd: "SCAN",
+                cmd: 'SCAN',
                 args
             };
         },
-        process(data: any, args: any[]): C.IScanResult<string> {
+        process(data: [[number, Buffer], [number, Array<[number, Buffer]>]]): C.IScanResult<string> {
 
             return {
-                "nextCursor": parseInt(data[0][1].toString()),
-                "items": U.list2StringList(data[1][1])
+                'nextCursor': parseInt(data[0][1].toString()),
+                'items': U.list2StringList(data[1][1])
             };
         }
     },
@@ -964,24 +984,30 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: hScan
      * @see https://redis.io/commands/hScan
      */
-    "hScan": {
+    'hScan': {
         prepare(k: string, cur: number, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [k, cur];
 
-            p && args.push("MATCH", p);
-            cn && args.push("COUNT", cn);
+            if (p) {
+
+                args.push('MATCH', p);
+            }
+            if (cn) {
+
+                args.push('COUNT', cn);
+            }
 
             return {
-                cmd: "HSCAN",
+                cmd: 'HSCAN',
                 args
             };
         },
-        process(data: any, args: any[]): C.IScanResult<string> {
+        process(data: [[number, Buffer], [number, Array<[number, Buffer]>]]): C.IScanResult<string> {
 
             return {
-                "nextCursor": parseInt(data[0][1].toString()),
-                "items": U.list2StringList(data[1][1])
+                'nextCursor': parseInt(data[0][1].toString()),
+                'items': U.list2StringList(data[1][1])
             };
         }
     },
@@ -990,11 +1016,11 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sAdd
      * @see https://redis.io/commands/sAdd
      */
-    "sAdd": {
+    'sAdd': {
         prepare(key: string, values: Array<string | Buffer>): IPrepareResult {
 
             return {
-                cmd: "SADD",
+                cmd: 'SADD',
                 args: [key, ...values]
             };
         }
@@ -1004,15 +1030,15 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sCard
      * @see https://redis.io/commands/sCard
      */
-    "sCard": {
-        prepare: createDefaultPreparer("SCARD")
+    'sCard': {
+        prepare: createDefaultPreparer('SCARD')
     },
 
     /**
      * Command: sDiff
      * @see https://redis.io/commands/sDiff
      */
-    "sDiff": {
+    'sDiff': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1023,13 +1049,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "SDIFF",
+                    cmd: 'SDIFF',
                     args: keys
                 };
             }
 
             return {
-                cmd: "SDIFF",
+                cmd: 'SDIFF',
                 args: [keys]
             };
         },
@@ -1040,7 +1066,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sDiff
      * @see https://redis.io/commands/sDiff
      */
-    "sDiff$": {
+    'sDiff$': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1051,13 +1077,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "SDIFF",
+                    cmd: 'SDIFF',
                     args: keys
                 };
             }
 
             return {
-                cmd: "SDIFF",
+                cmd: 'SDIFF',
                 args: [keys]
             };
         },
@@ -1068,7 +1094,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sDiffStore
      * @see https://redis.io/commands/sDiffStore
      */
-    "sDiffStore": {
+    'sDiffStore': {
         prepare(keys: string | string[], target: string): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1079,13 +1105,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "SDIFFSTORE",
-                    args: keys
+                    cmd: 'SDIFFSTORE',
+                    args: [target, ...keys]
                 };
             }
 
             return {
-                cmd: "SDIFFSTORE",
+                cmd: 'SDIFFSTORE',
                 args: [keys]
             };
         }
@@ -1095,7 +1121,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sInter
      * @see https://redis.io/commands/sInter
      */
-    "sInter": {
+    'sInter': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1106,13 +1132,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "SINTER",
+                    cmd: 'SINTER',
                     args: keys
                 };
             }
 
             return {
-                cmd: "SINTER",
+                cmd: 'SINTER',
                 args: [keys]
             };
         },
@@ -1123,7 +1149,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sInter
      * @see https://redis.io/commands/sInter
      */
-    "sInter$": {
+    'sInter$': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1134,13 +1160,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "SINTER",
+                    cmd: 'SINTER',
                     args: keys
                 };
             }
 
             return {
-                cmd: "SINTER",
+                cmd: 'SINTER',
                 args: [keys]
             };
         },
@@ -1151,7 +1177,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sInterStore
      * @see https://redis.io/commands/sInterStore
      */
-    "sInterStore": {
+    'sInterStore': {
         prepare(keys: string | string[], target: string): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1162,13 +1188,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "SINTERSTORE",
-                    args: keys
+                    cmd: 'SINTERSTORE',
+                    args: [target, ...keys]
                 };
             }
 
             return {
-                cmd: "SINTERSTORE",
+                cmd: 'SINTERSTORE',
                 args: [keys]
             };
         }
@@ -1178,7 +1204,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sUnion
      * @see https://redis.io/commands/sUnion
      */
-    "sUnion": {
+    'sUnion': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1189,13 +1215,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "SUNION",
+                    cmd: 'SUNION',
                     args: keys
                 };
             }
 
             return {
-                cmd: "SUNION",
+                cmd: 'SUNION',
                 args: [keys]
             };
         },
@@ -1206,7 +1232,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sUnion
      * @see https://redis.io/commands/sUnion
      */
-    "sUnion$": {
+    'sUnion$': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1217,13 +1243,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "SUNION",
+                    cmd: 'SUNION',
                     args: keys
                 };
             }
 
             return {
-                cmd: "SUNION",
+                cmd: 'SUNION',
                 args: [keys]
             };
         },
@@ -1234,7 +1260,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sUnionStore
      * @see https://redis.io/commands/sUnionStore
      */
-    "sUnionStore": {
+    'sUnionStore': {
         prepare(keys: string | string[]): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1245,13 +1271,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "SUNIONSTORE",
+                    cmd: 'SUNIONSTORE',
                     args: keys
                 };
             }
 
             return {
-                cmd: "SUNIONSTORE",
+                cmd: 'SUNIONSTORE',
                 args: [keys]
             };
         }
@@ -1261,8 +1287,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sIsMember
      * @see https://redis.io/commands/sIsMember
      */
-    "sIsMember": {
-        prepare: createDefaultPreparer("SISMEMBER"),
+    'sIsMember': {
+        prepare: createDefaultPreparer('SISMEMBER'),
         process: isIntegerOne
     },
 
@@ -1270,8 +1296,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sMembers
      * @see https://redis.io/commands/sMembers
      */
-    "sMembers": {
-        prepare: createDefaultPreparer("SMEMBERS"),
+    'sMembers': {
+        prepare: createDefaultPreparer('SMEMBERS'),
         process: U.list2StringList
     },
 
@@ -1279,8 +1305,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sMembers
      * @see https://redis.io/commands/sMembers
      */
-    "sMembers$": {
-        prepare: createDefaultPreparer("SMEMBERS"),
+    'sMembers$': {
+        prepare: createDefaultPreparer('SMEMBERS'),
         process: U.list2BufferList
     },
 
@@ -1288,8 +1314,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sMove
      * @see https://redis.io/commands/sMove
      */
-    "sMove": {
-        prepare: createDefaultPreparer("SMOVE"),
+    'sMove': {
+        prepare: createDefaultPreparer('SMOVE'),
         process: isIntegerOne
     },
 
@@ -1297,8 +1323,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sPop
      * @see https://redis.io/commands/sPop
      */
-    "sPop": {
-        prepare: createDefaultPreparer("SPOP"),
+    'sPop': {
+        prepare: createDefaultPreparer('SPOP'),
         process: U.list2StringList
     },
 
@@ -1306,8 +1332,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sPop
      * @see https://redis.io/commands/sPop
      */
-    "sPop$": {
-        prepare: createDefaultPreparer("SPOP"),
+    'sPop$': {
+        prepare: createDefaultPreparer('SPOP'),
         process: U.list2BufferList
     },
 
@@ -1315,8 +1341,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sRandMember
      * @see https://redis.io/commands/sRandMember
      */
-    "sRandMember": {
-        prepare: createDefaultPreparer("SRANDMEMBER"),
+    'sRandMember': {
+        prepare: createDefaultPreparer('SRANDMEMBER'),
         process: U.list2StringList
     },
 
@@ -1324,8 +1350,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sRandMember
      * @see https://redis.io/commands/sRandMember
      */
-    "sRandMember$": {
-        prepare: createDefaultPreparer("SRANDMEMBER"),
+    'sRandMember$': {
+        prepare: createDefaultPreparer('SRANDMEMBER'),
         process: U.list2BufferList
     },
 
@@ -1333,32 +1359,38 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sRem
      * @see https://redis.io/commands/sRem
      */
-    "sRem": {
-        prepare: createDefaultPreparer("SREM")
+    'sRem': {
+        prepare: createDefaultPreparer('SREM')
     },
 
     /**
      * Command: sScan
      * @see https://redis.io/commands/sScan
      */
-    "sScan": {
+    'sScan': {
         prepare(k: string, cur: number, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [k, cur];
 
-            p && args.push("MATCH", p);
-            cn && args.push("COUNT", cn);
+            if (p) {
+
+                args.push('MATCH', p);
+            }
+            if (cn) {
+
+                args.push('COUNT', cn);
+            }
 
             return {
-                cmd: "SSCAN",
+                cmd: 'SSCAN',
                 args
             };
         },
-        process(data: any, args: any[]): C.IScanResult<string> {
+        process(data: [[number, Buffer], [number, Array<[number, Buffer]>]]): C.IScanResult<string> {
 
             return {
-                "nextCursor": parseInt(data[0][1].toString()),
-                "items": U.list2StringList(data[1][1])
+                'nextCursor': parseInt(data[0][1].toString()),
+                'items': U.list2StringList(data[1][1])
             };
         }
     },
@@ -1367,24 +1399,30 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: sScan
      * @see https://redis.io/commands/sScan
      */
-    "sScan$": {
+    'sScan$': {
         prepare(k: string, cur: number, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [k, cur];
 
-            p && args.push("MATCH", p);
-            cn && args.push("COUNT", cn);
+            if (p) {
+
+                args.push('MATCH', p);
+            }
+            if (cn) {
+
+                args.push('COUNT', cn);
+            }
 
             return {
-                cmd: "SSCAN",
+                cmd: 'SSCAN',
                 args
             };
         },
-        process(data: any, args: any[]): C.IScanResult<Buffer> {
+        process(data: [[number, Buffer], [number, Array<[number, Buffer]>]]): C.IScanResult<string> {
 
             return {
-                "nextCursor": parseInt(data[0][1].toString()),
-                "items": U.list2BufferList(data[1][1])
+                'nextCursor': parseInt(data[0][1].toString()),
+                'items': U.list2StringList(data[1][1])
             };
         }
     },
@@ -1393,7 +1431,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: bLPop
      * @see https://redis.io/commands/bLPop
      */
-    "bLPop": {
+    'bLPop': {
         prepare(keys: string | string[], timeout: number): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1404,13 +1442,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "BLPOP",
+                    cmd: 'BLPOP',
                     args: [...keys, timeout]
                 };
             }
 
             return {
-                cmd: "BLPOP",
+                cmd: 'BLPOP',
                 args: [keys, timeout]
             };
         },
@@ -1421,7 +1459,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: bLPop
      * @see https://redis.io/commands/bLPop
      */
-    "bLPop$": {
+    'bLPop$': {
         prepare(keys: string | string[], timeout: number): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1432,13 +1470,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "BLPOP",
+                    cmd: 'BLPOP',
                     args: [...keys, timeout]
                 };
             }
 
             return {
-                cmd: "BLPOP",
+                cmd: 'BLPOP',
                 args: [keys, timeout]
             };
         },
@@ -1449,7 +1487,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: bRPop
      * @see https://redis.io/commands/bRPop
      */
-    "bRPop": {
+    'bRPop': {
         prepare(keys: string | string[], timeout: number): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1460,13 +1498,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "BRPOP",
+                    cmd: 'BRPOP',
                     args: [...keys, timeout]
                 };
             }
 
             return {
-                cmd: "BRPOP",
+                cmd: 'BRPOP',
                 args: [keys, timeout]
             };
         },
@@ -1477,7 +1515,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: bRPop
      * @see https://redis.io/commands/bRPop
      */
-    "bRPop$": {
+    'bRPop$': {
         prepare(keys: string | string[], timeout: number): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1488,13 +1526,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "BRPOP",
+                    cmd: 'BRPOP',
                     args: [...keys, timeout]
                 };
             }
 
             return {
-                cmd: "BRPOP",
+                cmd: 'BRPOP',
                 args: [keys, timeout]
             };
         },
@@ -1505,8 +1543,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: bRPopLPush
      * @see https://redis.io/commands/bRPopLPush
      */
-    "bRPopLPush": {
-        prepare: createDefaultPreparer("BRPOPLPUSH"),
+    'bRPopLPush': {
+        prepare: createDefaultPreparer('BRPOPLPUSH'),
         process: U.buffer2String
     },
 
@@ -1514,16 +1552,16 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: bRPopLPush
      * @see https://redis.io/commands/bRPopLPush
      */
-    "bRPopLPush$": {
-        prepare: createDefaultPreparer("BRPOPLPUSH")
+    'bRPopLPush$': {
+        prepare: createDefaultPreparer('BRPOPLPUSH')
     },
 
     /**
      * Command: lIndex
      * @see https://redis.io/commands/lIndex
      */
-    "lIndex": {
-        prepare: createDefaultPreparer("LINDEX"),
+    'lIndex': {
+        prepare: createDefaultPreparer('LINDEX'),
         process: U.buffer2String
     },
 
@@ -1531,20 +1569,20 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: lIndex
      * @see https://redis.io/commands/lIndex
      */
-    "lIndex$": {
-        prepare: createDefaultPreparer("LINDEX")
+    'lIndex$': {
+        prepare: createDefaultPreparer('LINDEX')
     },
 
     /**
      * Command: lInsert
      * @see https://redis.io/commands/lInsert
      */
-    "lInsertBefore": {
+    'lInsertBefore': {
         prepare(key: string, pivot: string, value: string | Buffer): IPrepareResult {
 
             return {
-                args: [key, "BEFORE", pivot, value],
-                cmd: "LINSERT"
+                args: [key, 'BEFORE', pivot, value],
+                cmd: 'LINSERT'
             };
         }
     },
@@ -1553,12 +1591,12 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: lInsert
      * @see https://redis.io/commands/lInsert
      */
-    "lInsertAfter": {
+    'lInsertAfter': {
         prepare(key: string, pivot: string, value: string | Buffer): IPrepareResult {
 
             return {
-                args: [key, "AFTER", pivot, value],
-                cmd: "LINSERT"
+                args: [key, 'AFTER', pivot, value],
+                cmd: 'LINSERT'
             };
         }
     },
@@ -1567,16 +1605,16 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: lLen
      * @see https://redis.io/commands/lLen
      */
-    "lLen": {
-        prepare: createDefaultPreparer("LLEN")
+    'lLen': {
+        prepare: createDefaultPreparer('LLEN')
     },
 
     /**
      * Command: lPop
      * @see https://redis.io/commands/lPop
      */
-    "lPop": {
-        prepare: createDefaultPreparer("LPOP"),
+    'lPop': {
+        prepare: createDefaultPreparer('LPOP'),
         process: U.buffer2String
     },
 
@@ -1584,20 +1622,20 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: lPop
      * @see https://redis.io/commands/lPop
      */
-    "lPop$": {
-        prepare: createDefaultPreparer("LPOP")
+    'lPop$': {
+        prepare: createDefaultPreparer('LPOP')
     },
 
     /**
      * Command: lPush
      * @see https://redis.io/commands/lPush
      */
-    "lPush": {
+    'lPush': {
         prepare(key: string, values: Array<string | Buffer>): IPrepareResult {
 
             return {
                 args: [key, ...values],
-                cmd: "LPUSH"
+                cmd: 'LPUSH'
             };
         }
     },
@@ -1606,12 +1644,12 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: lPushX
      * @see https://redis.io/commands/lPushX
      */
-    "lPushX": {
+    'lPushX': {
         prepare(key: string, values: Array<string | Buffer>): IPrepareResult {
 
             return {
                 args: [key, ...values],
-                cmd: "LPUSHX"
+                cmd: 'LPUSHX'
             };
         }
     },
@@ -1620,8 +1658,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: lRange
      * @see https://redis.io/commands/lRange
      */
-    "lRange": {
-        prepare: createDefaultPreparer("LRANGE"),
+    'lRange': {
+        prepare: createDefaultPreparer('LRANGE'),
         process: U.list2StringList
     },
 
@@ -1629,8 +1667,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: lRange
      * @see https://redis.io/commands/lRange
      */
-    "lRange$": {
-        prepare: createDefaultPreparer("LRANGE"),
+    'lRange$': {
+        prepare: createDefaultPreparer('LRANGE'),
         process: U.list2BufferList
     },
 
@@ -1638,16 +1676,16 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: lRem
      * @see https://redis.io/commands/lRem
      */
-    "lRem": {
-        prepare: createDefaultPreparer("LREM")
+    'lRem': {
+        prepare: createDefaultPreparer('LREM')
     },
 
     /**
      * Command: lSet
      * @see https://redis.io/commands/lSet
      */
-    "lSet": {
-        prepare: createDefaultPreparer("LSET"),
+    'lSet': {
+        prepare: createDefaultPreparer('LSET'),
         process: null
     },
 
@@ -1655,8 +1693,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: lTrim
      * @see https://redis.io/commands/lTrim
      */
-    "lTrim": {
-        prepare: createDefaultPreparer("LTRIM"),
+    'lTrim': {
+        prepare: createDefaultPreparer('LTRIM'),
         process: null
     },
 
@@ -1664,8 +1702,8 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: rPop
      * @see https://redis.io/commands/rPop
      */
-    "rPop": {
-        prepare: createDefaultPreparer("RPOP"),
+    'rPop': {
+        prepare: createDefaultPreparer('RPOP'),
         process: U.buffer2String
     },
 
@@ -1673,16 +1711,16 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: rPop
      * @see https://redis.io/commands/rPop
      */
-    "rPop$": {
-        prepare: createDefaultPreparer("RPOP")
+    'rPop$': {
+        prepare: createDefaultPreparer('RPOP')
     },
 
     /**
      * Command: rPopLPush
      * @see https://redis.io/commands/rPopLPush
      */
-    "rPopLPush": {
-        prepare: createDefaultPreparer("RPOPLPUSH"),
+    'rPopLPush': {
+        prepare: createDefaultPreparer('RPOPLPUSH'),
         process: U.buffer2String
     },
 
@@ -1690,20 +1728,20 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: rPopLPush
      * @see https://redis.io/commands/rPopLPush
      */
-    "rPopLPush$": {
-        prepare: createDefaultPreparer("RPOPLPUSH")
+    'rPopLPush$': {
+        prepare: createDefaultPreparer('RPOPLPUSH')
     },
 
     /**
      * Command: rPush
      * @see https://redis.io/commands/rPush
      */
-    "rPush": {
+    'rPush': {
         prepare(key: string, values: Array<string | Buffer>): IPrepareResult {
 
             return {
                 args: [key, ...values],
-                cmd: "RPUSH"
+                cmd: 'RPUSH'
             };
         }
     },
@@ -1712,12 +1750,12 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: rPushX
      * @see https://redis.io/commands/rPushX
      */
-    "rPushX": {
+    'rPushX': {
         prepare(key: string, values: Array<string | Buffer>): IPrepareResult {
 
             return {
                 args: [key, ...values],
-                cmd: "RPUSHX"
+                cmd: 'RPUSHX'
             };
         }
     },
@@ -1726,12 +1764,12 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: pfAdd
      * @see https://redis.io/commands/pfAdd
      */
-    "pfAdd": {
+    'pfAdd': {
         prepare(key: string, values: Array<string | Buffer>): IPrepareResult {
 
             return {
                 args: [key, ...values],
-                cmd: "PFADD"
+                cmd: 'PFADD'
             };
         },
         process: isIntegerOne
@@ -1741,15 +1779,15 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: pfCount
      * @see https://redis.io/commands/pfCount
      */
-    "pfCount": {
-        prepare: createDefaultPreparer("PFCOUNT")
+    'pfCount': {
+        prepare: createDefaultPreparer('PFCOUNT')
     },
 
     /**
      * Command: pfMerge
      * @see https://redis.io/commands/pfMerge
      */
-    "pfMerge": {
+    'pfMerge': {
         prepare(keys: string | string[], target: string): IPrepareResult {
 
             if (Array.isArray(keys)) {
@@ -1760,13 +1798,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 }
 
                 return {
-                    cmd: "PFMERGE",
+                    cmd: 'PFMERGE',
                     args: [target, ...keys]
                 };
             }
 
             return {
-                cmd: "PFMERGE",
+                cmd: 'PFMERGE',
                 args: [target, keys]
             };
         },
@@ -1777,49 +1815,49 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * Command: publish
      * @see https://redis.io/commands/publish
      */
-    "publish": {
-        prepare: createDefaultPreparer("PUBLISH")
+    'publish': {
+        prepare: createDefaultPreparer('PUBLISH')
     },
 
-    "pubSubChannels": {
+    'pubSubChannels': {
         prepare(p?: string): IPrepareResult {
 
             return {
-                args: p ? ["CHANNELS", p] : ["CHANNELS"],
-                cmd: "PUBSUB"
+                args: p ? ['CHANNELS', p] : ['CHANNELS'],
+                cmd: 'PUBSUB'
             };
         },
         process: U.list2StringList
     },
 
-    "pubSubNumSub": {
+    'pubSubNumSub': {
         prepare(channels: string[]): IPrepareResult {
 
             return {
-                args: ["NUMSUB", ...channels],
-                cmd: "PUBSUB"
+                args: ['NUMSUB', ...channels],
+                cmd: 'PUBSUB'
             };
         },
-        process(data: any, args: any[]): Record<string, number> {
+        process(data: Array<[number, Buffer | number]>): Record<string, number> {
 
             const ret: Record<string, number> = {};
 
             for (let i = 0; i < data.length; i += 2) {
 
-                ret[data[i][1].toString()] = data[i + 1][1];
+                ret[data[i][1].toString()] = data[i + 1][1] as number;
             }
 
             return ret;
         }
     },
 
-    "pubSubNumPat": {
+    'pubSubNumPat': {
 
         prepare(): IPrepareResult {
 
             return {
-                args: ["NUMPAT"],
-                cmd: "PUBSUB"
+                args: ['NUMPAT'],
+                cmd: 'PUBSUB'
             };
         }
     }

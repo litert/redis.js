@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-// tslint:disable: no-unused-expression
-import * as C from "./Common";
-import * as E from "./Errors";
-import * as CMD from "./Commands";
-import { BaseClient } from "./BaseClient";
+/* eslint-disable @typescript-eslint/unbound-method */
+import * as C from './Common';
+import * as CMD from './Commands';
+import { BaseClient } from './BaseClient';
 
 interface IQueueItem {
 
@@ -30,12 +29,10 @@ interface IQueueItem {
 }
 
 export class PipelineClient
-extends BaseClient
-implements C.IPipelineClientBase {
+    extends BaseClient
+    implements C.IPipelineClientBase {
 
     private _queue: IQueueItem[];
-
-    private _multi: boolean = false;
 
     public constructor(opts: C.IClientOptions) {
 
@@ -48,35 +45,9 @@ implements C.IPipelineClientBase {
         this._queue = [];
     }
 
-    public async watch(keys: string[]): Promise<void> {
-
-        await this._command("WATCH", keys);
-    }
-
-    public async unwatch(): Promise<void> {
-
-        await this._command("UNWATCH", []);
-    }
-
-    public async multi(): Promise<void> {
-
-        if (!this._multi && this._queue.length) {
-
-            throw new E.E_PIPELINING();
-        }
-
-        await this._command("multi", []);
-
-        this._multi = true;
-    }
-
-    public async discard(): Promise<void> {
-
-        await this._command("discard", []);
+    public abort(): void {
 
         this._queue = [];
-
-        this._multi = false;
     }
 
     public async exec(): Promise<any> {
@@ -92,66 +63,30 @@ implements C.IPipelineClientBase {
 
         const ret: any[] = new Array(queue.length);
 
-        if (this._multi) {
+        const data: any[] = await this._bulkCommands(queue);
 
-            const [data] = await this._command("EXEC", []) as Array<[number, any]>;
+        for (let i = 0; i < queue.length; i++) {
 
-            this._multi = false;
+            const qi = queue[i];
 
-            for (let i = 0; i < queue.length; i++) {
+            if (qi.process === undefined) {
 
-                const qi = queue[i];
-
-                if (qi.process === undefined) {
-
-                    ret[i] = data[i][1];
-                }
-                else if (qi.process === null) {
-
-                    ret[i] = null;
-                }
-                else {
-
-                    ret[i] = qi.process(data[i][1], qi.args);
-                }
+                ret[i] = data[i];
             }
-        }
-        else {
+            else if (qi.process === null) {
 
-            const data: any[] = await this._bulkCommands(queue);
+                ret[i] = null;
+            }
+            else {
 
-            for (let i = 0; i < queue.length; i++) {
-
-                const qi = queue[i];
-
-                if (qi.process === undefined) {
-
-                    ret[i] = data[i];
-                }
-                else if (qi.process === null) {
-
-                    ret[i] = null;
-                }
-                else {
-
-                    ret[i] = qi.process(data[i], qi.args);
-                }
+                ret[i] = qi.process(data[i], qi.args);
             }
         }
 
         return ret;
     }
 
-    public command(cmd: string, args: any[], cb?: C.ICallbackA): any {
-
-        if (this._multi) {
-
-            const ret = this._command(cmd, args, cb);
-
-            this._queue.push({ args, process: undefined, cmd });
-
-            return ret;
-        }
+    public command(cmd: string, args: any[]): any {
 
         this._queue.push({ args, process: undefined, cmd });
     }
@@ -165,22 +100,17 @@ implements C.IPipelineClientBase {
 
     for (name in CMD.COMMANDS) {
 
-        if (name === "auth" || name === "select") {
+        if (name === 'auth' || name === 'select') {
 
             continue;
         }
 
         c.prototype[name] = (new Function(
-            "process",
-            "prepare",
-            `return async function(...args) {
+            'process',
+            'prepare',
+            `return function(...args) {
 
                 const req = prepare(...args);
-
-                if (this._multi) {
-
-                    await this._command(req.cmd, req.args);
-                }
 
                 this._queue.push({ args: req.args, process: process, cmd: req.cmd });
             };`

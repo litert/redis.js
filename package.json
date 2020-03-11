@@ -1,6 +1,6 @@
 {
   "name": "@litert/redis",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "A redis protocol implement for Node.js.",
   "main": "./lib/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "build-watch": "tsc -v && tsc -w -p .",
     "rebuild": "npm run clean && npm run lint && npm run build",
     "clean": "rm -rf lib examples test",
-    "lint": "tslint -p . -c tslint.json",
+    "lint": "eslint --ext ts src",
     "test": "echo No tests yet."
   },
   "keywords": [
@@ -35,8 +35,10 @@
     "@litert/observable": "^0.1.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.21.0",
+    "@typescript-eslint/parser": "^2.21.0",
+    "eslint": "^6.8.0",
     "@types/node": "^12.0.8",
-    "tslint": "^5.17.0",
     "typescript": "^3.5.2"
   },
   "engines": {

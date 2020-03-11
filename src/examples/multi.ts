@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-// tslint:disable: no-console
-
-import * as Redis from "../lib";
+import * as Redis from '../lib';
 
 (async () => {
 
@@ -24,34 +22,34 @@ import * as Redis from "../lib";
 
     await cli.connect();
 
-    const pipeline = await cli.pipeline();
+    const multi = await cli.multi();
 
     // Multi Mode
-    await pipeline.multi();
-    await pipeline.get("a");
+    await multi.multi();
+    await multi.get('a');
 
-    await pipeline.set("ccc", "g");
+    await multi.set('ccc', 'g');
 
-    await pipeline.mGet(["a", "ccc"]);
+    await multi.mGet(['a', 'ccc']);
 
-    await pipeline.hSet("h", "name", "Mick");
-    await pipeline.hMSet("h", {
-        "age": 123,
-        "title": "Mr."
+    await multi.hSet('h', 'name', 'Mick');
+    await multi.hMSet('h', {
+        'age': 123,
+        'title': 'Mr.'
     });
 
-    await pipeline.hMGet("h", ["age", "title"]);
-    await pipeline.hGetAll("h");
-    console.log(JSON.stringify(await pipeline.scan(0), null, 2));
+    await multi.hMGet('h', ['age', 'title']);
+    await multi.hGetAll('h');
+    console.log(JSON.stringify(await multi.scan(0), null, 2));
 
-    await pipeline.incr("a", 123);
+    await multi.incr('a', 123);
 
-    await pipeline.command("HGETALL", ["h"]);
+    await multi.command('HGETALL', ['h']);
 
-    console.log(JSON.stringify(await pipeline.exec(), null, 2));
+    console.log(JSON.stringify(await multi.exec(), null, 2));
 
-    await pipeline.close();
+    await multi.close();
 
     await cli.close();
 
-})();
+})().catch((e) => console.error(e));

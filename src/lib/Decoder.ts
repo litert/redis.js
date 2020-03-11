@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import * as C from "./Common";
-import * as E from "./Errors";
-import * as Constants from "./Constants";
-import { Events } from "@litert/observable";
+import * as C from './Common';
+import * as E from './Errors';
+import * as Constants from './Constants';
+import { Events } from '@litert/observable';
 
 import PROTO_DELIMITER = Constants.PROTO_DELIMITER;
 
@@ -91,8 +91,8 @@ class DecodeContext {
 }
 
 export class Decoder
-extends Events.EventEmitter<C.IDecoderEvents>
-implements C.IDecoder {
+    extends Events.EventEmitter<C.IDecoderEvents>
+    implements C.IDecoder {
 
     protected _buf!: Buffer;
 
@@ -131,189 +131,189 @@ implements C.IDecoder {
             let end: number;
 
             switch (this._ctx.status) {
-            case DecodeStatus.READING_LIST:
-            case DecodeStatus.IDLE:
+                case DecodeStatus.READING_LIST:
+                case DecodeStatus.IDLE:
 
-                switch (this._buf[this._cursor]) {
-                case 36: // $
-                    this._push(DecodeStatus.READING_STRING_LENGTH);
+                    switch (this._buf[this._cursor]) {
+                        case 36: // $
+                            this._push(DecodeStatus.READING_STRING_LENGTH);
+                            break;
+                        case 42: // *
+                            this._push(DecodeStatus.READING_LIST_LENGTH);
+                            break;
+                        case 43: // +
+                            this._push(DecodeStatus.READING_MESSAGE);
+                            break;
+                        case 45: // -
+                            this._push(DecodeStatus.READING_FAILURE);
+                            break;
+                        case 58: // :
+                            this._push(DecodeStatus.READING_INTEGER);
+                            break;
+                        default:
+                            this.emit('error', new E.E_PROTOCOL_ERROR({
+                                'message': 'Unrecognizable format of stream.'
+                            }));
+                            return this;
+                    }
+
                     break;
-                case 42: // *
-                    this._push(DecodeStatus.READING_LIST_LENGTH);
-                    break;
-                case 43: // +
-                    this._push(DecodeStatus.READING_MESSAGE);
-                    break;
-                case 45: // -
-                    this._push(DecodeStatus.READING_FAILURE);
-                    break;
-                case 58: // :
-                    this._push(DecodeStatus.READING_INTEGER);
-                    break;
-                default:
-                    this.emit("error", new E.E_PROTOCOL_ERROR({
-                        "message": "Unrecognizable format of stream."
-                    }));
-                    return this;
-                }
 
-                break;
+                case DecodeStatus.READING_MESSAGE:
 
-            case DecodeStatus.READING_MESSAGE:
+                    this._ctx.type = C.DataType.MESSAGE;
 
-                this._ctx.type = C.DataType.MESSAGE;
+                    end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
-                end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
+                    if (end > -1) {
 
-                if (end > -1) {
-
-                    this._ctx.value = this._buf.slice(
-                        this._ctx.pos,
-                        end
-                    );
-
-                    this._pop(end + 2);
-                }
-                else {
-
-//                    this._cursor = this._buf.length - 2;
-                    return this;
-                }
-
-                break;
-
-            case DecodeStatus.READING_FAILURE:
-
-                this._ctx.type = C.DataType.FAILURE;
-
-                end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
-
-                if (end > -1) {
-
-                    this._ctx.value = this._buf.slice(
-                        this._ctx.pos,
-                        end
-                    );
-
-                    this._pop(end + 2);
-                }
-                else {
-
-//                    this._cursor = this._buf.length - 2;
-                    return this;
-                }
-
-                break;
-
-            case DecodeStatus.READING_INTEGER:
-
-                this._ctx.type = C.DataType.INTEGER;
-
-                end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
-
-                if (end > -1) {
-
-                    this._ctx.value = parseInt(this._buf.slice(
-                        this._ctx.pos,
-                        end
-                    ).toString());
-
-                    this._pop(end + 2);
-                }
-                else {
-
-//                    this._cursor = this._buf.length - 2;
-                    return this;
-                }
-
-                break;
-
-            case DecodeStatus.READING_LIST_LENGTH:
-
-                end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
-
-                if (end > -1) {
-
-                    this._ctx.type = C.DataType.LIST;
-
-                    this._ctx.value = [];
-
-                    this._ctx.data.length = parseInt(this._buf.slice(
-                        this._ctx.pos,
-                        end
-                    ).toString());
-
-                    if (this._ctx.data.length === 0) {
+                        this._ctx.value = this._buf.slice(
+                            this._ctx.pos,
+                            end
+                        );
 
                         this._pop(end + 2);
                     }
                     else {
 
-                        this._cut(end + 2);
-                        this._ctx.pos = this._cursor;
-                        this._ctx.status = DecodeStatus.READING_LIST;
+                        //                    this._cursor = this._buf.length - 2;
+                        return this;
                     }
-                }
-                else {
 
-//                    this._cursor = this._buf.length - 2;
-                    return this;
-                }
+                    break;
 
-                break;
+                case DecodeStatus.READING_FAILURE:
 
-            case DecodeStatus.READING_STRING_LENGTH:
+                    this._ctx.type = C.DataType.FAILURE;
 
-                this._ctx.type = C.DataType.STRING;
+                    end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
-                end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
+                    if (end > -1) {
 
-                if (end > -1) {
+                        this._ctx.value = this._buf.slice(
+                            this._ctx.pos,
+                            end
+                        );
 
-                    this._ctx.data.length = parseInt(this._buf.slice(
-                        this._ctx.pos,
-                        end
-                    ).toString());
-
-                    if (this._ctx.data.length === -1) {
-
-                        this._ctx.type = C.DataType.NULL;
-                        this._ctx.value = null;
                         this._pop(end + 2);
                     }
                     else {
 
-                        this._cut(end + 2);
-                        this._ctx.pos = this._cursor;
-                        this._ctx.status = DecodeStatus.READING_STRING;
+                        //                    this._cursor = this._buf.length - 2;
+                        return this;
                     }
-                }
-                else {
 
-//                    this._cursor = this._buf.length - 2;
-                    return this;
-                }
+                    break;
 
-                break;
+                case DecodeStatus.READING_INTEGER:
 
-            case DecodeStatus.READING_STRING:
+                    this._ctx.type = C.DataType.INTEGER;
 
-                if (this._buf.length >= this._ctx.data.length + 2) {
+                    end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
-                    this._ctx.value = this._buf.slice(
-                        this._ctx.pos,
-                        this._ctx.pos + this._ctx.data.length
-                    );
+                    if (end > -1) {
 
-                    this._pop(this._ctx.data.length + 2);
-                }
-                else {
+                        this._ctx.value = parseInt(this._buf.slice(
+                            this._ctx.pos,
+                            end
+                        ).toString());
 
-//                    this._cursor = this._buf.length - 2;
-                    return this;
-                }
+                        this._pop(end + 2);
+                    }
+                    else {
 
-                break;
+                        //                    this._cursor = this._buf.length - 2;
+                        return this;
+                    }
+
+                    break;
+
+                case DecodeStatus.READING_LIST_LENGTH:
+
+                    end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
+
+                    if (end > -1) {
+
+                        this._ctx.type = C.DataType.LIST;
+
+                        this._ctx.value = [];
+
+                        this._ctx.data.length = parseInt(this._buf.slice(
+                            this._ctx.pos,
+                            end
+                        ).toString());
+
+                        if (this._ctx.data.length === 0) {
+
+                            this._pop(end + 2);
+                        }
+                        else {
+
+                            this._cut(end + 2);
+                            this._ctx.pos = this._cursor;
+                            this._ctx.status = DecodeStatus.READING_LIST;
+                        }
+                    }
+                    else {
+
+                        //                    this._cursor = this._buf.length - 2;
+                        return this;
+                    }
+
+                    break;
+
+                case DecodeStatus.READING_STRING_LENGTH:
+
+                    this._ctx.type = C.DataType.STRING;
+
+                    end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
+
+                    if (end > -1) {
+
+                        this._ctx.data.length = parseInt(this._buf.slice(
+                            this._ctx.pos,
+                            end
+                        ).toString());
+
+                        if (this._ctx.data.length === -1) {
+
+                            this._ctx.type = C.DataType.NULL;
+                            this._ctx.value = null;
+                            this._pop(end + 2);
+                        }
+                        else {
+
+                            this._cut(end + 2);
+                            this._ctx.pos = this._cursor;
+                            this._ctx.status = DecodeStatus.READING_STRING;
+                        }
+                    }
+                    else {
+
+                        //                    this._cursor = this._buf.length - 2;
+                        return this;
+                    }
+
+                    break;
+
+                case DecodeStatus.READING_STRING:
+
+                    if (this._buf.length >= this._ctx.data.length + 2) {
+
+                        this._ctx.value = this._buf.slice(
+                            this._ctx.pos,
+                            this._ctx.pos + this._ctx.data.length
+                        );
+
+                        this._pop(this._ctx.data.length + 2);
+                    }
+                    else {
+
+                        //                    this._cursor = this._buf.length - 2;
+                        return this;
+                    }
+
+                    break;
             }
         }
 
@@ -332,11 +332,11 @@ implements C.IDecoder {
 
         let context = this._ctx;
 
-        this._ctx = <DecodeContext> this._contextStack.pop();
+        this._ctx = this._contextStack.pop() as DecodeContext;
 
         if (this._ctx.status === DecodeStatus.READING_LIST) {
 
-            this._ctx.value.push(<C.ListItem> [
+            this._ctx.value.push([
                 context.type,
                 context.value
             ]);
@@ -348,11 +348,13 @@ implements C.IDecoder {
         }
         else {
 
-            this.emit("data", context.type, context.value);
+            this.emit('data', context.type, context.value);
         }
 
-        // tslint:disable-next-line:no-unused-expression
-        end && this._cut(end);
+        if (end) {
+
+            this._cut(end);
+        }
     }
 
     /**

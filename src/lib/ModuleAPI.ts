@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { Decoder } from "./Decoder";
-import { Encoder } from "./Encoder";
-import { ProtocolClient } from "./ProtocolClient";
-import { CommandClient } from "./CommandClient";
-import { PipelineClient } from "./PipelineClient";
-import { SubscriberClient } from "./Subscriber";
-import * as C from "./Common";
-import * as Constants from "./Constants";
+import { Decoder } from './Decoder';
+import { Encoder } from './Encoder';
+import { ProtocolClient } from './ProtocolClient';
+import { CommandClient } from './CommandClient';
+import { PipelineClient } from './PipelineClient';
+import { SubscriberClient } from './Subscriber';
+import * as C from './Common';
+import * as Constants from './Constants';
 
 export function createDecoder(): C.IDecoder {
 
@@ -36,10 +36,10 @@ export function createEncoder(): C.IEncoder {
 export function createCommandClient(opts: Partial<C.IClientOptions>): C.ICommandClient {
 
     return new CommandClient({
-        host: opts.host || Constants.DEFUALT_HOST,
-        port: opts.port || Constants.DEFUALT_PORT,
-        decoderFactory:  opts.decoderFactory || createDecoder,
-        encoderFactory: opts.encoderFactory || createEncoder,
+        host: opts.host ?? Constants.DEFUALT_HOST,
+        port: opts.port ?? Constants.DEFUALT_PORT,
+        decoderFactory: opts.decoderFactory ?? createDecoder,
+        encoderFactory: opts.encoderFactory ?? createEncoder,
         commandTimeout: opts.commandTimeout === undefined ? Constants.DEFAULT_COMMAND_TIMEOUT : opts.commandTimeout,
         connectTimeout: opts.connectTimeout === undefined ? Constants.DEFAULT_CONNECT_TIMEOUT : opts.connectTimeout
     }) as any as C.ICommandClient;
@@ -48,10 +48,10 @@ export function createCommandClient(opts: Partial<C.IClientOptions>): C.ICommand
 export function createPipelineClient(opts: Partial<C.IClientOptions>): C.IPipelineClient {
 
     return new PipelineClient({
-        host: opts.host || Constants.DEFUALT_HOST,
-        port: opts.port || Constants.DEFUALT_PORT,
-        decoderFactory:  opts.decoderFactory || createDecoder,
-        encoderFactory: opts.encoderFactory || createEncoder,
+        host: opts.host ?? Constants.DEFUALT_HOST,
+        port: opts.port ?? Constants.DEFUALT_PORT,
+        decoderFactory: opts.decoderFactory ?? createDecoder,
+        encoderFactory: opts.encoderFactory ?? createEncoder,
         commandTimeout: opts.commandTimeout === undefined ? Constants.DEFAULT_COMMAND_TIMEOUT : opts.commandTimeout,
         connectTimeout: opts.connectTimeout === undefined ? Constants.DEFAULT_CONNECT_TIMEOUT : opts.connectTimeout
     }) as any as C.IPipelineClient;
@@ -65,10 +65,10 @@ export function createProtocolClient(opts: C.IProtocolClientOptions): C.IProtoco
 export function createSubscriberClient(opts: Partial<C.IClientOptions>): C.ISubscriberClient {
 
     return new SubscriberClient({
-        host: opts.host || Constants.DEFUALT_HOST,
-        port: opts.port || Constants.DEFUALT_PORT,
-        decoderFactory:  opts.decoderFactory || createDecoder,
-        encoderFactory: opts.encoderFactory || createEncoder,
+        host: opts.host ?? Constants.DEFUALT_HOST,
+        port: opts.port ?? Constants.DEFUALT_PORT,
+        decoderFactory: opts.decoderFactory ?? createDecoder,
+        encoderFactory: opts.encoderFactory ?? createEncoder,
         commandTimeout: opts.commandTimeout === undefined ? Constants.DEFAULT_COMMAND_TIMEOUT : opts.commandTimeout,
         connectTimeout: opts.connectTimeout === undefined ? Constants.DEFAULT_CONNECT_TIMEOUT : opts.connectTimeout
     });

@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-// tslint:disable: no-unused-expression
-import * as C from "./Common";
-import * as CMD from "./Commands";
-import { BaseClient } from "./BaseClient";
-import { PipelineClient } from "./PipelineClient";
+/* eslint-disable @typescript-eslint/unbound-method */
+import * as C from './Common';
+import * as CMD from './Commands';
+import { BaseClient } from './BaseClient';
+import { PipelineClient } from './PipelineClient';
+import { MultiClient } from './WatchClient';
 
 export class CommandClient
-extends BaseClient
-implements C.ICommandClientBase {
+    extends BaseClient
+    implements C.ICommandClientBase {
 
     private _createDecoder: C.TDecoderFactory;
 
@@ -65,6 +66,32 @@ implements C.ICommandClientBase {
 
         return cli;
     }
+
+    public async multi(): Promise<C.IMultiClient> {
+
+        const cli = new MultiClient({
+            host: this.host,
+            port: this.port,
+            decoderFactory: this._createDecoder,
+            encoderFactory: this._createEncoder,
+            commandTimeout: this._commandTimeout,
+            connectTimeout: this._connectTimeout
+        }) as any as C.IMultiClient;
+
+        await cli.connect();
+
+        if (this._password) {
+
+            await cli.auth(this._password);
+        }
+
+        if (this._db) {
+
+            await cli.select(this._db);
+        }
+
+        return cli;
+    }
 }
 
 (function(c: any) {
@@ -73,7 +100,7 @@ implements C.ICommandClientBase {
 
     for (name in CMD.COMMANDS) {
 
-        if (name === "auth" || name === "select") {
+        if (name === 'auth' || name === 'select') {
 
             continue;
         }
@@ -83,20 +110,20 @@ implements C.ICommandClientBase {
 
         if (cmd.process === undefined) {
 
-            process = `return this._command(req.cmd, req.args);`;
+            process = 'return this._command(req.cmd, req.args);';
         }
         else if (cmd.process === null) {
 
-            process = `this._command(req.cmd, req.args);`;
+            process = 'this._command(req.cmd, req.args);';
         }
         else {
 
-            process = `return process(await this._command(req.cmd, req.args), req.args);`;
+            process = 'return process(await this._command(req.cmd, req.args), req.args);';
         }
 
         c.prototype[name] = (new Function(
-            "process",
-            "prepare",
+            'process',
+            'prepare',
             `return async function(...args) {
 
                 const req = prepare(...args);

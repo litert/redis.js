@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { Events } from "@litert/observable";
+import { Events } from '@litert/observable';
 
 export type TStringValue = string | Buffer;
 
 export type TResponseType<
-    T extends "list" | "string" | "integer" | "message",
+    T extends 'list' | 'string' | 'integer' | 'message',
     E
 > =
-    T extends "list" ? E[] :
-    T extends "string" ? string | Buffer :
-    T extends "integer" ? number : string;
+    T extends 'list' ? E[] :
+    T extends 'string' ? string | Buffer :
+    T extends 'integer' ? number : string;
 
 export interface IProtocolClientEvents extends Events.ICallbackDefinitions {
 
@@ -941,17 +941,68 @@ export interface ICommandClientBase {
      * Create a client for multi-exec transaction.
      */
     pipeline(): Promise<IPipelineClient>;
+
+    /**
+     * Command: multi
+     * @see https://redis.io/commands/multi
+     */
+    multi(): Promise<IMultiClient>;
 }
 
-export interface ICommandClient
-extends IProtocolClient, ICommandAPIs, ICommandClientBase {}
+export interface ICommandClient extends IProtocolClient, ICommandAPIs, ICommandClientBase {}
 
 export type IPipelineCommandAPIs = {
 
-    [K in keyof ICommandAPIs]: (...args: Parameters<ICommandAPIs[K]>) => Promise<void>;
+    [K in Exclude<keyof ICommandAPIs, 'auth' | 'select'>]: (...args: Parameters<ICommandAPIs[K]>) => void;
 };
 
 export interface IPipelineClientBase {
+
+    /**
+     * Command: auth
+     * @see https://redis.io/commands/auth
+     */
+    auth(...args: Parameters<ICommandAPIs['auth']>): Promise<void>;
+
+    /**
+     * Command: select
+     * @see https://redis.io/commands/select
+     */
+    select(...args: Parameters<ICommandAPIs['select']>): Promise<void>;
+
+    /**
+     * Abort all cached commands.
+     */
+    abort(): void;
+
+    /**
+     * Command: exec
+     * @see https://redis.io/commands/exec
+     */
+    exec<T extends any[]>(): Promise<T>;
+}
+
+export interface IPipelineClient extends IProtocolClient, IPipelineCommandAPIs, IPipelineClientBase {}
+
+export interface IMultiClientBase {
+
+    /**
+     * Command: auth
+     * @see https://redis.io/commands/auth
+     */
+    auth(...args: Parameters<ICommandAPIs['auth']>): Promise<void>;
+
+    /**
+     * Command: select
+     * @see https://redis.io/commands/select
+     */
+    select(...args: Parameters<ICommandAPIs['select']>): Promise<void>;
+
+    /**
+     * Command: multi
+     * @see https://redis.io/commands/multi
+     */
+    multi(): Promise<void>;
 
     /**
      * Command: watch
@@ -966,12 +1017,6 @@ export interface IPipelineClientBase {
     unwatch(): Promise<void>;
 
     /**
-     * Command: multi
-     * @see https://redis.io/commands/multi
-     */
-    multi(): Promise<void>;
-
-    /**
      * Command: discard
      * @see https://redis.io/commands/discard
      */
@@ -984,8 +1029,12 @@ export interface IPipelineClientBase {
     exec<T extends any[]>(): Promise<T>;
 }
 
-export interface IPipelineClient
-extends IProtocolClient, IPipelineCommandAPIs, IPipelineClientBase {}
+export type IMultiCommandAPIs = {
+
+    [K in Exclude<keyof ICommandAPIs, 'auth' | 'select'>]: (...args: Parameters<ICommandAPIs[K]>) => Promise<void>;
+};
+
+export interface IMultiClient extends IProtocolClient, IMultiCommandAPIs, IMultiClientBase {}
 
 export interface ISubscriberClient extends IProtocolClient {
 

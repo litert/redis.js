@@ -400,6 +400,20 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
     },
 
     /**
+     * Command: exists
+     * @see https://redis.io/commands/exists
+     */
+    'mExists': {
+        prepare(keys: string[]): IPrepareResult {
+
+            return {
+                cmd: 'EXISTS',
+                args: keys
+            };
+        }
+    },
+
+    /**
      * Command: type
      * @see https://redis.io/commands/type
      */
@@ -1860,5 +1874,80 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 cmd: 'PUBSUB'
             };
         }
-    }
+    },
+
+    'scriptLoad': {
+        prepare(script: string): IPrepareResult {
+
+            return {
+                cmd: 'SCRIPT',
+                args: ['LOAD', script]
+            };
+        },
+        process: U.buffer2String
+    },
+
+    'scriptKill': {
+        prepare(): IPrepareResult {
+
+            return {
+                cmd: 'SCRIPT',
+                args: ['KILL']
+            };
+        },
+        process: null
+    },
+
+    'scriptFlush': {
+        prepare(): IPrepareResult {
+
+            return {
+                cmd: 'SCRIPT',
+                args: ['FLUSH']
+            };
+        },
+        process: null
+    },
+
+    'scriptExists': {
+        prepare(shaList: string[]): IPrepareResult {
+
+            return {
+                cmd: 'SCRIPT',
+                args: ['EXISTS', ...shaList]
+            };
+        }
+    },
+
+    'scriptDebug': {
+        prepare(enabled: boolean | 'sync'): IPrepareResult {
+
+            return {
+                cmd: 'SCRIPT',
+                args: ['DEBUG', enabled === false ? 'NO' : enabled === true ? 'YES' : 'SYNC']
+            };
+        },
+        process: null
+    },
+
+    'evalSHA': {
+        prepare(sha: string, keys: string[], args: Array<string | Buffer>): IPrepareResult {
+
+            return {
+                cmd: 'EVALSHA',
+                args: [sha, keys.length, ...keys, ...args]
+            };
+        }
+    },
+
+    'eval': {
+        prepare(script: string, keys: string[], args: Array<string | Buffer>): IPrepareResult {
+
+            return {
+                cmd: 'EVAL',
+                args: [script, keys.length, ...keys, ...args]
+            };
+        }
+    },
+
 };

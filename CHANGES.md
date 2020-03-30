@@ -1,5 +1,18 @@
 # Changes Logs
 
+## v1.2.0
+
+- Added following command methods:
+
+    - `mExists`
+    - `eval`
+    - `evalSHA`
+    - `scriptLoad`
+    - `scriptFlush`
+    - `scriptKill`
+    - `scriptExists`
+    - `scriptDebug`
+
 ## v1.1.0
 
 - Fixed the watch mode with a new `WatchClient` class.

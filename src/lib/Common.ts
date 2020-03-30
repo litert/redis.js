@@ -360,7 +360,13 @@ export interface ICommandAPIs {
      * Command: exists
      * @see https://redis.io/commands/exists
      */
-    exists(key: string): Promise<boolean>;
+    exists(key: string | string[]): Promise<number>;
+
+    /**
+     * Command: exists
+     * @see https://redis.io/commands/exists
+     */
+    mExists(keys: string[]): Promise<number>;
 
     /**
      * Command: type
@@ -933,6 +939,49 @@ export interface ICommandAPIs {
      * @see https://redis.io/commands/pubsub
      */
     pubSubNumPat(): Promise<number>;
+
+    /**
+     * Command: eval
+     * @see https://redis.io/commands/eval
+     */
+    eval(luaScript: string, keys: string[], args: Array<string | Buffer>): Promise<any>;
+
+    /**
+     * Command: evalsha
+     * @see https://redis.io/commands/evalsha
+     */
+    evalSHA(luaScriptSHA: string, keys: string[], args: Array<string | Buffer>): Promise<any>;
+
+    /**
+     * Command: script debug
+     * @see https://redis.io/commands/script-debug
+     */
+    scriptDebug(enabled: boolean | 'sync'): Promise<void>;
+
+    /**
+     * Command: script exists
+     * @see https://redis.io/commands/script-exists
+     */
+    scriptExists(shaList: string[]): Promise<number>;
+
+    /**
+     * Command: script kill
+     * @see https://redis.io/commands/script-kill
+     */
+    scriptKill(): Promise<void>;
+
+    /**
+     * Command: script flush
+     * @see https://redis.io/commands/script-flush
+     */
+    scriptFlush(): Promise<void>;
+
+    /**
+     * Command: script load
+     * @see https://redis.io/commands/script-load
+     */
+    scriptLoad(script: string): Promise<string>;
+
 }
 
 export interface ICommandClientBase {

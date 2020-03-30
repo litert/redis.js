@@ -37,31 +37,38 @@ import * as L from '@litert/core';
     // await cli.auth("hello");
     await cli.flushAll();
 
-    console.log(await cli.ping(''));
-    console.log(await cli.set('a', '123'));
-    console.log(await cli.incr('a', 23));
-    console.log(await cli.incrByFloat('a', 23.4));
-    console.log(await cli.get('a'));
-    console.log(await cli.mGet(['a', 'sada']));
+    console.log('PING ->', await cli.ping(''));
+    console.log('GET ->', await cli.set('a', '123'));
+    console.log('INCR ->', await cli.incr('a', 23));
+    console.log('INCRBYFLOAT ->', await cli.incrByFloat('a', 23.4));
+    console.log('GET ->', await cli.get('a'));
+    console.log('MGET ->', await cli.mGet(['a', 'sada']));
+    console.log('MGET ->', await cli.mGet(['a', 'sada']));
+
+    const SHA1 = await cli.scriptLoad('return redis.call("GET", "a")');
+
+    console.log('EVAL ->', (await cli.evalSHA(SHA1, [], [])).toString());
 
     await L.Async.sleep(2000);
 
     let x = cli.set('a', '333');
 
-    console.log(await x);
-    await cli.lPush('lll', ['a', 'b']);
-    console.log(await cli.lIndex('lll', 1));
-    console.log(await cli.lRange('lll', 0, -1));
-    console.log(await cli.hMSet('ggg', {
+    console.log('SET ->', await x);
+    console.log('LPUSH ->', await cli.lPush('lll', ['a', 'b']));
+    console.log('LINDEX ->', await cli.lIndex('lll', 1));
+    console.log('LRANGE ->', await cli.lRange('lll', 0, -1));
+    console.log('HMSET->', await cli.hMSet('ggg', {
         'a': '3333',
         'bb': '1231232131'
     }));
-    console.log(await cli.hMGet('ggg', ['bb', 'a']));
-    console.log(await cli.incr('a'));
-    console.log(await cli.pubSubChannels());
-    console.log(await cli.pubSubNumPat());
-    console.log(await cli.pubSubNumSub(['hello']));
-    console.log(await cli.publish('hello', 'test'));
+    console.log('HMGET->', await cli.hMGet('ggg', ['bb', 'a']));
+    console.log('INCR->', await cli.incr('a'));
+    console.log('PUBSUBCHANNELS->', await cli.pubSubChannels());
+    console.log('PUBSUBNUMPAT->', await cli.pubSubNumPat());
+    console.log('PUBSUBNUMSUB->', await cli.pubSubNumSub(['hello']));
+    console.log('PUBLISH->', await cli.publish('hello', 'test'));
+    console.log('EXISTS->', await cli.exists('a'));
+    console.log('MEXISTS->', await cli.mExists(['a', 'b', 'lll', 'x', 'y']));
 
     await L.Async.sleep(2000);
 

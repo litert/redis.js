@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v1.2.1
+
+- fix(command): fixed the return value of EXISTS command.
+
 ## v1.2.0
 
 - Added following command methods:

@@ -360,7 +360,7 @@ export interface ICommandAPIs {
      * Command: exists
      * @see https://redis.io/commands/exists
      */
-    exists(key: string | string[]): Promise<number>;
+    exists(key: string): Promise<boolean>;
 
     /**
      * Command: exists

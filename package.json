@@ -1,6 +1,6 @@
 {
   "name": "@litert/redis",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A redis protocol implement for Node.js.",
   "main": "./lib/index.js",
   "scripts": {
@@ -8,6 +8,7 @@
     "build": "tsc -v && tsc -p .",
     "build-watch": "tsc -v && tsc -w -p .",
     "rebuild": "npm run clean && npm run lint && npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf lib examples test",
     "lint": "eslint --ext ts src",
     "test": "echo No tests yet."
@@ -34,11 +35,20 @@
     "@litert/core": "^1.0.3",
     "@litert/observable": "^0.1.0"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run lint && npm run typecheck"
+    }
+  },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@types/node": "^12.0.8",
     "@typescript-eslint/eslint-plugin": "^2.21.0",
     "@typescript-eslint/parser": "^2.21.0",
     "eslint": "^6.8.0",
-    "@types/node": "^12.0.8",
+    "husky": "^4.2.3",
     "typescript": "^3.5.2"
   },
   "engines": {

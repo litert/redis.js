@@ -34,12 +34,12 @@ export interface ICommand {
     process?: TProcessor;
 }
 
-function isStringOK(data: any): boolean {
+function isStringOK(data: string | Buffer): data is string {
 
     return 'OK' === (data?.toString());
 }
 
-function isIntegerOne(data: any): boolean {
+function isIntegerOne(data: unknown): data is number {
 
     return 1 === data;
 }

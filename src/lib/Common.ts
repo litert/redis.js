@@ -20,9 +20,9 @@ export type TStringValue = string | Buffer;
 
 export type TResponseType<
     T extends 'list' | 'string' | 'integer' | 'message',
-    E
+    TE
 > =
-    T extends 'list' ? E[] :
+    T extends 'list' ? TE[] :
     T extends 'string' ? string | Buffer :
     T extends 'integer' ? number : string;
 
@@ -37,9 +37,9 @@ export interface IProtocolClientEvents extends Events.ICallbackDefinitions {
     message(channel: string, data: Buffer, pattern?: string): void;
 }
 
-export interface ICallbackA<R = any, E = any> {
-    (err?: E): void;
-    (err: null, result: R): void;
+export interface ICallbackA<TR = any, TE = any> {
+    (err?: TE): void;
+    (err: null, result: TR): void;
 }
 
 export enum EClientStatus {
@@ -83,7 +83,7 @@ export interface IProtocolClient extends Events.IObservable<IProtocolClientEvent
     command(cmd: string, args: TStringValue[], callback: ICallbackA): void;
 }
 
-export enum DataType {
+export enum EDataType {
 
     /**
      * The type of byte-string.
@@ -116,7 +116,7 @@ export enum DataType {
     NULL
 }
 
-export type ListItem<T = any> = [ DataType, T ];
+export type ListItem<T = any> = [ EDataType, T ];
 
 /**
  * This interface describes the structure of a Redis protocol encoder.
@@ -167,7 +167,7 @@ export interface IEncoder {
 
 export interface IDecoderEvents extends Events.ICallbackDefinitions {
 
-    data(type: DataType, data: any): void;
+    data(type: EDataType, data: any): void;
 }
 
 export interface IDecoder extends Events.IObservable<IDecoderEvents> {

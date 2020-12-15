@@ -21,6 +21,7 @@ module.exports = {
             'subscriber',
             'lint',
             'docs',
+            'deps',
             'branch',
             'global'
         ]],

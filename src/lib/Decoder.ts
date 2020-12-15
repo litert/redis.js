@@ -21,7 +21,7 @@ import { Events } from '@litert/observable';
 
 import PROTO_DELIMITER = Constants.PROTO_DELIMITER;
 
-enum DecodeStatus {
+enum EDecodeStatus {
 
     /**
      * Reading nothing.
@@ -69,18 +69,18 @@ class DecodeContext {
     /**
      * The status of decoder context.
      */
-    public status: DecodeStatus;
+    public status: EDecodeStatus;
 
     public data: Record<string, any>;
 
     public value: any;
 
-    public type!: C.DataType;
+    public type!: C.EDataType;
 
     public pos: number;
 
     public constructor(
-        status: DecodeStatus = DecodeStatus.IDLE,
+        status: EDecodeStatus = EDecodeStatus.IDLE,
         pos: number = 0
     ) {
 
@@ -131,24 +131,24 @@ export class Decoder
             let end: number;
 
             switch (this._ctx.status) {
-                case DecodeStatus.READING_LIST:
-                case DecodeStatus.IDLE:
+                case EDecodeStatus.READING_LIST:
+                case EDecodeStatus.IDLE:
 
                     switch (this._buf[this._cursor]) {
                         case 36: // $
-                            this._push(DecodeStatus.READING_STRING_LENGTH);
+                            this._push(EDecodeStatus.READING_STRING_LENGTH);
                             break;
                         case 42: // *
-                            this._push(DecodeStatus.READING_LIST_LENGTH);
+                            this._push(EDecodeStatus.READING_LIST_LENGTH);
                             break;
                         case 43: // +
-                            this._push(DecodeStatus.READING_MESSAGE);
+                            this._push(EDecodeStatus.READING_MESSAGE);
                             break;
                         case 45: // -
-                            this._push(DecodeStatus.READING_FAILURE);
+                            this._push(EDecodeStatus.READING_FAILURE);
                             break;
                         case 58: // :
-                            this._push(DecodeStatus.READING_INTEGER);
+                            this._push(EDecodeStatus.READING_INTEGER);
                             break;
                         default:
                             this.emit('error', new E.E_PROTOCOL_ERROR({
@@ -159,32 +159,9 @@ export class Decoder
 
                     break;
 
-                case DecodeStatus.READING_MESSAGE:
+                case EDecodeStatus.READING_MESSAGE:
 
-                    this._ctx.type = C.DataType.MESSAGE;
-
-                    end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
-
-                    if (end > -1) {
-
-                        this._ctx.value = this._buf.slice(
-                            this._ctx.pos,
-                            end
-                        );
-
-                        this._pop(end + 2);
-                    }
-                    else {
-
-                        //                    this._cursor = this._buf.length - 2;
-                        return this;
-                    }
-
-                    break;
-
-                case DecodeStatus.READING_FAILURE:
-
-                    this._ctx.type = C.DataType.FAILURE;
+                    this._ctx.type = C.EDataType.MESSAGE;
 
                     end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
@@ -205,9 +182,32 @@ export class Decoder
 
                     break;
 
-                case DecodeStatus.READING_INTEGER:
+                case EDecodeStatus.READING_FAILURE:
 
-                    this._ctx.type = C.DataType.INTEGER;
+                    this._ctx.type = C.EDataType.FAILURE;
+
+                    end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
+
+                    if (end > -1) {
+
+                        this._ctx.value = this._buf.slice(
+                            this._ctx.pos,
+                            end
+                        );
+
+                        this._pop(end + 2);
+                    }
+                    else {
+
+                        //                    this._cursor = this._buf.length - 2;
+                        return this;
+                    }
+
+                    break;
+
+                case EDecodeStatus.READING_INTEGER:
+
+                    this._ctx.type = C.EDataType.INTEGER;
 
                     end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
@@ -228,13 +228,13 @@ export class Decoder
 
                     break;
 
-                case DecodeStatus.READING_LIST_LENGTH:
+                case EDecodeStatus.READING_LIST_LENGTH:
 
                     end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
                     if (end > -1) {
 
-                        this._ctx.type = C.DataType.LIST;
+                        this._ctx.type = C.EDataType.LIST;
 
                         this._ctx.value = [];
 
@@ -251,7 +251,7 @@ export class Decoder
 
                             this._cut(end + 2);
                             this._ctx.pos = this._cursor;
-                            this._ctx.status = DecodeStatus.READING_LIST;
+                            this._ctx.status = EDecodeStatus.READING_LIST;
                         }
                     }
                     else {
@@ -262,9 +262,9 @@ export class Decoder
 
                     break;
 
-                case DecodeStatus.READING_STRING_LENGTH:
+                case EDecodeStatus.READING_STRING_LENGTH:
 
-                    this._ctx.type = C.DataType.STRING;
+                    this._ctx.type = C.EDataType.STRING;
 
                     end = this._buf.indexOf(PROTO_DELIMITER, this._cursor);
 
@@ -277,7 +277,7 @@ export class Decoder
 
                         if (this._ctx.data.length === -1) {
 
-                            this._ctx.type = C.DataType.NULL;
+                            this._ctx.type = C.EDataType.NULL;
                             this._ctx.value = null;
                             this._pop(end + 2);
                         }
@@ -285,7 +285,7 @@ export class Decoder
 
                             this._cut(end + 2);
                             this._ctx.pos = this._cursor;
-                            this._ctx.status = DecodeStatus.READING_STRING;
+                            this._ctx.status = EDecodeStatus.READING_STRING;
                         }
                     }
                     else {
@@ -296,7 +296,7 @@ export class Decoder
 
                     break;
 
-                case DecodeStatus.READING_STRING:
+                case EDecodeStatus.READING_STRING:
 
                     if (this._buf.length >= this._ctx.data.length + 2) {
 
@@ -320,7 +320,7 @@ export class Decoder
         return this;
     }
 
-    private _push(newStatus: DecodeStatus): void {
+    private _push(newStatus: EDecodeStatus): void {
 
         this._contextStack.push(this._ctx);
         this._ctx = new DecodeContext(newStatus);
@@ -334,7 +334,7 @@ export class Decoder
 
         this._ctx = this._contextStack.pop() as DecodeContext;
 
-        if (this._ctx.status === DecodeStatus.READING_LIST) {
+        if (this._ctx.status === EDecodeStatus.READING_LIST) {
 
             this._ctx.value.push([
                 context.type,

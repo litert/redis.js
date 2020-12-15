@@ -14,76 +14,83 @@
  * limitations under the License.
  */
 
-import * as Core from '@litert/core';
+import * as $Exceptions from '@litert/exception';
 
-export const ErrorHub = Core.createErrorHub('@litert/redis');
+export const errorRegistry = $Exceptions.createExceptionRegistry({
+    'module': 'redis.litert.org',
+    'types': {
+        'public': {
+            'index': $Exceptions.createIncreaseCodeIndex(1)
+        }
+    }
+});
 
-export const E_PROTOCOL_ERROR = ErrorHub.define(
-    null,
-    'E_PROTOCOL_ERROR',
-    'Malformed data received from remote server.',
-    {}
-);
+export const E_PROTOCOL_ERROR = errorRegistry.register({
+    name: 'protocol_error',
+    message: 'Malformed data received from remote server.',
+    metadata: {},
+    type: 'public'
+});
 
-export const E_CAN_NOT_CONNECT = ErrorHub.define(
-    null,
-    'E_CAN_NOT_CONNECT',
-    'Can not connect to remote server.',
-    {}
-);
+export const E_CAN_NOT_CONNECT = errorRegistry.register({
+    name: 'can_not_connect',
+    message: 'Can not connect to remote server.',
+    metadata: {},
+    type: 'public'
+});
 
-export const E_COMMAND_FAILURE = ErrorHub.define(
-    null,
-    'E_COMMAND_FAILURE',
-    'Recieved a failure response of command execution from remote server.',
-    {}
-);
+export const E_COMMAND_FAILURE = errorRegistry.register({
+    name: 'command_failure',
+    message: 'Recieved a failure response of command execution from remote server.',
+    metadata: {},
+    type: 'public'
+});
 
-export const E_CONN_LOST = ErrorHub.define(
-    null,
-    'E_CONN_LOST',
-    'Lost the connection to remote server.',
-    {}
-);
+export const E_CONN_LOST = errorRegistry.register({
+    name: 'conn_lost',
+    message: 'Lost the connection to remote server.',
+    metadata: {},
+    type: 'public'
+});
 
-export const E_NO_CONN = ErrorHub.define(
-    null,
-    'E_NO_CONN',
-    'The connection is not ready yet.',
-    {}
-);
+export const E_NO_CONN = errorRegistry.register({
+    name: 'no_conn',
+    message: 'The connection is not ready yet.',
+    metadata: {},
+    type: 'public'
+});
 
-export const E_SUBSCRIBE_FAILURE = ErrorHub.define(
-    null,
-    'E_SUBSCRIBE_FAILURE',
-    'Failed to subscribe subjects.',
-    {}
-);
+export const E_SUBSCRIBE_FAILURE = errorRegistry.register({
+    name: 'subscribe_failure',
+    message: 'Failed to subscribe subjects.',
+    metadata: {},
+    type: 'public'
+});
 
-export const E_PIPELINING = ErrorHub.define(
-    null,
-    'E_PIPELINING',
-    'Some commands queued in pipeline, can not use MULTI.',
-    {}
-);
+export const E_PIPELINING = errorRegistry.register({
+    name: 'pipelining',
+    message: 'Some commands queued in pipeline, can not use MULTI.',
+    metadata: {},
+    type: 'public'
+});
 
-export const E_REQUEST_TIMEOUT = ErrorHub.define(
-    null,
-    'E_REQUEST_TIMEOUT',
-    'There was no response for commands sent in time .',
-    {}
-);
+export const E_REQUEST_TIMEOUT = errorRegistry.register({
+    name: 'request_timeout',
+    message: 'There was no response for commands sent in time .',
+    metadata: {},
+    type: 'public'
+});
 
-export const E_INVALID_PARAM = ErrorHub.define(
-    null,
-    'E_INVALID_PARAM',
-    'The parameters passed to the command is unacceptable.',
-    {}
-);
+export const E_INVALID_PARAM = errorRegistry.register({
+    name: 'invalid_param',
+    message: 'The parameters passed to the command is unacceptable.',
+    metadata: {},
+    type: 'public'
+});
 
-export const E_NOT_MULTI_MODE = ErrorHub.define(
-    null,
-    'E_NOT_MULTI_MODE',
-    'The client is not under multi mode, please call multi method first.',
-    {}
-);
+export const E_NOT_MULTI_MODE = errorRegistry.register({
+    name: 'not_multi_mode',
+    message: 'The client is not under multi mode, please call multi method first.',
+    metadata: {},
+    type: 'public'
+});

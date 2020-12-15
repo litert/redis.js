@@ -15,7 +15,11 @@
  */
 
 import * as Redis from '../lib';
-import * as L from '@litert/core';
+
+function sleep(ms: number): Promise<void> {
+
+    return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
 
 (async () => {
 
@@ -49,7 +53,7 @@ import * as L from '@litert/core';
 
     console.log('EVAL ->', (await cli.evalSHA(SHA1, [], [])).toString());
 
-    await L.Async.sleep(2000);
+    await sleep(2000);
 
     let x = cli.set('a', '333');
 
@@ -70,7 +74,7 @@ import * as L from '@litert/core';
     console.log('EXISTS->', await cli.exists('a'));
     console.log('MEXISTS->', await cli.mExists(['a', 'b', 'lll', 'x', 'y']));
 
-    await L.Async.sleep(2000);
+    await sleep(2000);
 
     const pipeline = await cli.multi();
 

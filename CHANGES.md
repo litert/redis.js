@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v1.2.2
+
+- config(deps): replaced exception mechanism with `@litert/exception`.
+
 ## v1.2.1
 
 - fix(command): fixed the return value of EXISTS command.

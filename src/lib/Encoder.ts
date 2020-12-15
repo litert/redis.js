@@ -220,19 +220,19 @@ export class Encoder implements A.IEncoder {
         for (let item of data) {
 
             switch (item[0]) {
-                case A.DataType.FAILURE:
+                case A.EDataType.FAILURE:
                     ret.push(this.encodeString(item[1]));
                     break;
-                case A.DataType.MESSAGE:
+                case A.EDataType.MESSAGE:
                     ret.push(this.encodeMessage(item[1]));
                     break;
-                case A.DataType.STRING:
+                case A.EDataType.STRING:
                     ret.push(this.encodeString(item[1]));
                     break;
-                case A.DataType.INTEGER:
+                case A.EDataType.INTEGER:
                     ret.push(this.encodeInteger(item[1]));
                     break;
-                case A.DataType.LIST:
+                case A.EDataType.LIST:
                     ret.push(this.encodeList(item[1]));
                     break;
             }

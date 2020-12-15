@@ -33,9 +33,9 @@ interface IPendingQueueItem extends IQueueItem {
     data: Buffer;
 }
 
-function wrapPromise<R = any, W = any>(
-    process: (cb: C.ICallbackA<R, W>) => void,
-    callback?: C.ICallbackA<R, W>,
+function wrapPromise<TR = any, TW = any>(
+    process: (cb: C.ICallbackA<TR, TW>) => void,
+    callback?: C.ICallbackA<TR, TW>,
 ): Promise<any> | void {
 
     if (callback) {
@@ -115,19 +115,19 @@ export class ProtocolClient
                 const it = this._executingQueue.shift() as IQueueItem;
 
                 switch (type) {
-                    case C.DataType.FAILURE:
+                    case C.EDataType.FAILURE:
                         it.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
                         break;
-                    case C.DataType.INTEGER:
+                    case C.EDataType.INTEGER:
                         it.callback(null, parseInt(data));
                         break;
-                    case C.DataType.MESSAGE:
+                    case C.EDataType.MESSAGE:
                         it.callback(null, data.toString());
                         break;
-                    case C.DataType.NULL:
+                    case C.EDataType.NULL:
                         it.callback(null, null);
                         break;
-                    case C.DataType.LIST:
+                    case C.EDataType.LIST:
 
                         if (this._subscribeMode) {
 
@@ -146,7 +146,10 @@ export class ProtocolClient
                             }
                         }
 
-                    case C.DataType.STRING:
+                        it.callback(null, data);
+                        break;
+
+                    case C.EDataType.STRING:
                         it.callback(null, data);
                         break;
                 }
@@ -164,20 +167,20 @@ export class ProtocolClient
                 const item = this._executingQueue[0];
 
                 switch (type) {
-                    case C.DataType.FAILURE:
+                    case C.EDataType.FAILURE:
                         item.result.push(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
                         break;
-                    case C.DataType.INTEGER:
+                    case C.EDataType.INTEGER:
                         item.result.push(parseInt(data));
                         break;
-                    case C.DataType.MESSAGE:
+                    case C.EDataType.MESSAGE:
                         item.result.push(data.toString());
                         break;
-                    case C.DataType.NULL:
+                    case C.EDataType.NULL:
                         item.result.push(null);
                         break;
-                    case C.DataType.LIST:
-                    case C.DataType.STRING:
+                    case C.EDataType.LIST:
+                    case C.EDataType.STRING:
                         item.result.push(data);
                         break;
                 }
@@ -201,20 +204,20 @@ export class ProtocolClient
                 const cb = this._executingQueue.shift() as IQueueItem;
 
                 switch (type) {
-                    case C.DataType.FAILURE:
+                    case C.EDataType.FAILURE:
                         cb.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
                         break;
-                    case C.DataType.INTEGER:
+                    case C.EDataType.INTEGER:
                         cb.callback(null, parseInt(data));
                         break;
-                    case C.DataType.MESSAGE:
+                    case C.EDataType.MESSAGE:
                         cb.callback(null, data.toString());
                         break;
-                    case C.DataType.NULL:
+                    case C.EDataType.NULL:
                         cb.callback(null, null);
                         break;
-                    case C.DataType.LIST:
-                    case C.DataType.STRING:
+                    case C.EDataType.LIST:
+                    case C.EDataType.STRING:
                         cb.callback(null, data);
                         break;
                 }
@@ -412,6 +415,7 @@ export class ProtocolClient
                         break;
                     case C.EClientStatus.READY:
                         this._status = C.EClientStatus.CONNECTING;
+                    // eslint-disable-next-line no-fallthrough
                     case C.EClientStatus.CONNECTING:
                         this.emit('abort');
                         this._connect();
@@ -515,7 +519,7 @@ export class ProtocolClient
 
             if (
                 this._status !== C.EClientStatus.READY ||
-                !(this._socket && this._socket.writable)
+                !this._socket?.writable
             ) {
 
                 this._pendingQueue.push({data, callback, count: 1, result: []});
@@ -555,7 +559,7 @@ export class ProtocolClient
 
             if (
                 this._status !== C.EClientStatus.READY ||
-                !(this._socket && this._socket.writable)
+                !this._socket?.writable
             ) {
 
                 this._pendingQueue.push({data, callback, count: cmds.length, result: []});

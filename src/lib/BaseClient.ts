@@ -33,6 +33,21 @@ export abstract class BaseClient
 
         if (!this._password) {
 
+            if (this._db) {
+
+                this._send('SELECT', [this._db], (e: any): void => {
+
+                    if (e) {
+
+                        return callback(e);
+                    }
+
+                    super._onConnected(callback);
+                });
+
+                return;
+            }
+
             return super._onConnected(callback);
         }
 

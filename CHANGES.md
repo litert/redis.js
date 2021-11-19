@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v1.2.3
+
+- fix(connection): select previous database if reconnected.
+
 ## v1.2.2
 
 - config(deps): replaced exception mechanism with `@litert/exception`.

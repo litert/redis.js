@@ -1688,8 +1688,27 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/lPop
      */
     'lPop': {
-        prepare: createDefaultPreparer('LPOP'),
-        process: U.buffer2String
+        prepare(key: string, count: number = 1): IPrepareResult {
+
+            return {
+                args: [key, count],
+                cmd: 'LPOP'
+            };
+        },
+        process(data: any, args: any[]): string | null | string[] {
+
+            if (data === null) {
+
+                return args[1] !== '1' ? [] : null;
+            }
+
+            if (data.length === 1) {
+
+                return data[0][1].toString();
+            }
+
+            return U.list2StringList(data);
+        }
     },
 
     /**
@@ -1697,7 +1716,27 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/lPop
      */
     'lPop$': {
-        prepare: createDefaultPreparer('LPOP')
+        prepare(key: string, count: number = 1): IPrepareResult {
+
+            return {
+                args: [key, count],
+                cmd: 'LPOP'
+            };
+        },
+        process(data: any, args: any[]): Buffer | null | Buffer[] {
+
+            if (data === null) {
+
+                return null;
+            }
+
+            if (data.length === 1) {
+
+                return args[1] !== '1' ? [] : null;
+            }
+
+            return U.list2BufferList(data);
+        }
     },
 
     /**
@@ -1777,8 +1816,27 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/rPop
      */
     'rPop': {
-        prepare: createDefaultPreparer('RPOP'),
-        process: U.buffer2String
+        prepare(key: string, count: number = 1): IPrepareResult {
+
+            return {
+                args: [key, count],
+                cmd: 'RPOP'
+            };
+        },
+        process(data: any, args: any[]): string | null | string[] {
+
+            if (data === null) {
+
+                return args[1] !== '1' ? [] : null;
+            }
+
+            if (data.length === 1) {
+
+                return data[0][1].toString();
+            }
+
+            return U.list2StringList(data);
+        }
     },
 
     /**
@@ -1786,7 +1844,27 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/rPop
      */
     'rPop$': {
-        prepare: createDefaultPreparer('RPOP')
+        prepare(key: string, count: number = 1): IPrepareResult {
+
+            return {
+                args: [key, count],
+                cmd: 'RPOP'
+            };
+        },
+        process(data: any, args: any[]): Buffer | null | Buffer[] {
+
+            if (data === null) {
+
+                return null;
+            }
+
+            if (data.length === 1) {
+
+                return args[1] !== '1' ? [] : null;
+            }
+
+            return U.list2BufferList(data);
+        }
     },
 
     /**

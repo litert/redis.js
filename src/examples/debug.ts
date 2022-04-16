@@ -58,6 +58,12 @@ function sleep(ms: number): Promise<void> {
     console.log(await cli.hRandFieldWithValues('aaaa', 2));
     console.log(await cli.hRandFieldWithValues$('aaaa', 2));
 
+    await cli.rPush('list-test', ['1', '2', '3', '4', '5']);
+    console.log(await cli.rPop('list-test'));
+    console.log(await cli.rPop('list-test', 4));
+    console.log(await cli.rPop('list-test'));
+    console.log(await cli.rPop('list-test', 4));
+
     console.log('PING ->', await cli.ping(''));
     console.log('GET ->', await cli.set('a', '123'));
     console.log('INCR ->', await cli.incr('a', 23));

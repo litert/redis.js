@@ -842,7 +842,19 @@ export interface ICommandAPIs {
      * Command: lPop
      * @see https://redis.io/commands/lPop
      */
+    lPop(key: string, count: number): Promise<string[]>;
+
+    /**
+     * Command: lPop
+     * @see https://redis.io/commands/lPop
+     */
     lPop$(key: string): Promise<Buffer | null>;
+
+    /**
+     * Command: lPop
+     * @see https://redis.io/commands/lPop
+     */
+    lPop$(key: string, count: number): Promise<Buffer[]>;
 
     /**
      * Command: lPush
@@ -896,7 +908,19 @@ export interface ICommandAPIs {
      * Command: rPop
      * @see https://redis.io/commands/rPop
      */
+    rPop(key: string, count: number): Promise<string[]>;
+
+    /**
+     * Command: rPop
+     * @see https://redis.io/commands/rPop
+     */
     rPop$(key: string): Promise<Buffer | null>;
+
+    /**
+     * Command: rPop
+     * @see https://redis.io/commands/rPop
+     */
+    rPop$(key: string, count: number): Promise<Buffer[]>;
 
     /**
      * Command: rPopLPush

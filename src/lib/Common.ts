@@ -261,6 +261,20 @@ export interface ICommandAPIs {
     get$(key: string): Promise<Buffer | null>;
 
     /**
+     * Command: getdel
+     * @see https://redis.io/commands/getdel
+     * @since v6.2.0
+     */
+    getAndDel(key: string): Promise<string | null>;
+
+    /**
+     * Command: getdel
+     * @see https://redis.io/commands/getdel
+     * @since v6.2.0
+     */
+    getAndDel$(key: string): Promise<Buffer | null>;
+
+    /**
      * Command: getex
      * @see https://redis.io/commands/getex
      * @since v6.2.0

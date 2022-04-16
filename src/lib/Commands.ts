@@ -275,6 +275,23 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
     },
 
     /**
+     * Command: getdel
+     * @see https://redis.io/commands/getdel
+     */
+    'getAndDel': {
+        prepare: createDefaultPreparer('GETDEL'),
+        process: U.nullableBuffer2String
+    },
+
+    /**
+     * Command: getdel
+     * @see https://redis.io/commands/getdel
+     */
+    'getAndDel$': {
+        prepare: createDefaultPreparer('GETDEL'),
+    },
+
+    /**
      * Command: getex
      * @see https://redis.io/commands/getex
      */

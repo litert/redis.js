@@ -82,6 +82,66 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
     },
 
     /**
+     * Command: hRandField
+     * @see https://redis.io/commands/hRandField
+     */
+    'hRandField': {
+        prepare(key: string, count: number): IPrepareResult {
+
+            return {
+                'cmd': 'HRANDFIELD',
+                'args': [key, count]
+            };
+        },
+        process: U.list2StringList
+    },
+
+    /**
+     * Command: hRandField
+     * @see https://redis.io/commands/hRandField
+     */
+    'hRandField$': {
+        prepare(key: string, count: number): IPrepareResult {
+
+            return {
+                'cmd': 'HRANDFIELD',
+                'args': [key, count]
+            };
+        },
+        process: U.list2BufferList
+    },
+
+    /**
+     * Command: hRandField
+     * @see https://redis.io/commands/hRandField
+     */
+    'hRandFieldWithValues': {
+        prepare(key: string, count: number): IPrepareResult {
+
+            return {
+                'cmd': 'HRANDFIELD',
+                'args': [key, count, 'WITHVALUES']
+            };
+        },
+        process: U.pairList2NullableStringDict
+    },
+
+    /**
+     * Command: hRandField
+     * @see https://redis.io/commands/hRandField
+     */
+    'hRandFieldWithValues$': {
+        prepare(key: string, count: number): IPrepareResult {
+
+            return {
+                'cmd': 'HRANDFIELD',
+                'args': [key, count, 'WITHVALUES']
+            };
+        },
+        process: U.pairList2NullableBufferDict
+    },
+
+    /**
      * Command: incr
      * @see https://redis.io/commands/incr
      */

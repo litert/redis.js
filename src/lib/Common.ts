@@ -447,6 +447,30 @@ export interface ICommandAPIs {
     hSetNX(key: string, field: string, value: string | Buffer): Promise<boolean>;
 
     /**
+     * Command: hrandfield
+     * @see https://redis.io/commands/hrandfield
+     */
+    hRandField(key: string, count: number): Promise<string[]>;
+
+    /**
+     * Command: hrandfield
+     * @see https://redis.io/commands/hrandfield
+     */
+    hRandField$(key: string, count: number): Promise<Buffer[]>;
+
+    /**
+     * Command: hrandfield with values returning.
+     * @see https://redis.io/commands/hrandfield
+     */
+    hRandFieldWithValues(key: string, count: number): Promise<Record<string, string>>;
+
+    /**
+     * Command: hrandfield with values returning.
+     * @see https://redis.io/commands/hrandfield
+     */
+    hRandFieldWithValues$(key: string, count: number): Promise<Record<string, Buffer>>;
+
+    /**
      * Command: hExists
      * @see https://redis.io/commands/hExists
      */

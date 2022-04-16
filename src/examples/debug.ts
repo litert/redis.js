@@ -41,6 +41,23 @@ function sleep(ms: number): Promise<void> {
     // await cli.auth("hello");
     await cli.flushAll();
 
+    console.log(await cli.hRandField('aaaa', 1));
+
+    console.log(await cli.hRandField('aaaa', 2));
+
+    await cli.hMSet('aaaa', {
+        a: '1',
+        b: '2',
+        c: '3',
+        d: '4',
+        e: '5',
+    });
+
+    console.log(await cli.hRandField('aaaa', 2));
+    console.log(await cli.hRandField$('aaaa', 2));
+    console.log(await cli.hRandFieldWithValues('aaaa', 2));
+    console.log(await cli.hRandFieldWithValues$('aaaa', 2));
+
     console.log('PING ->', await cli.ping(''));
     console.log('GET ->', await cli.set('a', '123'));
     console.log('INCR ->', await cli.incr('a', 23));

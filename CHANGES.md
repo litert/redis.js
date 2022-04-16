@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v1.2.4
+
+- feat(command): added command `HRANDFILED` supports.
+
 ## v1.2.3
 
 - fix(connection): select previous database if reconnected.

@@ -46,7 +46,7 @@ function isIntegerOne(data: unknown): data is number {
 
 function createDefaultPreparer(cmd: string): Required<ICommand>['prepare'] {
 
-    return (...args: Array<string | Buffer>) => ({args, cmd});
+    return (...args: Array<string | Buffer>) => ({ args, cmd });
 }
 
 export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
@@ -272,6 +272,141 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      */
     'get$': {
         prepare: createDefaultPreparer('GET'),
+    },
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     */
+    'getEx': {
+        prepare(key: string, seconds: number): IPrepareResult {
+            return {
+                'args': [key, 'EX', seconds],
+                'cmd': 'GETEX',
+            };
+        },
+        process: U.nullableBuffer2String
+    },
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     */
+    'getEx$': {
+        prepare(key: string, seconds: number): IPrepareResult {
+            return {
+                'args': [key, 'EX', seconds],
+                'cmd': 'GETEX'
+            };
+        },
+    },
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     */
+    'getExAt': {
+        prepare(key: string, tsInSec: number): IPrepareResult {
+            return {
+                'args': [key, 'EXAT', tsInSec],
+                'cmd': 'GETEX',
+            };
+        },
+        process: U.nullableBuffer2String
+    },
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     */
+    'getExAt$': {
+        prepare(key: string, seconds: number): IPrepareResult {
+            return {
+                'args': [key, 'EXAT', seconds],
+                'cmd': 'GETEX'
+            };
+        },
+    },
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     */
+    'getPEx': {
+        prepare(key: string, seconds: number): IPrepareResult {
+            return {
+                'args': [key, 'PX', seconds],
+                'cmd': 'GETEX',
+            };
+        },
+        process: U.nullableBuffer2String
+    },
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     */
+    'getPEx$': {
+        prepare(key: string, seconds: number): IPrepareResult {
+            return {
+                'args': [key, 'PX', seconds],
+                'cmd': 'GETEX'
+            };
+        },
+    },
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     */
+    'getPExAt': {
+        prepare(key: string, tsInSec: number): IPrepareResult {
+            return {
+                'args': [key, 'PXAT', tsInSec],
+                'cmd': 'GETEX',
+            };
+        },
+        process: U.nullableBuffer2String
+    },
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     */
+    'getPExAt$': {
+        prepare(key: string, seconds: number): IPrepareResult {
+            return {
+                'args': [key, 'PXAT', seconds],
+                'cmd': 'GETEX'
+            };
+        },
+    },
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     */
+    'getAndPersist': {
+        prepare(key: string): IPrepareResult {
+            return {
+                'args': [key, 'PERSIST'],
+                'cmd': 'GETEX',
+            };
+        },
+        process: U.nullableBuffer2String
+    },
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     */
+    'getAndPersist$': {
+        prepare(key: string): IPrepareResult {
+            return {
+                'args': [key, 'PERSIST'],
+                'cmd': 'GETEX'
+            };
+        },
     },
 
     /**

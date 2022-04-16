@@ -261,14 +261,86 @@ export interface ICommandAPIs {
     get$(key: string): Promise<Buffer | null>;
 
     /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     * @since v6.2.0
+     */
+    getAndPersist(key: string): Promise<string | null>;
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     * @since v6.2.0
+     */
+    getAndPersist$(key: string): Promise<Buffer | null>;
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     * @since v6.2.0
+     */
+    getEx(key: string, ttl: number): Promise<string | null>;
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     * @since v6.2.0
+     */
+    getEx$(key: string, ttl: number): Promise<Buffer | null>;
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     * @since v6.2.0
+     */
+    getExAt(key: string, at: number): Promise<string | null>;
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     * @since v6.2.0
+     */
+    getExAt$(key: string, at: number): Promise<Buffer | null>;
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     * @since v6.2.0
+     */
+    getPEx(key: string, ttl: number): Promise<string | null>;
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     * @since v6.2.0
+     */
+    getPEx$(key: string, ttl: number): Promise<Buffer | null>;
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     * @since v6.2.0
+     */
+    getPExAt(key: string, at: number): Promise<string | null>;
+
+    /**
+     * Command: getex
+     * @see https://redis.io/commands/getex
+     * @since v6.2.0
+     */
+    getPExAt$(key: string, at: number): Promise<Buffer | null>;
+
+    /**
      * Command: getSet
      * @see https://redis.io/commands/getSet
+     * @deprecated since v6.2.0
      */
     getSet(key: string, value: string): Promise<string | null>;
 
     /**
      * Command: getSet
      * @see https://redis.io/commands/getSet
+     * @deprecated since v6.2.0
      */
     getSet$(key: string, value: Buffer): Promise<Buffer | null>;
 

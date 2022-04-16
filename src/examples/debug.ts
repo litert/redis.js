@@ -41,6 +41,23 @@ function sleep(ms: number): Promise<void> {
     // await cli.auth("hello");
     await cli.flushAll();
 
+    await cli.set('getex-test', 'hello');
+
+    console.log(await cli.getEx('getex-test', 1000));
+    console.log(await cli.ttl('getex-test'));
+
+    await cli.getPEx('getex-test', 1000);
+    console.log(await cli.pTTL('getex-test'));
+
+    await cli.getExAt('getex-test', Math.floor(Date.now() / 1000) + 30);
+    console.log(await cli.ttl('getex-test'));
+
+    await cli.getPExAt('getex-test', Date.now() + 1000);
+    console.log(await cli.pTTL('getex-test'));
+
+    await cli.getAndPersist('getex-test');
+    console.log(await cli.ttl('getex-test'));
+
     console.log(await cli.hRandField('aaaa', 1));
 
     console.log(await cli.hRandField('aaaa', 2));
@@ -78,16 +95,17 @@ function sleep(ms: number): Promise<void> {
 
     await sleep(2000);
 
-    let x = cli.set('a', '333');
+    const x = cli.set('a', '333');
 
     console.log('SET ->', await x);
     console.log('LPUSH ->', await cli.lPush('lll', ['a', 'b']));
     console.log('LINDEX ->', await cli.lIndex('lll', 1));
     console.log('LRANGE ->', await cli.lRange('lll', 0, -1));
-    console.log('HMSET->', await cli.hMSet('ggg', {
+    console.log('HMSET->');
+    await cli.hMSet('ggg', {
         'a': '3333',
         'bb': '1231232131'
-    }));
+    });
     console.log('HMGET->', await cli.hMGet('ggg', ['bb', 'a']));
     console.log('INCR->', await cli.incr('a'));
     console.log('PUBSUBCHANNELS->', await cli.pubSubChannels());
@@ -99,52 +117,57 @@ function sleep(ms: number): Promise<void> {
 
     await sleep(2000);
 
-    const pipeline = await cli.multi();
+    const multiTrx = await cli.multi();
 
     // Multi Mode
-    await pipeline.multi();
-    await pipeline.get('a');
+    await multiTrx.multi();
+    await multiTrx.get('a');
 
-    await pipeline.set('ccc', 'g');
+    await multiTrx.set('ccc', 'g');
 
-    await pipeline.mGet(['a', 'ccc']);
+    await multiTrx.mGet(['a', 'ccc']);
 
-    await pipeline.hSet('h', 'name', 'Mick');
-    await pipeline.hMSet('h', {
+    await multiTrx.hSet('h', 'name', 'Mick');
+    await multiTrx.hMSet('h', {
         'age': 123,
         'title': 'Mr.'
     });
 
-    await pipeline.hMGet('h', ['age', 'title']);
-    await pipeline.hGetAll('h');
-    console.log(JSON.stringify(await pipeline.scan(0), null, 2));
+    await multiTrx.hMGet('h', ['age', 'title']);
+    await multiTrx.hGetAll('h');
+    await multiTrx.scan(0);
+    // console.log(JSON.stringify(await multiTrx.scan(0), null, 2));
 
-    await pipeline.incr('a', 123);
+    await multiTrx.incr('a', 123);
 
-    await pipeline.command('HGETALL', ['h']);
+    await multiTrx.command('HGETALL', ['h']);
 
-    console.log(JSON.stringify(await pipeline.exec(), null, 2));
+    console.log(JSON.stringify(await multiTrx.exec(), null, 2));
+
+    await multiTrx.close();
+
+    const pipeline = await cli.pipeline();
 
     // Pipeline Mode
-    await pipeline.get('a');
+    pipeline.get('a');
 
-    await pipeline.set('ccc', 'g');
+    pipeline.set('ccc', 'g');
 
-    await pipeline.mGet(['a', 'ccc']);
+    pipeline.mGet(['a', 'ccc']);
 
-    await pipeline.hSet('h', 'name', 'Mick');
-    await pipeline.hMSet('h', {
+    pipeline.hSet('h', 'name', 'Mick');
+    pipeline.hMSet('h', {
         'age': 123,
         'title': 'Mr.'
     });
 
-    await pipeline.hMGet('h', ['age', 'title']);
-    await pipeline.hGetAll('h');
-    console.log(JSON.stringify(await pipeline.scan(0), null, 2));
+    pipeline.hMGet('h', ['age', 'title']);
+    pipeline.hGetAll('h');
+    pipeline.scan(0);
 
-    await pipeline.incr('a', 123);
+    pipeline.incr('a', 123);
 
-    await pipeline.command('HGETALL', ['h']);
+    // pipeline.command('HGETALL', ['h']);
 
     console.log(JSON.stringify(await pipeline.exec(), null, 2));
 
@@ -153,4 +176,4 @@ function sleep(ms: number): Promise<void> {
     await cli.close();
     await sub.close();
 
-})().catch((e) => console.error(e));
+})().catch(console.error);

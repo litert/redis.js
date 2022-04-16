@@ -4,6 +4,7 @@
 
 - feat(command): added command `HRANDFILED` supports.
 - feat(command): added `count` param of command `R/LPOP`.
+- feat(command): added command `GETEX` supports.
 
 ## v1.2.3
 

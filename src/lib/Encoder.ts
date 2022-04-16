@@ -26,7 +26,7 @@ export class Encoder implements A.IEncoder {
 
     protected _getStringEncodedLength(val: string | Buffer): number {
 
-        let l = Buffer.byteLength(val);
+        const l = Buffer.byteLength(val);
 
         return 5 + l + l.toString().length;
     }
@@ -65,8 +65,6 @@ export class Encoder implements A.IEncoder {
 
     public encodeCommand(cmd: string | Buffer, values?: Array<string | Buffer | number>): Buffer {
 
-        let ret: Buffer;
-
         let length: number = 3;
 
         if (values) {
@@ -81,7 +79,7 @@ export class Encoder implements A.IEncoder {
 
             length += (1 + values.length).toString().length;
 
-            for (let el of values) {
+            for (const el of values) {
 
                 length += this._getStringEncodedLength(el as string);
             }
@@ -93,7 +91,7 @@ export class Encoder implements A.IEncoder {
 
         length += this._getStringEncodedLength(cmd);
 
-        ret = Buffer.allocUnsafe(length);
+        const ret = Buffer.allocUnsafe(length);
 
         let pos: number = 0;
 
@@ -112,7 +110,7 @@ export class Encoder implements A.IEncoder {
 
         if (values) {
 
-            for (let el of values) {
+            for (const el of values) {
 
                 pos = this._writeString(
                     ret,
@@ -127,7 +125,7 @@ export class Encoder implements A.IEncoder {
 
     public encodeString(data: string | Buffer): Buffer {
 
-        let ret = Buffer.allocUnsafe(this._getStringEncodedLength(data));
+        const ret = Buffer.allocUnsafe(this._getStringEncodedLength(data));
 
         this._writeString(ret, data, 0);
 
@@ -136,7 +134,6 @@ export class Encoder implements A.IEncoder {
 
     public encodeMessage(data: string | Buffer): Buffer {
 
-        // @ts-ignore
         if (data.indexOf(PROTO_DELIMITER_VALUE) > -1) {
 
             throw new E.E_PROTOCOL_ERROR({
@@ -144,9 +141,9 @@ export class Encoder implements A.IEncoder {
             });
         }
 
-        let length = Buffer.byteLength(data);
+        const length = Buffer.byteLength(data);
 
-        let ret = Buffer.allocUnsafe(length + 3);
+        const ret = Buffer.allocUnsafe(length + 3);
 
         ret[0] = 43;
 
@@ -173,9 +170,9 @@ export class Encoder implements A.IEncoder {
             });
         }
 
-        let length = Buffer.byteLength(data);
+        const length = Buffer.byteLength(data);
 
-        let ret = Buffer.allocUnsafe(length + 3);
+        const ret = Buffer.allocUnsafe(length + 3);
 
         ret[0] = 45;
 
@@ -195,11 +192,11 @@ export class Encoder implements A.IEncoder {
 
     public encodeInteger(val: number): Buffer {
 
-        let data = val.toString();
+        const data = val.toString();
 
-        let len = Buffer.byteLength(data);
+        const len = Buffer.byteLength(data);
 
-        let ret = Buffer.allocUnsafe(3 + len);
+        const ret = Buffer.allocUnsafe(3 + len);
 
         ret[0] = 58;
 
@@ -212,12 +209,12 @@ export class Encoder implements A.IEncoder {
 
     public encodeList(data: A.ListItem[]): Buffer {
 
-        let ret: Buffer[] = [
+        const ret: Buffer[] = [
             Buffer.from(`*${data.length}`),
             PROTO_DELIMITER
         ];
 
-        for (let item of data) {
+        for (const item of data) {
 
             switch (item[0]) {
                 case A.EDataType.FAILURE:
@@ -234,6 +231,9 @@ export class Encoder implements A.IEncoder {
                     break;
                 case A.EDataType.LIST:
                     ret.push(this.encodeList(item[1]));
+                    break;
+                case A.EDataType.NULL:
+                    ret.push(this.encodeNull());
                     break;
             }
         }

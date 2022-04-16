@@ -50,4 +50,4 @@ import * as Redis from '../lib';
 
     await cli.close();
 
-})().catch((e) => console.error(e));
+})().catch((e) => { console.error(e); });

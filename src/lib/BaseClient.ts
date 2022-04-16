@@ -39,7 +39,7 @@ export abstract class BaseClient
 
                     if (e) {
 
-                        return callback(e);
+                        callback(e); return;
                     }
 
                     super._onConnected(callback);
@@ -48,21 +48,21 @@ export abstract class BaseClient
                 return;
             }
 
-            return super._onConnected(callback);
+            super._onConnected(callback); return;
         }
 
         this._send('AUTH', [this._password], (err: any): void => {
 
             if (err) {
 
-                return callback(err);
+                callback(err); return;
             }
 
             this._send('SELECT', [this._db], (err2: any): void => {
 
                 if (err2) {
 
-                    return callback(err2);
+                    callback(err2); return;
                 }
 
                 super._onConnected(callback);

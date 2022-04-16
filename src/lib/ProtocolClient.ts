@@ -36,18 +36,28 @@ interface IPendingQueueItem extends IQueueItem {
 function wrapPromise<TR = any, TW = any>(
     process: (cb: C.ICallbackA<TR, TW>) => void,
     callback?: C.ICallbackA<TR, TW>,
-): Promise<any> | void {
+): Promise<any> | undefined {
 
     if (callback) {
 
         process(callback);
+        return undefined;
     }
     else {
 
         return new Promise(
-            (resolve, reject) => process(
-                (e: any, r?: any) => e ? reject(e) : resolve(r)
-            )
+            (resolve, reject) => {
+                process(
+                    (e: any, r?: any) => {
+                        if (e) {
+                            reject(e);
+                        }
+                        else {
+                            resolve(r);
+                        }
+                    }
+                );
+            }
         );
     }
 }
@@ -68,15 +78,15 @@ export class ProtocolClient
 
     private _sendingQueue: IQueueItem[] = [];
 
-    private _decoder: C.IDecoder;
+    private readonly _decoder: C.IDecoder;
 
-    private _encoder: C.IEncoder;
+    private readonly _encoder: C.IEncoder;
 
     private _ready: boolean = false;
 
-    private _subscribeMode: boolean;
+    private readonly _subscribeMode: boolean;
 
-    private _pipelineMode: boolean;
+    private readonly _pipelineMode: boolean;
 
     public readonly host: string;
 
@@ -112,7 +122,7 @@ export class ProtocolClient
 
             this._decoder.on('data', (type, data): void => {
 
-                const it = this._executingQueue.shift() as IQueueItem;
+                const it = this._executingQueue.shift()!;
 
                 switch (type) {
                     case C.EDataType.FAILURE:
@@ -201,7 +211,7 @@ export class ProtocolClient
 
             this._decoder.on('data', (type, data): void => {
 
-                const cb = this._executingQueue.shift() as IQueueItem;
+                const cb = this._executingQueue.shift()!;
 
                 switch (type) {
                     case C.EDataType.FAILURE:
@@ -269,7 +279,7 @@ export class ProtocolClient
 
         this._pendingQueue = [];
 
-        for (let x of queue) {
+        for (const x of queue) {
 
             if (this._socket.writable) {
 
@@ -277,7 +287,17 @@ export class ProtocolClient
 
                 this._socket.write(
                     x.data,
-                    (e) => e ? callback(e) : this._executingQueue.push(this._sendingQueue.shift() as any)
+                    (e) => {
+
+                        if (e) {
+
+                            callback(e);
+                        }
+                        else {
+
+                            this._executingQueue.push(this._sendingQueue.shift() as any);
+                        }
+                    }
                 );
             }
         }
@@ -310,7 +330,7 @@ export class ProtocolClient
 
         this._status = C.EClientStatus.CONNECTING;
 
-        // @ts-ignore
+        // @ts-expect-error
         this._socket.__uuid = ++this._uuidCounter;
 
         this._timeoutLocked = false;
@@ -325,7 +345,7 @@ export class ProtocolClient
 
         this._socket.on('connect', () => {
 
-            // @ts-ignore
+            // @ts-expect-error
             if (this._socket.__uuid !== this._uuidCounter) {
 
                 return;
@@ -357,7 +377,7 @@ export class ProtocolClient
         })
             .on('error', (e: any) => {
 
-                // @ts-ignore
+                // @ts-expect-error
                 if (this._socket.__uuid !== this._uuidCounter) {
 
                     return;
@@ -367,7 +387,7 @@ export class ProtocolClient
             })
             .on('close', () => {
 
-                // @ts-ignore
+                // @ts-expect-error
                 if (this._socket.__uuid !== this._uuidCounter) {
 
                     return;
@@ -380,7 +400,7 @@ export class ProtocolClient
                     return;
                 }
 
-                for (let x of this._sendingQueue) {
+                for (const x of this._sendingQueue) {
 
                     try {
 
@@ -392,7 +412,7 @@ export class ProtocolClient
                     }
                 }
 
-                for (let x of this._executingQueue) {
+                for (const x of this._executingQueue) {
 
                     try {
 
@@ -522,7 +542,7 @@ export class ProtocolClient
                 !this._socket?.writable
             ) {
 
-                this._pendingQueue.push({data, callback, count: 1, result: []});
+                this._pendingQueue.push({ data, callback, count: 1, result: [] });
             }
             else {
 
@@ -562,7 +582,7 @@ export class ProtocolClient
                 !this._socket?.writable
             ) {
 
-                this._pendingQueue.push({data, callback, count: cmds.length, result: []});
+                this._pendingQueue.push({ data, callback, count: cmds.length, result: [] });
             }
             else {
 

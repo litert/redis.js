@@ -41,7 +41,7 @@ export class SubscriberClient
 
             if (e) {
 
-                return callback(e);
+                callback(e); return;
             }
 
             (async () => {
@@ -60,7 +60,7 @@ export class SubscriberClient
                 }
                 catch (e) {
 
-                    return callback(new E.E_SUBSCRIBE_FAILURE({ metadata: { origin: e } }));
+                    callback(new E.E_SUBSCRIBE_FAILURE({ metadata: { origin: e } })); return;
                 }
 
                 callback();
@@ -71,7 +71,7 @@ export class SubscriberClient
 
     public async subscribe(channels: string | string[]): Promise<void> {
 
-        let cs: string[] = [];
+        const cs: string[] = [];
 
         if (!Array.isArray(channels)) {
 
@@ -100,7 +100,7 @@ export class SubscriberClient
 
         await this.command('SUBSCRIBE', cs);
 
-        for (let c of cs) {
+        for (const c of cs) {
 
             this._channels[c] = true;
         }
@@ -108,7 +108,7 @@ export class SubscriberClient
 
     public async unsubscribe(channels: string | string[]): Promise<void> {
 
-        let cs: string[] = [];
+        const cs: string[] = [];
 
         if (!Array.isArray(channels)) {
 
@@ -137,7 +137,7 @@ export class SubscriberClient
 
         await this.command('UNSUBSCRIBE', cs);
 
-        for (let c of cs) {
+        for (const c of cs) {
 
             delete this._channels[c];
         }
@@ -145,7 +145,7 @@ export class SubscriberClient
 
     public async pSubscribe(patterns: string | string[]): Promise<void> {
 
-        let ps: string[] = [];
+        const ps: string[] = [];
 
         if (!Array.isArray(patterns)) {
 
@@ -174,7 +174,7 @@ export class SubscriberClient
 
         await this.command('PSUBSCRIBE', ps);
 
-        for (let p of ps) {
+        for (const p of ps) {
 
             this._patterns[p] = true;
         }
@@ -182,7 +182,7 @@ export class SubscriberClient
 
     public async pUnsubscribe(patterns: string | string[]): Promise<void> {
 
-        let ps: string[] = [];
+        const ps: string[] = [];
 
         if (!Array.isArray(patterns)) {
 
@@ -211,7 +211,7 @@ export class SubscriberClient
 
         await this.command('PUNSUBSCRIBE', ps);
 
-        for (let p of ps) {
+        for (const p of ps) {
 
             delete this._patterns[p];
         }

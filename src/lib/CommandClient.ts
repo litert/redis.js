@@ -25,9 +25,9 @@ export class CommandClient
     extends BaseClient
     implements C.ICommandClientBase {
 
-    private _createDecoder: C.TDecoderFactory;
+    private readonly _createDecoder: C.TDecoderFactory;
 
-    private _createEncoder: C.TEncoderFactory;
+    private readonly _createEncoder: C.TEncoderFactory;
 
     public constructor(opts: C.IClientOptions) {
 

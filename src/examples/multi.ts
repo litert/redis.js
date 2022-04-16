@@ -40,7 +40,7 @@ import * as Redis from '../lib';
 
     await multi.hMGet('h', ['age', 'title']);
     await multi.hGetAll('h');
-    console.log(JSON.stringify(await multi.scan(0), null, 2));
+    await multi.scan(0);
 
     await multi.incr('a', 123);
 
@@ -52,4 +52,4 @@ import * as Redis from '../lib';
 
     await cli.close();
 
-})().catch((e) => console.error(e));
+})().catch((e) => { console.error(e); });

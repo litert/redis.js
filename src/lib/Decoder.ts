@@ -71,7 +71,9 @@ class DecodeContext {
      */
     public status: EDecodeStatus;
 
-    public data: Record<string, any>;
+    public data: {
+        length: number;
+    };
 
     public value: any;
 
@@ -84,7 +86,7 @@ class DecodeContext {
         pos: number = 0
     ) {
 
-        this.data = {};
+        this.data = {} as any;
         this.status = status;
         this.pos = pos;
     }
@@ -330,9 +332,9 @@ export class Decoder
 
     private _pop(end: number): void {
 
-        let context = this._ctx;
+        const context = this._ctx;
 
-        this._ctx = this._contextStack.pop() as DecodeContext;
+        this._ctx = this._contextStack.pop()!;
 
         if (this._ctx.status === EDecodeStatus.READING_LIST) {
 

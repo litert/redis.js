@@ -26,7 +26,7 @@ export function buffer2String(data: Buffer): string {
 
 export function pairList2BufferDict(data: Array<[number, Buffer]>): Record<string, Buffer> {
 
-    let ret: Record<string, Buffer> = {};
+    const ret: Record<string, Buffer> = {};
 
     if (!data) {
 
@@ -43,7 +43,7 @@ export function pairList2BufferDict(data: Array<[number, Buffer]>): Record<strin
 
 export function pairList2NullableBufferDict(data: Array<[number, Buffer]>): Record<string, Buffer | null> {
 
-    let ret: Record<string, Buffer | null> = {};
+    const ret: Record<string, Buffer | null> = {};
 
     if (!data) {
 
@@ -60,7 +60,7 @@ export function pairList2NullableBufferDict(data: Array<[number, Buffer]>): Reco
 
 export function pairList2StringDict(data: Array<[number, Buffer]>): Record<string, string> {
 
-    let ret: Record<string, string> = {};
+    const ret: Record<string, string> = {};
 
     if (!data) {
 
@@ -77,7 +77,7 @@ export function pairList2StringDict(data: Array<[number, Buffer]>): Record<strin
 
 export function pairList2NullableStringDict(data: Array<[number, Buffer]>): Record<string, string | null> {
 
-    let ret: Record<string, string | null> = {};
+    const ret: Record<string, string | null> = {};
 
     if (!data) {
 
@@ -94,7 +94,7 @@ export function pairList2NullableStringDict(data: Array<[number, Buffer]>): Reco
 
 export function list2NullableBufferDict(keys: string[], data: Array<[number, Buffer]>): Record<string, Buffer | null> {
 
-    let ret: Record<string, Buffer | null> = {};
+    const ret: Record<string, Buffer | null> = {};
 
     for (let i = 0; i < data.length; i++) {
 
@@ -106,7 +106,7 @@ export function list2NullableBufferDict(keys: string[], data: Array<[number, Buf
 
 export function list2NullableStringDict(keys: string[], data: Array<[number, Buffer]>): Record<string, string | null> {
 
-    let ret: Record<string, string | null> = {};
+    const ret: Record<string, string | null> = {};
 
     for (let i = 0; i < data.length; i++) {
 

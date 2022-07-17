@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import * as $Exceptions from '@litert/exception';
 export const errorRegistry = $Exceptions.createExceptionRegistry({
     'module': 'redis.litert.org',
     'types': {
-        'public': {
+        'redis': {
             'index': $Exceptions.createIncreaseCodeIndex(1)
         }
     }
@@ -29,68 +29,68 @@ export const E_PROTOCOL_ERROR = errorRegistry.register({
     name: 'protocol_error',
     message: 'Malformed data received from remote server.',
     metadata: {},
-    type: 'public'
-});
-
-export const E_CAN_NOT_CONNECT = errorRegistry.register({
-    name: 'can_not_connect',
-    message: 'Can not connect to remote server.',
-    metadata: {},
-    type: 'public'
+    type: 'redis'
 });
 
 export const E_COMMAND_FAILURE = errorRegistry.register({
     name: 'command_failure',
     message: 'Recieved a failure response of command execution from remote server.',
     metadata: {},
-    type: 'public'
+    type: 'redis'
 });
 
 export const E_CONN_LOST = errorRegistry.register({
     name: 'conn_lost',
     message: 'Lost the connection to remote server.',
     metadata: {},
-    type: 'public'
+    type: 'redis'
 });
 
-export const E_NO_CONN = errorRegistry.register({
-    name: 'no_conn',
-    message: 'The connection is not ready yet.',
+export const E_CONNECT_FAILED = errorRegistry.register({
+    name: 'connect_failed',
+    message: 'Failed to connect to Redis server.',
     metadata: {},
-    type: 'public'
+    type: 'redis'
 });
 
-export const E_SUBSCRIBE_FAILURE = errorRegistry.register({
-    name: 'subscribe_failure',
-    message: 'Failed to subscribe subjects.',
+export const E_COMMAND_QUEUE_FULL = errorRegistry.register({
+    name: 'command_queue_full',
+    message: 'The queue of commands is full.',
     metadata: {},
-    type: 'public'
+    type: 'redis'
 });
 
 export const E_PIPELINING = errorRegistry.register({
     name: 'pipelining',
     message: 'Some commands queued in pipeline, can not use MULTI.',
     metadata: {},
-    type: 'public'
+    type: 'redis'
 });
 
-export const E_REQUEST_TIMEOUT = errorRegistry.register({
-    name: 'request_timeout',
-    message: 'There was no response for commands sent in time .',
+export const E_COMMAND_TIMEOUT = errorRegistry.register({
+    name: 'command_timeout',
+    message: 'There was no response for commands in time .',
     metadata: {},
-    type: 'public'
+    type: 'redis'
+});
+
+export const E_CONNECT_TIMEOUT = errorRegistry.register({
+    name: 'connect_timeout',
+    message: 'Timeout while connecting to server.',
+    metadata: {},
+    type: 'redis'
 });
 
 export const E_INVALID_PARAM = errorRegistry.register({
     name: 'invalid_param',
     message: 'The parameters passed to the command is unacceptable.',
     metadata: {},
-    type: 'public'
+    type: 'redis'
 });
 
 export const E_NOT_MULTI_MODE = errorRegistry.register({
     name: 'not_multi_mode',
     message: 'The client is not under multi mode, please call multi method first.',
     metadata: {},
-    type: 'public'
+    type: 'redis'
 });

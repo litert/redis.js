@@ -1,5 +1,20 @@
 # Changes Logs
 
+## v2.0.0
+
+- fix(connection): refactored connection management
+
+    - Not use internal reconnection anymore. Instead, if a connection dead, redis.js will try
+    reconnect only when a command requested. *Except for subscriber clients.*
+    - Disabled command timeout **by default**.
+
+- fix(protocol): fixed empty list like `*-1<CR><LF>`.
+- fix(command): fixed command `MOVE`.
+- feat(command): added command `COPY` supports.
+- feat(command): added command `SWAPDB` supports.
+- feat(command): added command `TIME` supports with methods `time`, `secTime`, `msTime`, `usTime`.
+- feat(command): added ACL user supports to command `AUTH`.
+
 ## v1.2.4
 
 - feat(command): added command `HRANDFILED` supports.

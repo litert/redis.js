@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,56 +16,74 @@
 
 import * as C from './Common';
 import * as E from './Errors';
-import { BaseClient } from './BaseClient';
+import { ProtocolClient } from './ProtocolClient';
 
 export class SubscriberClient
-    extends BaseClient
+    extends ProtocolClient
     implements C.ISubscriberClient {
 
-    private _channels: Record<string, boolean> = {};
+    private readonly _channels: Record<string, boolean> = {};
 
-    private _patterns: Record<string, boolean> = {};
+    private readonly _patterns: Record<string, boolean> = {};
+
+    private _closed: boolean = false;
 
     public constructor(opts: C.IClientOptions) {
 
         super({
-            pipelineMode: false,
-            subscribeMode: true,
+            mode: C.EClientMode.SUBSCRIBER,
             ...opts
         });
-    }
 
-    protected _onConnected(callback: C.ICallbackA): void {
+        this.on('ready', () => {
 
-        super._onConnected((e: unknown): void => {
-
-            if (e) {
-
-                callback(e); return;
+            if (this._closed) {
+                this.close();
+                return;
             }
+
+            this._closed = false;
 
             (async () => {
 
-                try {
+                if (Object.keys(this._channels).length) {
 
-                    if (Object.keys(this._channels).length) {
-
-                        await this._send('SUBSCRIBE', Object.keys(this._channels));
-                    }
-
-                    if (Object.keys(this._patterns).length) {
-
-                        await this._send('PSUBSCRIBE', Object.keys(this._patterns));
-                    }
-                }
-                catch (e) {
-
-                    callback(new E.E_SUBSCRIBE_FAILURE({ metadata: { origin: e } })); return;
+                    await this._command('SUBSCRIBE', Object.keys(this._channels));
                 }
 
-                callback();
+                if (Object.keys(this._patterns).length) {
 
-            })().catch(() => null);
+                    await this._command('PSUBSCRIBE', Object.keys(this._patterns));
+                }
+
+            })().catch((e) => {
+
+                this.emit('error', e);
+
+                if (this._closed) {
+
+                    this.close();
+                }
+            });
+        }).on('close', () => {
+
+            if (!this._closed) {
+
+                this._tryReconnect();
+            }
+        });
+    }
+
+    private _tryReconnect(t: number = 0): void {
+
+        this.connect((e) => {
+
+            if (e && !this._closed) {
+
+                setTimeout(() => {
+                    this._tryReconnect(t + 1);
+                }, t);
+            }
         });
     }
 
@@ -215,5 +233,11 @@ export class SubscriberClient
 
             delete this._patterns[p];
         }
+    }
+
+    public close(cb?: C.ICallbackA<void>): any {
+
+        this._closed = true;
+        super.close(cb);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,6 @@ export type TResponseType<
 
 export interface IProtocolClientEvents extends Events.ICallbackDefinitions {
 
-    aborted(e: unknown): void;
-
     ready(): void;
 
     close(): void;
@@ -42,31 +40,24 @@ export interface ICallbackA<TR = any, TE = any> {
     (err: null, result: TR): void;
 }
 
-export enum EClientStatus {
-
-    IDLE,
-    READY,
-    CONNECTING,
-    CLOSING
-}
-
 /**
  * The client only provides the basic connection and communication over Redis
  * protocol.
  */
 export interface IProtocolClient extends Events.IObservable<IProtocolClientEvents> {
 
-    readonly status: EClientStatus;
-
     /**
-     * Start a connection to remote server..
+     * Start a connection to remote server.
+     *
+     * > This method is not required anymore, since the command request will always try connecting
+     * > to Redis server when there is no available socket.
      */
     connect(): Promise<void>;
 
     connect(callback: ICallbackA<void>): void;
 
     /**
-     * Close the connection to remote server..
+     * Close the connection to remote server.
      */
     close(): Promise<void>;
 
@@ -204,13 +195,49 @@ export interface ICommandAPIs {
      * Command: auth
      * @see https://redis.io/commands/auth
      */
-    auth(password: string): Promise<void>;
+    auth(password: string, username?: string): Promise<void>;
 
     /**
      * Command: ping
      * @see https://redis.io/commands/ping
      */
     ping(text?: string): Promise<string>;
+
+    /**
+     * Command: time
+     *
+     * > Return Redis server in 2 parts of seconds and microseconds.
+     *
+     * @see https://redis.io/commands/time
+     */
+    time(): Promise<Record<'secPart' | 'usPart', number>>;
+
+    /**
+     * Command: time
+     *
+     * > Return Redis server time as milliseconds.
+     *
+     * @see https://redis.io/commands/time
+     */
+    msTime(): Promise<number>;
+
+    /**
+     * Command: time
+     *
+     * > Return Redis server time as seconds.
+     *
+     * @see https://redis.io/commands/time
+     */
+    secTime(): Promise<number>;
+
+    /**
+     * Command: time
+     *
+     * > Return Redis server time as microseconds.
+     *
+     * @see https://redis.io/commands/time
+     */
+    usTime(): Promise<number>;
 
     /**
      * Command: incr
@@ -465,6 +492,21 @@ export interface ICommandAPIs {
      * @see https://redis.io/commands/move
      */
     move(key: string, db: number): Promise<boolean>;
+
+    /**
+     * Command: swapdb
+     * @see https://redis.io/commands/swapdb
+     */
+    swapDB(dbA: number, dbB: number): Promise<boolean>;
+
+    /**
+     * Command: swapdb
+     * @see https://redis.io/commands/swapdb
+     *
+     * @param destDB    Specify an alternate destination db instead of db selected by current connection.
+     * @param overwrite Overwrite existing destination key. [Default: false]
+     */
+    copy(srcKey: string, destKey: string, destDB?: number | null, overwrite?: boolean): Promise<boolean>;
 
     /**
      * Command: randomKey
@@ -1225,7 +1267,7 @@ export interface ISubscriberClient extends IProtocolClient {
      * Command: auth
      * @see https://redis.io/commands/auth
      */
-    auth(password: string): Promise<void>;
+    auth(password: string, username?: string): Promise<void>;
 
     /**
      * Command: subscribe
@@ -1258,32 +1300,64 @@ export type TDecoderFactory = () => IDecoder;
 
 export interface IClientOptions {
 
-    host: string;
+    /**
+     * The hostname of Redis server.
+     *
+     * @default '127.0.0.1'
+     */
+    'host': string;
 
-    port: number;
+    /**
+     * The port of Redis server.
+     *
+     * @default 6379
+     */
+    'port': number;
 
-    encoderFactory: TEncoderFactory;
+    'encoderFactory': TEncoderFactory;
 
-    decoderFactory: TDecoderFactory;
+    'decoderFactory': TDecoderFactory;
 
     /**
      * The timeout for connecting to server.
      *
      * @default 5000ms
      */
-    connectTimeout: number;
+    'connectTimeout': number;
 
     /**
-     * How long will a command request timeout.
+     * How many milliseconds will a command request be timeout after sent.
      *
-     * @default 3000ms
+     * > Set to 0 to disable timeout.
+     *
+     * @default 0
      */
-    commandTimeout: number;
+    'commandTimeout': number;
+
+    /**
+     * How many commands could be queued.
+     *
+     * > Set to 0 if queue size is unlimited.
+     *
+     * @default 1048576
+     */
+    'queueSize': number;
+
+    /**
+     * What to do if queue is full.
+     *
+     * @default 'error'
+     */
+    'actionOnQueueFull': 'kill' | 'error';
+}
+
+export enum EClientMode {
+    SIMPLE,
+    SUBSCRIBER,
+    PIPELINE,
 }
 
 export interface IProtocolClientOptions extends IClientOptions {
 
-    subscribeMode: boolean;
-
-    pipelineMode: boolean;
+    'mode': EClientMode;
 }

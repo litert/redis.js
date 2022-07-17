@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import * as C from './Common';
 import * as CMD from './Commands';
-import { BaseClient } from './BaseClient';
 import { PipelineClient } from './PipelineClient';
 import { MultiClient } from './WatchClient';
+import { ProtocolClient } from './ProtocolClient';
 
 export class CommandClient
-    extends BaseClient
+    extends ProtocolClient
     implements C.ICommandClientBase {
 
     private readonly _createDecoder: C.TDecoderFactory;
@@ -32,8 +32,7 @@ export class CommandClient
     public constructor(opts: C.IClientOptions) {
 
         super({
-            subscribeMode: false,
-            pipelineMode: false,
+            mode: C.EClientMode.SIMPLE,
             ...opts
         });
 
@@ -44,19 +43,21 @@ export class CommandClient
     public async pipeline(): Promise<C.IPipelineClient> {
 
         const cli = new PipelineClient({
-            host: this.host,
-            port: this.port,
-            decoderFactory: this._createDecoder,
-            encoderFactory: this._createEncoder,
-            commandTimeout: this._commandTimeout,
-            connectTimeout: this._connectTimeout
+            'host': this.host,
+            'port': this.port,
+            'decoderFactory': this._createDecoder,
+            'encoderFactory': this._createEncoder,
+            'commandTimeout': this._cfg.commandTimeout,
+            'connectTimeout': this._cfg.connectTimeout,
+            'queueSize': this._cfg.queueSize,
+            'actionOnQueueFull': this._cfg.actionOnQueueFull,
         }) as any as C.IPipelineClient;
 
         await cli.connect();
 
-        if (this._password) {
+        if (this._passwd) {
 
-            await cli.auth(this._password);
+            await cli.auth(this._passwd, this._aclUser);
         }
 
         if (this._db) {
@@ -70,19 +71,21 @@ export class CommandClient
     public async multi(): Promise<C.IMultiClient> {
 
         const cli = new MultiClient({
-            host: this.host,
-            port: this.port,
-            decoderFactory: this._createDecoder,
-            encoderFactory: this._createEncoder,
-            commandTimeout: this._commandTimeout,
-            connectTimeout: this._connectTimeout
+            'host': this.host,
+            'port': this.port,
+            'decoderFactory': this._createDecoder,
+            'encoderFactory': this._createEncoder,
+            'commandTimeout': this._cfg.commandTimeout,
+            'connectTimeout': this._cfg.connectTimeout,
+            'queueSize': this._cfg.queueSize,
+            'actionOnQueueFull': this._cfg.actionOnQueueFull,
         }) as any as C.IMultiClient;
 
         await cli.connect();
 
-        if (this._password) {
+        if (this._passwd) {
 
-            await cli.auth(this._password);
+            await cli.auth(this._passwd, this._aclUser);
         }
 
         if (this._db) {
@@ -123,10 +126,10 @@ export class CommandClient
 
         c.prototype[name] = (new Function(
             'process',
-            'prepare',
+            'command',
             `return async function(...args) {
 
-                const req = prepare(...args);
+                const req = command(...args);
 
                 ${process}
             };`

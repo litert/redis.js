@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -639,7 +639,48 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/move
      */
     'move': {
-        prepare: createDefaultPreparer('EXISTS'),
+        prepare: createDefaultPreparer('MOVE'),
+        process: isIntegerOne
+    },
+
+    /**
+     * Command: swapdb
+     * @see https://redis.io/commands/swapdb
+     */
+    'swapDB': {
+        prepare: createDefaultPreparer('SWAPDB'),
+        process: isStringOK
+    },
+
+    /**
+     * Command: copy
+     * @see https://redis.io/commands/copy
+     */
+    'copy': {
+        prepare(
+            srcKey: string,
+            destKey: string,
+            destDB: number | null = null,
+            overwrite: boolean = false
+        ): IPrepareResult {
+
+            const ret: IPrepareResult = {
+                cmd: 'COPY',
+                args: [srcKey, destKey]
+            };
+
+            if (destDB !== null) {
+
+                ret.args.push('DB', destDB);
+            }
+
+            if (overwrite) {
+
+                ret.args.push('REPLACE');
+            }
+
+            return ret;
+        },
         process: isIntegerOne
     },
 
@@ -2237,6 +2278,78 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 cmd: 'EVAL',
                 args: [script, keys.length, ...keys, ...args]
             };
+        }
+    },
+
+    /**
+     * Command: time
+     * @see https://redis.io/commands/time
+     */
+    'time': {
+        prepare(): IPrepareResult {
+
+            return {
+                cmd: 'TIME',
+                args: []
+            };
+        },
+        process(data: [[number, Buffer], [number, Buffer]]): any {
+
+            return { s: parseInt(data[0][1].toString()), us: parseInt(data[1][1].toString()),  };
+        }
+    },
+
+    /**
+     * Command: time
+     * @see https://redis.io/commands/time
+     */
+    'msTime': {
+        prepare(): IPrepareResult {
+
+            return {
+                cmd: 'TIME',
+                args: []
+            };
+        },
+        process(data: [[number, Buffer], [number, Buffer]]): number {
+
+            return parseInt(data[0][1].toString()) * 1_000 + Math.floor(parseInt(data[1][1].toString()) / 1000);
+        }
+    },
+
+    /**
+     * Command: time
+     * @see https://redis.io/commands/time
+     */
+    'secTime': {
+        prepare(): IPrepareResult {
+
+            return {
+                cmd: 'TIME',
+                args: []
+            };
+        },
+        process(data: [[number, Buffer], [number, Buffer]]): number {
+
+            return parseInt(data[0][1].toString());
+        }
+    },
+
+    /**
+     * Command: time
+     * @see https://redis.io/commands/time
+     */
+    'usTime': {
+        prepare(): IPrepareResult {
+
+            return {
+                cmd: 'TIME',
+                args: []
+            };
+        },
+        process(data: [[number, Buffer], [number, Buffer]]): number {
+
+            return parseInt(data[0][1].toString()) * 1_000_000 + parseInt(data[1][1].toString());
         }
     },
 

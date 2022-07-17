@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ import { Decoder } from './Decoder';
 import { Encoder } from './Encoder';
 import { ProtocolClient } from './ProtocolClient';
 import { CommandClient } from './CommandClient';
-import { PipelineClient } from './PipelineClient';
 import { SubscriberClient } from './Subscriber';
 import * as C from './Common';
 import * as Constants from './Constants';
@@ -33,43 +32,56 @@ export function createEncoder(): C.IEncoder {
     return new Encoder();
 }
 
+/**
+ * Create a standard command client to Redis server.
+ *
+ * @param {C.IClientOptions} opts   The options of client.
+ *
+ * @see C.ICommandClient
+ */
 export function createCommandClient(opts: Partial<C.IClientOptions>): C.ICommandClient {
 
     return new CommandClient({
-        host: opts.host ?? Constants.DEFUALT_HOST,
-        port: opts.port ?? Constants.DEFUALT_PORT,
-        decoderFactory: opts.decoderFactory ?? createDecoder,
-        encoderFactory: opts.encoderFactory ?? createEncoder,
-        commandTimeout: opts.commandTimeout === undefined ? Constants.DEFAULT_COMMAND_TIMEOUT : opts.commandTimeout,
-        connectTimeout: opts.connectTimeout === undefined ? Constants.DEFAULT_CONNECT_TIMEOUT : opts.connectTimeout
+        'host': opts.host ?? Constants.DEFUALT_HOST,
+        'port': opts.port ?? Constants.DEFUALT_PORT,
+        'decoderFactory': opts.decoderFactory ?? createDecoder,
+        'encoderFactory': opts.encoderFactory ?? createEncoder,
+        'commandTimeout': opts.commandTimeout ?? Constants.DEFAULT_COMMAND_TIMEOUT,
+        'connectTimeout': opts.connectTimeout ?? Constants.DEFAULT_CONNECT_TIMEOUT,
+        'queueSize': opts.queueSize ?? Constants.DEFAULT_QUEUE_SIZE,
+        'actionOnQueueFull': opts.actionOnQueueFull ?? Constants.DEFAULT_ACTION_ON_QUEUE_FULL,
     }) as any as C.ICommandClient;
 }
 
-export function createPipelineClient(opts: Partial<C.IClientOptions>): C.IPipelineClient {
-
-    return new PipelineClient({
-        host: opts.host ?? Constants.DEFUALT_HOST,
-        port: opts.port ?? Constants.DEFUALT_PORT,
-        decoderFactory: opts.decoderFactory ?? createDecoder,
-        encoderFactory: opts.encoderFactory ?? createEncoder,
-        commandTimeout: opts.commandTimeout === undefined ? Constants.DEFAULT_COMMAND_TIMEOUT : opts.commandTimeout,
-        connectTimeout: opts.connectTimeout === undefined ? Constants.DEFAULT_CONNECT_TIMEOUT : opts.connectTimeout
-    }) as any as C.IPipelineClient;
-}
-
+/**
+ * Create a pure protocol client to Redis server.
+ *
+ * @param {C.IProtocolClientOptions} opts   The options of client.
+ *
+ * @see C.IProtocolClient
+ */
 export function createProtocolClient(opts: C.IProtocolClientOptions): C.IProtocolClient {
 
     return new ProtocolClient(opts);
 }
 
+/**
+ * Create a subscriber client to Redis server.
+ *
+ * @param {C.IClientOptions} opts   The options of client.
+ *
+ * @see C.ISubscriberClient
+ */
 export function createSubscriberClient(opts: Partial<C.IClientOptions>): C.ISubscriberClient {
 
     return new SubscriberClient({
-        host: opts.host ?? Constants.DEFUALT_HOST,
-        port: opts.port ?? Constants.DEFUALT_PORT,
-        decoderFactory: opts.decoderFactory ?? createDecoder,
-        encoderFactory: opts.encoderFactory ?? createEncoder,
-        commandTimeout: opts.commandTimeout === undefined ? Constants.DEFAULT_COMMAND_TIMEOUT : opts.commandTimeout,
-        connectTimeout: opts.connectTimeout === undefined ? Constants.DEFAULT_CONNECT_TIMEOUT : opts.connectTimeout
+        'host': opts.host ?? Constants.DEFUALT_HOST,
+        'port': opts.port ?? Constants.DEFUALT_PORT,
+        'decoderFactory': opts.decoderFactory ?? createDecoder,
+        'encoderFactory': opts.encoderFactory ?? createEncoder,
+        'commandTimeout': opts.commandTimeout ?? Constants.DEFAULT_COMMAND_TIMEOUT,
+        'connectTimeout': opts.connectTimeout ?? Constants.DEFAULT_CONNECT_TIMEOUT,
+        'queueSize': opts.queueSize ?? Constants.DEFAULT_QUEUE_SIZE,
+        'actionOnQueueFull': opts.actionOnQueueFull ?? Constants.DEFAULT_ACTION_ON_QUEUE_FULL,
     });
 }

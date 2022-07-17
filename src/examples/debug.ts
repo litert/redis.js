@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 import * as Redis from '../lib';
 
-function sleep(ms: number): Promise<void> {
+// function sleep(ms: number): Promise<void> {
 
-    return new Promise<void>((resolve) => setTimeout(resolve, ms));
-}
+//     return new Promise<void>((resolve) => setTimeout(resolve, ms));
+// }
 
 (async () => {
 
@@ -93,7 +93,7 @@ function sleep(ms: number): Promise<void> {
 
     console.log('EVAL ->', (await cli.evalSHA(SHA1, [], [])).toString());
 
-    await sleep(2000);
+    // await sleep(2000);
 
     const x = cli.set('a', '333');
 
@@ -115,7 +115,7 @@ function sleep(ms: number): Promise<void> {
     console.log('EXISTS->', await cli.exists('a'));
     console.log('MEXISTS->', await cli.mExists(['a', 'b', 'lll', 'x', 'y']));
 
-    await sleep(2000);
+    // await sleep(2000);
 
     const multiTrx = await cli.multi();
 

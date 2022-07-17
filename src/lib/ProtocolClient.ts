@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,127 +19,97 @@ import { Events } from '@litert/observable';
 import * as $Net from 'net';
 import * as E from './Errors';
 
+enum ERequestState {
+    PENDING,
+    DONE,
+    TIMEOUT,
+}
+
 interface IQueueItem {
 
     callback: C.ICallbackA;
 
-    count: number;
+    state: ERequestState;
+
+    timeout?: NodeJS.Timeout;
+}
+
+interface IQueueBatchItem extends IQueueItem {
+
+    /**
+     * How many command responses are expected.
+     */
+    expected: number;
 
     result: any[];
-}
-
-interface IPendingQueueItem extends IQueueItem {
-
-    data: Buffer;
-}
-
-function wrapPromise<TR = any, TW = any>(
-    process: (cb: C.ICallbackA<TR, TW>) => void,
-    callback?: C.ICallbackA<TR, TW>,
-): Promise<any> | undefined {
-
-    if (callback) {
-
-        process(callback);
-        return undefined;
-    }
-    else {
-
-        return new Promise(
-            (resolve, reject) => {
-                process(
-                    (e: any, r?: any) => {
-                        if (e) {
-                            reject(e);
-                        }
-                        else {
-                            resolve(r);
-                        }
-                    }
-                );
-            }
-        );
-    }
 }
 
 export class ProtocolClient
     extends Events.EventEmitter<C.IProtocolClientEvents>
     implements C.IProtocolClient {
 
-    private _socket!: $Net.Socket;
+    protected readonly _cfg: C.IProtocolClientOptions;
 
-    private _status: C.EClientStatus = C.EClientStatus.IDLE;
+    protected _aclUser!: string;
 
-    private _uuidCounter: number = 0;
+    protected _passwd!: string;
 
-    private _pendingQueue: IPendingQueueItem[] = [];
+    protected _db: number = 0;
+
+    private _ready: boolean = false;
 
     private _executingQueue: IQueueItem[] = [];
-
-    private _sendingQueue: IQueueItem[] = [];
 
     private readonly _decoder: C.IDecoder;
 
     private readonly _encoder: C.IEncoder;
 
-    private _ready: boolean = false;
+    public get host(): string {
 
-    private readonly _subscribeMode: boolean;
+        return this._cfg.host;
+    }
 
-    private readonly _pipelineMode: boolean;
+    public get port(): number {
 
-    public readonly host: string;
+        return this._cfg.port;
+    }
 
-    public readonly port: number;
+    private _socket: $Net.Socket | null = null;
 
-    protected _connectTimeout: number;
-
-    protected _commandTimeout: number;
-
-    private _timeoutLocked: boolean = false;
+    private _promise4Socket?: Promise<$Net.Socket>;
 
     public constructor(opts: C.IProtocolClientOptions) {
 
         super();
 
+        this._cfg = opts;
+
         this._decoder = opts.decoderFactory();
 
         this._encoder = opts.encoderFactory();
 
-        this._connectTimeout = opts.connectTimeout;
+        switch (this._cfg.mode) {
+            case C.EClientMode.SUBSCRIBER: {
 
-        this._commandTimeout = opts.commandTimeout;
+                this._decoder.on('data', (type, data): void => {
 
-        this._subscribeMode = opts.subscribeMode;
+                    const it = this._executingQueue.shift()!;
 
-        this._pipelineMode = opts.pipelineMode;
+                    if (it) {
 
-        this.host = opts.host;
+                        if (it.state !== ERequestState.PENDING) {
 
-        this.port = opts.port;
+                            return;
+                        }
 
-        if (this._subscribeMode) {
+                        if (it.timeout) {
 
-            this._decoder.on('data', (type, data): void => {
+                            clearTimeout(it.timeout);
+                        }
+                    }
 
-                const it = this._executingQueue.shift()!;
-
-                switch (type) {
-                    case C.EDataType.FAILURE:
-                        it.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
-                        break;
-                    case C.EDataType.INTEGER:
-                        it.callback(null, parseInt(data));
-                        break;
-                    case C.EDataType.MESSAGE:
-                        it.callback(null, data.toString());
-                        break;
-                    case C.EDataType.NULL:
-                        it.callback(null, null);
-                        break;
-                    case C.EDataType.LIST:
-
-                        if (this._subscribeMode) {
+                    switch (type) {
+                        case C.EDataType.LIST:
 
                             switch (data[0][1].toString()) {
                                 case 'message':
@@ -154,371 +124,383 @@ export class ProtocolClient
 
                                 default:
                             }
+
+                            it.callback(null, data);
+                            break;
+                        case C.EDataType.FAILURE:
+                            it.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
+                            break;
+                        case C.EDataType.INTEGER:
+                            it.callback(null, parseInt(data));
+                            break;
+                        case C.EDataType.MESSAGE:
+                            it.callback(null, data.toString());
+                            break;
+                        case C.EDataType.NULL:
+                            it.callback(null, null);
+                            break;
+                        case C.EDataType.STRING:
+                            it.callback(null, data);
+                            break;
+                    }
+                });
+                break;
+            }
+            case C.EClientMode.PIPELINE: {
+
+                this._decoder.on('data', (type, data): void => {
+
+                    const i = this._executingQueue[0] as IQueueBatchItem;
+
+                    if (!i.result) {
+
+                        this._executingQueue.shift();
+
+                        if (i.state !== ERequestState.PENDING) {
+
+                            return;
                         }
 
-                        it.callback(null, data);
-                        break;
+                        if (i.timeout) {
 
-                    case C.EDataType.STRING:
-                        it.callback(null, data);
-                        break;
-                }
+                            clearTimeout(i.timeout);
+                        }
 
-                if (!this._executingQueue.length && this._commandTimeout) {
+                        switch (type) {
+                            case C.EDataType.FAILURE:
+                                i.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
+                                break;
+                            case C.EDataType.INTEGER:
+                                i.callback(null, parseInt(data));
+                                break;
+                            case C.EDataType.MESSAGE:
+                                i.callback(null, data.toString());
+                                break;
+                            case C.EDataType.NULL:
+                                i.callback(null, null);
+                                break;
+                            case C.EDataType.LIST:
+                            case C.EDataType.STRING:
+                                i.callback(null, data);
+                                break;
+                        }
 
-                    this._socket.setTimeout(0);
-                }
-            });
+                        return;
+                    }
+
+                    const offset = i.result.length - i.expected--;
+
+                    switch (type) {
+                        case C.EDataType.FAILURE:
+                            i.result[offset] = new E.E_COMMAND_FAILURE({ 'message': data.toString() });
+                            break;
+                        case C.EDataType.INTEGER:
+                            i.result[offset] = parseInt(data);
+                            break;
+                        case C.EDataType.MESSAGE:
+                            i.result[offset] = data.toString();
+                            break;
+                        case C.EDataType.NULL:
+                            i.result[offset] = null;
+                            break;
+                        case C.EDataType.LIST:
+                        case C.EDataType.STRING:
+                            i.result[offset] = data;
+                            break;
+                    }
+
+                    if (!i.expected) {
+
+                        this._executingQueue.shift();
+
+                        if (i.state === ERequestState.PENDING) {
+
+                            i.callback(null, i.result);
+                            i.state = ERequestState.DONE;
+
+                            if (i.timeout) {
+
+                                clearTimeout(i.timeout);
+                            }
+                        }
+                    }
+                });
+                break;
+            }
+            case C.EClientMode.SIMPLE: {
+
+                this._decoder.on('data', (type, data): void => {
+
+                    const i = this._executingQueue.shift()!;
+
+                    if (i.state !== ERequestState.PENDING) {
+
+                        return;
+                    }
+
+                    if (i.timeout) {
+
+                        clearTimeout(i.timeout);
+                    }
+
+                    switch (type) {
+                        case C.EDataType.FAILURE:
+                            i.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
+                            break;
+                        case C.EDataType.INTEGER:
+                            i.callback(null, parseInt(data));
+                            break;
+                        case C.EDataType.MESSAGE:
+                            i.callback(null, data.toString());
+                            break;
+                        case C.EDataType.NULL:
+                            i.callback(null, null);
+                            break;
+                        case C.EDataType.LIST:
+                        case C.EDataType.STRING:
+                            i.callback(null, data);
+                            break;
+                    }
+
+                });
+                break;
+            }
         }
-        else if (this._pipelineMode) {
+    }
 
-            this._decoder.on('data', (type, data): void => {
+    /**
+     * Use an existing socket or create a new one.
+     */
+    protected async _getConnection(): Promise<$Net.Socket> {
 
-                const item = this._executingQueue[0];
+        if (this._socket) {
 
-                switch (type) {
-                    case C.EDataType.FAILURE:
-                        item.result.push(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
-                        break;
-                    case C.EDataType.INTEGER:
-                        item.result.push(parseInt(data));
-                        break;
-                    case C.EDataType.MESSAGE:
-                        item.result.push(data.toString());
-                        break;
-                    case C.EDataType.NULL:
-                        item.result.push(null);
-                        break;
-                    case C.EDataType.LIST:
-                    case C.EDataType.STRING:
-                        item.result.push(data);
-                        break;
+            return this._socket;
+        }
+
+        if (this._promise4Socket) {
+
+            return this._promise4Socket;
+        }
+
+        return this._promise4Socket = this._redisConnect();
+    }
+
+    private async _redisConnect(): Promise<$Net.Socket> {
+
+        try {
+
+            this._socket = (await this._netConnect(this.host, this.port, this._cfg.connectTimeout))
+                .on('close', () => {
+
+                    this._socket = null;
+                    this._ready = false;
+                    this._decoder.reset();
+
+                    const deadItems = this._executingQueue;
+
+                    this._executingQueue = [];
+
+                    /**
+                     * Reject all promises of pending commands.
+                     */
+                    for (const x of deadItems) {
+
+                        try {
+
+                            x.callback(new E.E_CONN_LOST());
+                        }
+                        catch (e) {
+
+                            this.emit('error', e);
+                        }
+                    }
+
+                    this.emit('close');
+                })
+                .on('error', (e: unknown) => {
+
+                    this.emit('error', e);
+                })
+                .on('data', (data) => this._decoder.update(data));
+
+            if (!this._ready) {
+
+                this._ready = true;
+
+                try {
+
+                    if (this._passwd) {
+
+                        await this.auth(this._passwd, this._aclUser);
+                    }
+
+                    if (this._db) {
+
+                        await this.select(this._db);
+                    }
+                }
+                catch (e) {
+
+                    this.close();
+
+                    throw e;
                 }
 
-                if (item.result.length === item.count) {
+                this.emit('ready');
+            }
 
-                    this._executingQueue.shift();
-                    item.callback(null, item.result);
-                }
+            return this._socket;
+        }
+        finally {
 
-                if (!this._executingQueue.length && this._commandTimeout) {
+            delete this._promise4Socket;
+        }
+    }
 
-                    this._socket.setTimeout(0);
-                }
-            });
+    public async auth(password: string, username?: string): Promise<void> {
+
+        if (username) {
+
+            await this._command('AUTH', [username, password]);
+
+            this._aclUser = username;
         }
         else {
 
-            this._decoder.on('data', (type, data): void => {
-
-                const cb = this._executingQueue.shift()!;
-
-                switch (type) {
-                    case C.EDataType.FAILURE:
-                        cb.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
-                        break;
-                    case C.EDataType.INTEGER:
-                        cb.callback(null, parseInt(data));
-                        break;
-                    case C.EDataType.MESSAGE:
-                        cb.callback(null, data.toString());
-                        break;
-                    case C.EDataType.NULL:
-                        cb.callback(null, null);
-                        break;
-                    case C.EDataType.LIST:
-                    case C.EDataType.STRING:
-                        cb.callback(null, data);
-                        break;
-                }
-
-                if (!this._executingQueue.length && this._commandTimeout) {
-
-                    this._socket.setTimeout(0);
-                }
-            });
+            await this._command('AUTH', [password]);
         }
 
+        this._passwd = password;
     }
 
-    public get status(): C.EClientStatus {
+    public async select(db: number): Promise<void> {
 
-        return this._status;
+        await this._command('SELECT', [db]);
+
+        this._db = db;
+    }
+
+    /**
+     * Create a network socket and make it connect to the server.
+     *
+     * @param {string} host     The host of server.
+     * @param {number} port     The port of server.
+     * @param {number} timeout  The timeout for the connecting to server.
+     * @returns {Promise<$Net.Socket>}
+     */
+    private _netConnect(
+        host: string,
+        port: number,
+        timeout: number
+    ): Promise<$Net.Socket> {
+
+        return new Promise<$Net.Socket>((resolve, reject) => {
+
+            const socket = new $Net.Socket();
+
+            socket.on('connect', () => {
+
+                // return a clean socket here
+                socket.removeAllListeners();
+                socket.setTimeout(0);
+                resolve(socket);
+            });
+
+            socket.on('error', (e) => {
+
+                reject(new E.E_CONNECT_FAILED({}, e));
+            });
+
+            socket.connect(port, host);
+
+            socket.setTimeout(timeout, () => {
+
+                socket.destroy(new E.E_CONNECT_TIMEOUT());
+            });
+        });
     }
 
     public connect(cb?: C.ICallbackA<void>): any {
 
-        return wrapPromise((callback): void => {
+        return this._unifyAsync(async (callback) => {
 
-            if (this._status === C.EClientStatus.READY) {
+            await this._getConnection();
 
-                callback();
-
-                return;
-            }
-
-            const helper = function(this: ProtocolClient): void {
-
-                this.removeListener('ready', callback);
-                this.removeListener('ready', helper);
-                this.removeListener('error', callback);
-                this.removeListener('error', helper);
-            };
-
-            this.once('ready', callback as any).once('ready', helper);
-            this.once('error', callback).once('error', helper);
-
-            this._connect();
+            callback(null);
 
         }, cb);
-    }
-
-    protected _onConnected(callback: C.ICallbackA): void {
-
-        const queue = this._pendingQueue;
-
-        this._pendingQueue = [];
-
-        for (const x of queue) {
-
-            if (this._socket.writable) {
-
-                this._sendingQueue.push(x);
-
-                this._socket.write(
-                    x.data,
-                    (e) => {
-
-                        if (e) {
-
-                            callback(e);
-                        }
-                        else {
-
-                            this._executingQueue.push(this._sendingQueue.shift() as any);
-                        }
-                    }
-                );
-            }
-        }
-
-        callback();
-    }
-
-    private _connect(): void {
-
-        switch (this._status) {
-
-            case C.EClientStatus.CLOSING:
-            case C.EClientStatus.IDLE:
-                break;
-            case C.EClientStatus.READY:
-            case C.EClientStatus.CONNECTING:
-
-                if (this._socket && this._ready) {
-
-                    break;
-                }
-
-                return;
-        }
-
-        this._socket = $Net.connect({
-            host: this.host,
-            port: this.port
-        });
-
-        this._status = C.EClientStatus.CONNECTING;
-
-        // @ts-expect-error
-        this._socket.__uuid = ++this._uuidCounter;
-
-        this._timeoutLocked = false;
-
-        if (this._connectTimeout) {
-
-            this._socket.setTimeout(
-                this._connectTimeout,
-                () => this._socket.destroy(new E.E_REQUEST_TIMEOUT())
-            );
-        }
-
-        this._socket.on('connect', () => {
-
-            // @ts-expect-error
-            if (this._socket.__uuid !== this._uuidCounter) {
-
-                return;
-            }
-
-            this._socket.setTimeout(0);
-
-            this._decoder.reset();
-
-            this._socket.on('data', (data) => this._decoder.update(data));
-
-            this._ready = true;
-
-            this._onConnected((err: unknown): void => {
-
-                if (err) {
-
-                    this.emit('error', err);
-
-                    this._socket.destroy();
-
-                    return;
-                }
-
-                this._status = C.EClientStatus.READY;
-
-                this.emit('ready');
-            });
-        })
-            .on('error', (e: any) => {
-
-                // @ts-expect-error
-                if (this._socket.__uuid !== this._uuidCounter) {
-
-                    return;
-                }
-
-                this.emit('error', e);
-            })
-            .on('close', () => {
-
-                // @ts-expect-error
-                if (this._socket.__uuid !== this._uuidCounter) {
-
-                    return;
-                }
-
-                if (!this._ready) {
-
-                    this.emit('close');
-
-                    return;
-                }
-
-                for (const x of this._sendingQueue) {
-
-                    try {
-
-                        x.callback(new E.E_CONN_LOST());
-                    }
-                    catch (e) {
-
-                        this.emit('error', e);
-                    }
-                }
-
-                for (const x of this._executingQueue) {
-
-                    try {
-
-                        x.callback(new E.E_CONN_LOST());
-                    }
-                    catch (e) {
-
-                        this.emit('error', e);
-                    }
-                }
-
-                this._sendingQueue = [];
-                this._executingQueue = [];
-
-                switch (this._status) {
-                    case C.EClientStatus.IDLE:
-                    case C.EClientStatus.CLOSING:
-                        this._status = C.EClientStatus.IDLE;
-                        this.emit('close');
-                        break;
-                    case C.EClientStatus.READY:
-                        this._status = C.EClientStatus.CONNECTING;
-                    // eslint-disable-next-line no-fallthrough
-                    case C.EClientStatus.CONNECTING:
-                        this.emit('abort');
-                        this._connect();
-                        break;
-                }
-            });
     }
 
     public close(cb?: C.ICallbackA<void>): any {
 
-        return wrapPromise((callback): void => {
+        if (this._socket) {
 
-            if (this._status === C.EClientStatus.IDLE) {
+            this._socket.end();
 
-                callback();
-                return;
+            if (cb) {
+
+                this.once('close', cb);
             }
+        }
+        else {
 
-            this.once('close', callback as any);
-
-            this._close();
-
-        }, cb);
-    }
-
-    private _close(): void {
-
-        this._ready = false;
-
-        switch (this._status) {
-
-            case C.EClientStatus.IDLE:
-            case C.EClientStatus.CLOSING:
-                break;
-            case C.EClientStatus.CONNECTING:
-            case C.EClientStatus.READY:
-                this._socket.end();
-                this._status = C.EClientStatus.CLOSING;
-                break;
+            cb?.();
         }
     }
 
-    protected _send(cmd: string, args: any[], cb?: C.ICallbackA): any {
+    /**
+     * Make async process same in both callback and promise styles.
+     * @param fn    The body of async process
+     * @param cb    The omitable callback function if not promise style.
+     * @returns     Return a promise if cb is not provided.
+     */
+    private _unifyAsync(fn: (resolve: C.ICallbackA) => Promise<any>, cb?: C.ICallbackA): Promise<any> | undefined {
 
-        return wrapPromise((callback): void => {
+        if (cb) {
 
-            const data = this._encoder.encodeCommand(cmd, args);
+            try {
 
-            this._sendingQueue.push({ callback, count: 1, result: [] });
+                fn(cb).catch(cb);
+            }
+            catch (e) {
 
-            this._socket.write(
-                data,
-                (e) => {
+                /**
+                 * fn() itself may throw an error if not an async function.
+                 */
+                cb(e);
+            }
 
-                    if (e) {
-                        callback(e);
-                    }
-                    else {
-                        this._executingQueue.push(this._sendingQueue.shift() as any);
-                        this._setTimeout();
-                    }
+            return;
+        }
+        else {
+
+            return new Promise((resolve, reject) => {
+
+                try {
+
+                    fn((e, v?) => {
+
+                        if (e) {
+
+                            reject(e);
+                        }
+                        else {
+
+                            resolve(v);
+                        }
+
+                    }).catch(reject);
                 }
-            );
+                catch (e) {
 
-        }, cb);
-    }
-
-    protected _sendOnly(cmd: string, args: any[]): Promise<void> {
-
-        return new Promise((resolve, reject) => this._socket.write(
-            this._encoder.encodeCommand(cmd, args),
-            (e) => {
-
-                if (e) {
+                    /**
+                     * fn() itself may throw an error if not an async function.
+                     */
                     reject(e);
                 }
-                else {
-
-                    this._setTimeout();
-                    resolve();
-                }
-            }
-        ));
+            });
+        }
     }
 
     public command(cmd: string, args: any[], cb?: C.ICallbackA): any {
@@ -526,41 +508,77 @@ export class ProtocolClient
         return this._command(cmd, args, cb);
     }
 
-    protected _command(cmd: string, args: any[], cb?: C.ICallbackA): any {
+    protected async _write2Socket(data: Buffer, socket?: $Net.Socket): Promise<void> {
 
-        if (this._status === C.EClientStatus.IDLE) {
+        if (!socket) {
 
-            throw new E.E_NO_CONN();
+            socket = await this._getConnection();
         }
 
-        return wrapPromise((callback): void => {
+        return new Promise<void>((resolve, reject) => {
+
+            socket!.write(data, (e) => {
+
+                if (e) {
+
+                    reject(e);
+                }
+                else {
+
+                    resolve();
+                }
+            });
+        });
+    }
+
+    protected _checkQueueSize(): void {
+
+        if (this._cfg.queueSize && this._executingQueue.length >= this._cfg.queueSize) {
+
+            if (this._cfg.actionOnQueueFull === 'error') {
+
+                throw new E.E_COMMAND_QUEUE_FULL();
+            }
+
+            this._socket!.destroy(new E.E_COMMAND_QUEUE_FULL());
+        }
+    }
+
+    protected _command(cmd: string, args: any[], cb?: C.ICallbackA): any {
+
+        return this._unifyAsync(async (callback) => {
+
+            this._checkQueueSize();
 
             const data = this._encoder.encodeCommand(cmd, args);
 
-            if (
-                this._status !== C.EClientStatus.READY ||
-                !this._socket?.writable
-            ) {
+            const handle: IQueueItem = {
+                callback,
+                state: ERequestState.PENDING,
+            };
 
-                this._pendingQueue.push({ data, callback, count: 1, result: [] });
-            }
-            else {
+            await this._write2Socket(data);
 
-                this._sendingQueue.push({ callback, count: 1, result: [] });
+            this._executingQueue.push(handle);
 
-                this._socket.write(
-                    data,
-                    (e) => {
+            if (this._cfg.commandTimeout > 0) {
 
-                        if (e) {
-                            callback(e);
-                        }
-                        else {
-                            this._executingQueue.push(this._sendingQueue.shift() as any);
-                            this._setTimeout();
-                        }
+                handle.timeout = setTimeout(() => {
+
+                    switch (handle.state) {
+                        case ERequestState.PENDING:
+                            handle.state = ERequestState.TIMEOUT;
+                            handle.callback(new E.E_COMMAND_TIMEOUT({
+                                mode: 'mono', cmd, argsQty: args.length
+                            }));
+                            break;
+                        case ERequestState.DONE:
+                        case ERequestState.TIMEOUT:
+                        default:
+                            break;
                     }
-                );
+
+                }, this._cfg.commandTimeout);
             }
 
         }, cb);
@@ -568,50 +586,82 @@ export class ProtocolClient
 
     protected _bulkCommands(cmds: Array<{ cmd: string; args: any[]; }>, cb?: C.ICallbackA): any {
 
-        if (this._status === C.EClientStatus.IDLE) {
+        return this._unifyAsync(async (callback) => {
 
-            throw new E.E_NO_CONN();
-        }
+            this._checkQueueSize();
 
-        return wrapPromise((callback): void => {
+            const handle: IQueueBatchItem = {
+                callback,
+                expected: cmds.length,
+                state: ERequestState.PENDING,
+                result: new Array(cmds.length),
+            };
+
+            this._executingQueue.push(handle);
+
+            if (this._cfg.commandTimeout > 0) {
+
+                handle.timeout = setTimeout(() => {
+
+                    switch (handle.state) {
+                        case ERequestState.PENDING:
+                            handle.state = ERequestState.TIMEOUT;
+                            handle.callback(new E.E_COMMAND_TIMEOUT({
+                                mode: 'bulk', cmdQty: handle.expected
+                            }));
+                            break;
+                        case ERequestState.DONE:
+                        case ERequestState.TIMEOUT:
+                        default:
+                            break;
+                    }
+
+                }, this._cfg.commandTimeout);
+            }
 
             const data = Buffer.concat(cmds.map((x) => this._encoder.encodeCommand(x.cmd, x.args)));
 
-            if (
-                this._status !== C.EClientStatus.READY ||
-                !this._socket?.writable
-            ) {
-
-                this._pendingQueue.push({ data, callback, count: cmds.length, result: [] });
-            }
-            else {
-
-                this._sendingQueue.push({ callback, count: cmds.length, result: [] });
-
-                this._socket.write(
-                    data,
-                    (e) => {
-
-                        if (e) {
-                            callback(e);
-                        }
-                        else {
-                            this._executingQueue.push(this._sendingQueue.shift() as any);
-                            this._setTimeout();
-                        }
-                    }
-                );
-            }
+            await this._write2Socket(data);
 
         }, cb);
     }
 
-    private _setTimeout(): void {
+    protected async _commitExec(qty: number): Promise<any> {
 
-        if (this._commandTimeout && !this._timeoutLocked) {
+        return this._unifyAsync(async (callback) => {
 
-            this._timeoutLocked = true;
-            this._socket.setTimeout(this._commandTimeout, () => this._socket.destroy(new E.E_REQUEST_TIMEOUT()));
-        }
+            const data = this._encoder.encodeCommand('EXEC', []);
+
+            const handle: IQueueBatchItem = {
+                callback,
+                expected: qty,
+                state: ERequestState.PENDING,
+                result: [],
+            };
+
+            await this._write2Socket(data);
+
+            this._executingQueue.push(handle);
+
+            if (this._cfg.commandTimeout > 0) {
+
+                handle.timeout = setTimeout(() => {
+
+                    switch (handle.state) {
+                        case ERequestState.PENDING:
+                            handle.state = ERequestState.TIMEOUT;
+                            handle.callback(new E.E_COMMAND_TIMEOUT({
+                                mode: 'bulk', cmdQty: handle.expected
+                            }));
+                            break;
+                        case ERequestState.DONE:
+                        case ERequestState.TIMEOUT:
+                        default:
+                            break;
+                    }
+
+                }, this._cfg.commandTimeout);
+            }
+        });
     }
 }

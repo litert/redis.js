@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 import * as C from './Common';
 import * as E from './Errors';
 import * as CMD from './Commands';
-import { BaseClient } from './BaseClient';
+import { ProtocolClient } from './ProtocolClient';
 
 interface IQueueItem {
 
@@ -30,7 +30,7 @@ interface IQueueItem {
 }
 
 export class MultiClient
-    extends BaseClient
+    extends ProtocolClient
     implements C.IMultiClientBase {
 
     private _queue: IQueueItem[];
@@ -40,12 +40,17 @@ export class MultiClient
     public constructor(opts: C.IClientOptions) {
 
         super({
-            pipelineMode: true,
-            subscribeMode: false,
+            mode: C.EClientMode.SIMPLE,
             ...opts
         });
 
         this._queue = [];
+
+        this.on('close', () => {
+
+            this._multi = false;
+            this._queue = [];
+        });
     }
 
     public async watch(keys: string[]): Promise<void> {
@@ -94,7 +99,7 @@ export class MultiClient
 
         if (this._multi) {
 
-            const [data] = await this._command('EXEC', []) as Array<[number, any]>;
+            const data = await this.command('EXEC', []);
 
             this._multi = false;
 
@@ -170,26 +175,28 @@ export class MultiClient
             continue;
         }
 
+        const cmd = CMD.COMMANDS[name];
+
         c.prototype[name] = (new Function(
             'process',
-            'prepare',
+            'command',
             'E',
             `return function(...args) {
 
-                const req = prepare(...args);
+                const req = command(...args);
 
                 if (!this._multi) {
 
                     throw new E.E_NOT_MULTI_MODE();
                 }
 
-                let ret = this._command(req.cmd, req.args);
+                const ret = this._command(req.cmd, req.args);
 
                 this._queue.push({ args: req.args, process: process, cmd: req.cmd });
 
                 return ret;
             };`
-        ))(CMD.COMMANDS[name].process, CMD.COMMANDS[name].prepare, E);
+        ))(cmd.process, cmd.prepare, E);
     }
 
 })(MultiClient);

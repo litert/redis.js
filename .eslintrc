@@ -147,7 +147,8 @@
         "require-await": "off",
         "@typescript-eslint/require-await": ["error"],
         "@typescript-eslint/restrict-plus-operands": ["error", {
-            "checkCompoundAssignments": true
+            "checkCompoundAssignments": true,
+            "allowAny": true
         }],
         "@typescript-eslint/unified-signatures": ["error"],
         "semi": "off",

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,10 @@ export const DEFUALT_PORT = 6379;
 
 export const DEFUALT_HOST = '127.0.0.1';
 
-export const DEFAULT_COMMAND_TIMEOUT = 3000;
+export const DEFAULT_COMMAND_TIMEOUT = 0;
 
-export const DEFAULT_CONNECT_TIMEOUT = 5000;
+export const DEFAULT_CONNECT_TIMEOUT = 30_000;
+
+export const DEFAULT_QUEUE_SIZE = 1024 * 1024;
+
+export const DEFAULT_ACTION_ON_QUEUE_FULL = 'error';

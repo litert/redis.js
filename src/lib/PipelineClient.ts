@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Angus.Fenying <fenying@litert.org>
+ * Copyright 2022 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import * as C from './Common';
 import * as CMD from './Commands';
-import { BaseClient } from './BaseClient';
+import { ProtocolClient } from './ProtocolClient';
 
 interface IQueueItem {
 
@@ -29,7 +29,7 @@ interface IQueueItem {
 }
 
 export class PipelineClient
-    extends BaseClient
+    extends ProtocolClient
     implements C.IPipelineClientBase {
 
     private _queue: IQueueItem[];
@@ -37,8 +37,7 @@ export class PipelineClient
     public constructor(opts: C.IClientOptions) {
 
         super({
-            pipelineMode: true,
-            subscribeMode: false,
+            mode: C.EClientMode.PIPELINE,
             ...opts
         });
 
@@ -67,19 +66,19 @@ export class PipelineClient
 
         for (let i = 0; i < queue.length; i++) {
 
-            const qi = queue[i];
+            const item = queue[i];
 
-            if (qi.process === undefined) {
+            if (item.process === undefined) {
 
                 ret[i] = data[i];
             }
-            else if (qi.process === null) {
+            else if (item.process === null) {
 
                 ret[i] = null;
             }
             else {
 
-                ret[i] = qi.process(data[i], qi.args);
+                ret[i] = item.process(data[i], item.args);
             }
         }
 
@@ -105,16 +104,18 @@ export class PipelineClient
             continue;
         }
 
+        const cmd = CMD.COMMANDS[name];
+
         c.prototype[name] = (new Function(
             'process',
-            'prepare',
+            'command',
             `return function(...args) {
 
-                const req = prepare(...args);
+                const req = command(...args);
 
                 this._queue.push({ args: req.args, process: process, cmd: req.cmd });
             };`
-        ))(CMD.COMMANDS[name].process, CMD.COMMANDS[name].prepare);
+        ))(cmd.process, cmd.prepare);
     }
 
 })(PipelineClient);

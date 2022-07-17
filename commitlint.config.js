@@ -13,6 +13,7 @@ module.exports = {
             'client',
             'pipeline',
             'subscriber',
+            'protocol',
             'lint',
             'docs',
             'deps',

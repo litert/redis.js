@@ -65,9 +65,9 @@ export class MultiClient
 
     public async multi(): Promise<void> {
 
-        if (!this._multi && this._queue.length) {
+        if (this._multi) {
 
-            throw new E.E_PIPELINING();
+            return;
         }
 
         await this._command('multi', []);
@@ -77,7 +77,10 @@ export class MultiClient
 
     public async discard(): Promise<void> {
 
-        await this._command('discard', []);
+        if (this._multi) {
+
+            await this._command('discard', []);
+        }
 
         this._queue = [];
 
@@ -86,8 +89,14 @@ export class MultiClient
 
     public async exec(): Promise<any> {
 
+        if (!this._multi) {
+
+            throw new E.E_NOT_MULTI_MODE();
+        }
+
         if (!this._queue.length) {
 
+            await this.discard();
             return [];
         }
 
@@ -97,50 +106,25 @@ export class MultiClient
 
         const ret: any[] = new Array(queue.length);
 
-        if (this._multi) {
+        const data = await this.command('EXEC', []);
 
-            const data = await this.command('EXEC', []);
+        this._multi = false;
 
-            this._multi = false;
+        for (let i = 0; i < queue.length; i++) {
 
-            for (let i = 0; i < queue.length; i++) {
+            const qi = queue[i];
 
-                const qi = queue[i];
+            if (qi.process === undefined) {
 
-                if (qi.process === undefined) {
-
-                    ret[i] = data[i][1];
-                }
-                else if (qi.process === null) {
-
-                    ret[i] = null;
-                }
-                else {
-
-                    ret[i] = qi.process(data[i][1], qi.args);
-                }
+                ret[i] = data[i][1];
             }
-        }
-        else {
+            else if (qi.process === null) {
 
-            const data: any[] = await this._bulkCommands(queue);
+                ret[i] = null;
+            }
+            else {
 
-            for (let i = 0; i < queue.length; i++) {
-
-                const qi = queue[i];
-
-                if (qi.process === undefined) {
-
-                    ret[i] = data[i];
-                }
-                else if (qi.process === null) {
-
-                    ret[i] = null;
-                }
-                else {
-
-                    ret[i] = qi.process(data[i], qi.args);
-                }
+                ret[i] = qi.process(data[i][1], qi.args);
             }
         }
 
@@ -183,12 +167,12 @@ export class MultiClient
             'E',
             `return function(...args) {
 
-                const req = command(...args);
-
                 if (!this._multi) {
 
                     throw new E.E_NOT_MULTI_MODE();
                 }
+
+                const req = command(...args);
 
                 const ret = this._command(req.cmd, req.args);
 

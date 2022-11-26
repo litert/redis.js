@@ -76,10 +76,14 @@ import * as Redis from '../lib';
     console.log(await cli.hRandFieldWithValues$('aaaa', 2));
 
     await cli.rPush('list-test', ['1', '2', '3', '4', '5']);
-    console.log(await cli.rPop('list-test'));
-    console.log(await cli.rPop('list-test', 4));
-    console.log(await cli.rPop('list-test'));
-    console.log(await cli.rPop('list-test', 4));
+    console.log(await cli.lPop('list-test'));
+    console.log(await cli.lPop('list-test', 1));
+    console.log(await cli.lPop('list-test', 4));
+    console.log(await cli.lPop('list-test'));
+    console.log(await cli.lPop('list-test', 4));
+
+    await cli.close();
+    return;
 
     console.log('PING ->', await cli.ping(''));
     console.log('GET ->', await cli.set('a', '123'));

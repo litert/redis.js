@@ -60,7 +60,7 @@ export class Encoder implements A.IEncoder {
 
     public encodeNull(): Buffer {
 
-        return PROTO_NULL.slice();
+        return PROTO_NULL.subarray();
     }
 
     public encodeCommand(cmd: string | Buffer, values?: Array<string | Buffer | number>): Buffer {

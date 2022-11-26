@@ -1,6 +1,6 @@
 # Changes Logs
 
-## v2.0.0
+## v2.0.1
 
 - fix(connection): refactored connection management
 
@@ -9,6 +9,7 @@
     - Disabled command timeout **by default**.
 
 - fix(protocol): fixed empty list like `*-1<CR><LF>`.
+- fix(command): fixed command `LPOP`/`RPOP` with 2nd argument `count`.
 - fix(command): fixed command `MOVE`.
 - feat(command): added command `COPY` supports.
 - feat(command): added command `SWAPDB` supports.

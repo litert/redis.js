@@ -169,7 +169,7 @@ export class Decoder
 
                     if (end > -1) {
 
-                        this._ctx.value = this._buf.slice(
+                        this._ctx.value = this._buf.subarray(
                             this._ctx.pos,
                             end
                         );
@@ -192,7 +192,7 @@ export class Decoder
 
                     if (end > -1) {
 
-                        this._ctx.value = this._buf.slice(
+                        this._ctx.value = this._buf.subarray(
                             this._ctx.pos,
                             end
                         );
@@ -215,7 +215,7 @@ export class Decoder
 
                     if (end > -1) {
 
-                        this._ctx.value = parseInt(this._buf.slice(
+                        this._ctx.value = parseInt(this._buf.subarray(
                             this._ctx.pos,
                             end
                         ).toString());
@@ -240,7 +240,7 @@ export class Decoder
 
                         this._ctx.value = [];
 
-                        this._ctx.data.length = parseInt(this._buf.slice(
+                        this._ctx.data.length = parseInt(this._buf.subarray(
                             this._ctx.pos,
                             end
                         ).toString());
@@ -272,7 +272,7 @@ export class Decoder
 
                     if (end > -1) {
 
-                        this._ctx.data.length = parseInt(this._buf.slice(
+                        this._ctx.data.length = parseInt(this._buf.subarray(
                             this._ctx.pos,
                             end
                         ).toString());
@@ -302,7 +302,7 @@ export class Decoder
 
                     if (this._buf.length >= this._ctx.data.length + 2) {
 
-                        this._ctx.value = this._buf.slice(
+                        this._ctx.value = this._buf.subarray(
                             this._ctx.pos,
                             this._ctx.pos + this._ctx.data.length
                         );
@@ -364,7 +364,7 @@ export class Decoder
      */
     private _cut(end: number): void {
 
-        this._buf = this._buf.slice(end);
+        this._buf = this._buf.subarray(end);
         this._cursor = 0;
     }
 }

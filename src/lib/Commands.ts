@@ -1881,26 +1881,23 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/lPop
      */
     'lPop': {
-        prepare(key: string, count: number = 1): IPrepareResult {
+        prepare(key: string, count?: number): IPrepareResult {
 
             return {
-                args: [key, count],
+                args: count === undefined ? [key] : [key, count],
                 cmd: 'LPOP'
             };
         },
         process(data: any, args: any[]): string | null | string[] {
 
-            if (data === null) {
-
-                return args[1] !== '1' ? [] : null;
+            switch (data?.length ?? 0) {
+                case 0:
+                    return args[1] ? [] : null;
+                case 1:
+                    return args[1] ? [data[0][1].toString()] : data.toString();
+                default:
+                    return U.list2StringList(data);
             }
-
-            if (data.length === 1) {
-
-                return data[0][1].toString();
-            }
-
-            return U.list2StringList(data);
         }
     },
 
@@ -1909,26 +1906,23 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/lPop
      */
     'lPop$': {
-        prepare(key: string, count: number = 1): IPrepareResult {
+        prepare(key: string, count?: number): IPrepareResult {
 
             return {
-                args: [key, count],
+                args: count === undefined ? [key] : [key, count],
                 cmd: 'LPOP'
             };
         },
         process(data: any, args: any[]): Buffer | null | Buffer[] {
 
-            if (data === null) {
-
-                return null;
+            switch (data?.length ?? 0) {
+                case 0:
+                    return args[1] ? [] : null;
+                case 1:
+                    return args[1] ? [data[0][1]] : data;
+                default:
+                    return U.list2BufferList(data);
             }
-
-            if (data.length === 1) {
-
-                return args[1] !== '1' ? [] : null;
-            }
-
-            return U.list2BufferList(data);
         }
     },
 
@@ -2009,26 +2003,23 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/rPop
      */
     'rPop': {
-        prepare(key: string, count: number = 1): IPrepareResult {
+        prepare(key: string, count?: number): IPrepareResult {
 
             return {
-                args: [key, count],
+                args: count === undefined ? [key] : [key, count],
                 cmd: 'RPOP'
             };
         },
         process(data: any, args: any[]): string | null | string[] {
 
-            if (data === null) {
-
-                return args[1] !== '1' ? [] : null;
+            switch (data?.length ?? 0) {
+                case 0:
+                    return args[1] ? [] : null;
+                case 1:
+                    return args[1] ? [data[0][1].toString()] : data.toString();
+                default:
+                    return U.list2StringList(data);
             }
-
-            if (data.length === 1) {
-
-                return data[0][1].toString();
-            }
-
-            return U.list2StringList(data);
         }
     },
 
@@ -2037,26 +2028,23 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/rPop
      */
     'rPop$': {
-        prepare(key: string, count: number = 1): IPrepareResult {
+        prepare(key: string, count?: number): IPrepareResult {
 
             return {
-                args: [key, count],
+                args: count === undefined ? [key] : [key, count],
                 cmd: 'RPOP'
             };
         },
         process(data: any, args: any[]): Buffer | null | Buffer[] {
 
-            if (data === null) {
-
-                return null;
+            switch (data?.length ?? 0) {
+                case 0:
+                    return args[1] ? [] : null;
+                case 1:
+                    return args[1] ? [data[0][1]] : data;
+                default:
+                    return U.list2BufferList(data);
             }
-
-            if (data.length === 1) {
-
-                return args[1] !== '1' ? [] : null;
-            }
-
-            return U.list2BufferList(data);
         }
     },
 

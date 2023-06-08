@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v2.0.2
+
+- fix(command): fixed command `lpop` and `rpop`.
+
 ## v2.0.1
 
 - fix(connection): refactored connection management

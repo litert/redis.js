@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/src/examples/debug.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/{lib,examples}/*.js"
+                "${workspaceFolder}/**/*.js"
             ]
         },
         {
@@ -21,7 +21,7 @@
             "program": "${workspaceFolder}/src/examples/multi.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/{lib,examples}/*.js"
+                "${workspaceFolder}/**/*.js"
             ]
         },
         {
@@ -31,7 +31,7 @@
             "program": "${workspaceFolder}/src/examples/pipeline.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/{lib,examples}/*.js"
+                "${workspaceFolder}/**/*.js"
             ]
         },
         {
@@ -41,7 +41,7 @@
             "program": "${workspaceFolder}/src/examples/reconnection.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/{lib,examples}/*.js"
+                "${workspaceFolder}/**/*.js"
             ]
         }
     ]

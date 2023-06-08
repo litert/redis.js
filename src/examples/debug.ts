@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Angus.Fenying <fenying@litert.org>
+ * Copyright 2023 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,14 +75,22 @@ import * as Redis from '../lib';
     console.log(await cli.hRandFieldWithValues('aaaa', 2));
     console.log(await cli.hRandFieldWithValues$('aaaa', 2));
 
-    await cli.rPush('list-test', ['1', '2', '3', '4', '5']);
-    console.log(await cli.lPop('list-test'));
+    await cli.rPush('list-test', ['1', '2', '23', '345', '4567', '5']);
     console.log(await cli.lPop('list-test', 1));
+    console.log(await cli.lPop('list-test'));
     console.log(await cli.lPop('list-test', 4));
     console.log(await cli.lPop('list-test'));
     console.log(await cli.lPop('list-test', 4));
 
+    await cli.rPush('list-test', ['1', '2', '23', '345', '4567', '5']);
+    console.log(await cli.lPop$('list-test', 1));
+    console.log(await cli.lPop$('list-test'));
+    console.log(await cli.lPop$('list-test', 4));
+    console.log(await cli.lPop$('list-test'));
+    console.log(await cli.lPop$('list-test', 4));
+
     await cli.close();
+    await sub.close();
     return;
 
     console.log('PING ->', await cli.ping(''));

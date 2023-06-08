@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Angus.Fenying <fenying@litert.org>
+ * Copyright 2023 Angus.Fenying <fenying@litert.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1890,11 +1890,9 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         },
         process(data: any, args: any[]): string | null | string[] {
 
-            switch (data?.length ?? 0) {
-                case 0:
-                    return args[1] ? [] : null;
+            switch (args.length) {
                 case 1:
-                    return args[1] ? [data[0][1].toString()] : data.toString();
+                    return data?.toString() ?? null;
                 default:
                     return U.list2StringList(data);
             }
@@ -1915,11 +1913,9 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         },
         process(data: any, args: any[]): Buffer | null | Buffer[] {
 
-            switch (data?.length ?? 0) {
-                case 0:
-                    return args[1] ? [] : null;
+            switch (args.length) {
                 case 1:
-                    return args[1] ? [data[0][1]] : data;
+                    return data ?? null;
                 default:
                     return U.list2BufferList(data);
             }
@@ -2012,11 +2008,9 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         },
         process(data: any, args: any[]): string | null | string[] {
 
-            switch (data?.length ?? 0) {
-                case 0:
-                    return args[1] ? [] : null;
+            switch (args.length) {
                 case 1:
-                    return args[1] ? [data[0][1].toString()] : data.toString();
+                    return data?.toString() ?? null;
                 default:
                     return U.list2StringList(data);
             }
@@ -2037,11 +2031,9 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         },
         process(data: any, args: any[]): Buffer | null | Buffer[] {
 
-            switch (data?.length ?? 0) {
-                case 0:
-                    return args[1] ? [] : null;
+            switch (args.length) {
                 case 1:
-                    return args[1] ? [data[0][1]] : data;
+                    return data ?? null;
                 default:
                     return U.list2BufferList(data);
             }

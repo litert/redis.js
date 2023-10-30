@@ -17,7 +17,7 @@
 import * as C from './Common';
 import * as E from './Errors';
 import * as Constants from './Constants';
-import { Events } from '@litert/observable';
+import { EventEmitter } from 'node:events';
 
 import PROTO_DELIMITER = Constants.PROTO_DELIMITER;
 
@@ -92,9 +92,7 @@ class DecodeContext {
     }
 }
 
-export class Decoder
-    extends Events.EventEmitter<C.IDecoderEvents>
-    implements C.IDecoder {
+export class Decoder extends EventEmitter implements C.IDecoder {
 
     protected _buf!: Buffer;
 

@@ -1,6 +1,6 @@
 {
   "name": "@litert/redis",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "A redis protocol implement for Node.js.",
   "main": "./lib/index.js",
   "scripts": {
@@ -31,16 +31,13 @@
   "homepage": "https://github.com/litert/redis.js#readme",
   "types": "./lib/index.d.ts",
   "typings": "./lib/index.d.ts",
-  "dependencies": {
-    "@litert/observable": "^0.3.0"
-  },
   "devDependencies": {
-    "@commitlint/cli": "^17.0.3",
-    "@commitlint/config-conventional": "^17.0.3",
-    "@types/node": "^18.0.5",
-    "@litert/eslint-plugin-rules": "^0.1.0",
-    "husky": "^8.0.1",
-    "typescript": "^4.7.4"
+    "@commitlint/cli": "^18.2.0",
+    "@commitlint/config-conventional": "^18.1.0",
+    "@litert/eslint-plugin-rules": "^0.1.6",
+    "@types/node": "^20.8.9",
+    "husky": "^8.0.3",
+    "typescript": "^5.2.2"
   },
   "engines": {
     "node": ">=16.0.0"

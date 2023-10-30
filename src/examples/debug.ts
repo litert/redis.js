@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/* eslint-disable no-console */
 import * as Redis from '../lib';
 
 // function sleep(ms: number): Promise<void> {
@@ -42,6 +42,15 @@ import * as Redis from '../lib';
     await cli.flushAll();
 
     await cli.set('getex-test', 'hello');
+    try {
+
+        await cli.incr('getex-test');
+    }
+    catch (e) {
+
+        console.info('Expecting an error from redis server:');
+        console.error(e);
+    }
 
     console.log(await cli.getEx('getex-test', 1000));
     console.log(await cli.ttl('getex-test'));
@@ -89,9 +98,9 @@ import * as Redis from '../lib';
     console.log(await cli.lPop$('list-test'));
     console.log(await cli.lPop$('list-test', 4));
 
-    await cli.close();
-    await sub.close();
-    return;
+    // await cli.close();
+    // await sub.close();
+    // return;
 
     console.log('PING ->', await cli.ping(''));
     console.log('GET ->', await cli.set('a', '123'));

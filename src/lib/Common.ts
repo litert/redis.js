@@ -14,7 +14,154 @@
  * limitations under the License.
  */
 
-import { Events } from '@litert/observable';
+export type IFn<TArgs extends any[], TRet> = (...args: TArgs) => TRet;
+
+export type IVoidFn<TArgs extends any[]> = IFn<TArgs, void>;
+
+export type IfIsOfFn<T, TFn extends IFn<any[], any>, TTrue = T, TFalse = never> = T extends TFn ? TTrue : TFalse;
+
+export interface IEventListener<T extends IDefaultEvents> {
+
+    /**
+     * Register a listener for the given event.
+     *
+     * > Alias for `addListener()`.
+     *
+     * @param event         The event name.
+     * @param listener      The listener function.
+     */
+    on<TKey extends keyof T>(event: TKey, listener: IfIsOfFn<T[TKey], IVoidFn<any[]>>): this;
+
+    /**
+     * Register a listener for the given event.
+     *
+     * > Alias for `addListener()`.
+     *
+     * @param event         The event name.
+     * @param listener      The listener function.
+     */
+    on(event: string | symbol, listener: IVoidFn<any[]>): this;
+
+    /**
+     * Register a one-time listener for the given event.
+     *
+     * > The listener is invoked only the next time the event is fired, after which it is removed.
+     *
+     * @param event         The event name.
+     * @param listener      The listener function.
+     */
+    once<TKey extends keyof T>(event: TKey, listener: IfIsOfFn<T[TKey], IVoidFn<any[]>>): this;
+
+    /**
+     * Register a one-time listener for the given event.
+     *
+     * > The listener is invoked only the next time the event is fired, after which it is removed.
+     *
+     * @param event         The event name.
+     * @param listener      The listener function.
+     */
+    once(event: string | symbol, listener: IVoidFn<any[]>): this;
+
+    /**
+     * Register a listener for the given event.
+     *
+     * > Alias for `on()`.
+     *
+     * @param event         The event name.
+     * @param listener      The listener function.
+     */
+    addListener<TKey extends keyof T>(event: TKey, listener: IfIsOfFn<T[TKey], IVoidFn<any[]>>): this;
+
+    /**
+     * Register a listener for the given event.
+     *
+     * > Alias for `on()`.
+     *
+     * @param event         The event name.
+     * @param listener      The listener function.
+     */
+    addListener(event: string | symbol, listener: IVoidFn<any[]>): this;
+
+    /**
+     * Remove the given listener for the given event.
+     *
+     * > Alias for `off()`.
+     *
+     * @param event     The event name.
+     * @param listener  The listener function.
+     */
+    removeListener<TKey extends keyof T>(event: TKey, listener: IVoidFn<any[]>): this;
+
+    /**
+     * Remove the given listener for the given event.
+     *
+     * > Alias for `off()`.
+     *
+     * @param event     The event name.
+     * @param listener  The listener function.
+     */
+    removeListener(event: string | symbol, listener: IVoidFn<any[]>): this;
+
+    /**
+     * Remove the given listener for the given event.
+     *
+     * > Alias for `removeListener()`.
+     *
+     * @param event     The event name.
+     * @param listener  The listener function.
+     */
+    off<TKey extends keyof T>(event: TKey, listener: IVoidFn<any[]>): this;
+
+    /**
+     * Remove the given listener for the given event.
+     *
+     * > Alias for `removeListener()`.
+     *
+     * @param event     The event name.
+     * @param listener  The listener function.
+     */
+    off(event: string | symbol, listener: IVoidFn<any[]>): this;
+
+    /**
+     * Remove all listeners for the given event.
+     *
+     * @param event     The event name.
+     */
+    removeAllListeners(event: keyof T): this;
+
+    /**
+     * Remove all listeners for the given event.
+     *
+     * @param event     The event name.
+     */
+    removeAllListeners(event: string): this;
+
+    /**
+     * Return the number of listeners for the given event.
+     *
+     * @param event     The event name.
+     */
+    listenerCount(event: keyof T): number;
+
+    /**
+     * Return the number of listeners for the given event.
+     *
+     * @param event     The event name.
+     */
+    listenerCount(event: string): number;
+
+    /**
+     * Set the maximum number of listeners for the given event.
+     *
+     * @param n     The new value of maximum listeners number.
+     */
+    setMaxListeners(n: number): this;
+}
+
+export interface IDefaultEvents {
+
+    error(error: unknown): void;
+}
 
 export type TStringValue = string | Buffer;
 
@@ -26,7 +173,7 @@ export type TResponseType<
     T extends 'string' ? string | Buffer :
     T extends 'integer' ? number : string;
 
-export interface IProtocolClientEvents extends Events.ICallbackDefinitions {
+export interface IProtocolClientEvents extends IDefaultEvents {
 
     ready(): void;
 
@@ -44,7 +191,7 @@ export interface ICallbackA<TR = any, TE = any> {
  * The client only provides the basic connection and communication over Redis
  * protocol.
  */
-export interface IProtocolClient extends Events.IObservable<IProtocolClientEvents> {
+export interface IProtocolClient extends IEventListener<IProtocolClientEvents> {
 
     /**
      * Start a connection to remote server.
@@ -156,12 +303,12 @@ export interface IEncoder {
     encodeList(data: ListItem[]): Buffer;
 }
 
-export interface IDecoderEvents extends Events.ICallbackDefinitions {
+export interface IDecoderEvents extends IDefaultEvents {
 
     data(type: EDataType, data: any): void;
 }
 
-export interface IDecoder extends Events.IObservable<IDecoderEvents> {
+export interface IDecoder extends IEventListener<IDecoderEvents> {
 
     /**
      * Reset the decoder.

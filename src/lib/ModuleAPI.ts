@@ -42,8 +42,8 @@ export function createEncoder(): C.IEncoder {
 export function createCommandClient(opts: Partial<C.IClientOptions>): C.ICommandClient {
 
     return new CommandClient({
-        'host': opts.host ?? Constants.DEFUALT_HOST,
-        'port': opts.port ?? Constants.DEFUALT_PORT,
+        'host': opts.host ?? Constants.DEFAULT_HOST,
+        'port': opts.port ?? Constants.DEFAULT_PORT,
         'decoderFactory': opts.decoderFactory ?? createDecoder,
         'encoderFactory': opts.encoderFactory ?? createEncoder,
         'commandTimeout': opts.commandTimeout ?? Constants.DEFAULT_COMMAND_TIMEOUT,
@@ -75,8 +75,8 @@ export function createProtocolClient(opts: C.IProtocolClientOptions): C.IProtoco
 export function createSubscriberClient(opts: Partial<C.IClientOptions>): C.ISubscriberClient {
 
     return new SubscriberClient({
-        'host': opts.host ?? Constants.DEFUALT_HOST,
-        'port': opts.port ?? Constants.DEFUALT_PORT,
+        'host': opts.host ?? Constants.DEFAULT_HOST,
+        'port': opts.port ?? Constants.DEFAULT_PORT,
         'decoderFactory': opts.decoderFactory ?? createDecoder,
         'encoderFactory': opts.encoderFactory ?? createEncoder,
         'commandTimeout': opts.commandTimeout ?? Constants.DEFAULT_COMMAND_TIMEOUT,

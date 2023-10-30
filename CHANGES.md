@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v3.0.0
+
+- build(deps): dropped `@litert/exception` and `@litert/observable`.
+
 ## v2.0.2
 
 - fix(command): fixed command `lpop` and `rpop`.

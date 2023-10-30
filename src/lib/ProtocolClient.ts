@@ -15,7 +15,7 @@
  */
 
 import * as C from './Common';
-import { Events } from '@litert/observable';
+import { EventEmitter } from 'node:events';
 import * as $Net from 'net';
 import * as E from './Errors';
 
@@ -45,7 +45,7 @@ interface IQueueBatchItem extends IQueueItem {
 }
 
 export class ProtocolClient
-    extends Events.EventEmitter<C.IProtocolClientEvents>
+    extends EventEmitter
     implements C.IProtocolClient {
 
     protected readonly _cfg: C.IProtocolClientOptions;
@@ -128,7 +128,7 @@ export class ProtocolClient
                             it.callback(null, data);
                             break;
                         case C.EDataType.FAILURE:
-                            it.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
+                            it.callback(new E.E_COMMAND_FAILURE(data.toString()));
                             break;
                         case C.EDataType.INTEGER:
                             it.callback(null, parseInt(data));
@@ -168,7 +168,7 @@ export class ProtocolClient
 
                         switch (type) {
                             case C.EDataType.FAILURE:
-                                i.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
+                                i.callback(new E.E_COMMAND_FAILURE(data.toString()));
                                 break;
                             case C.EDataType.INTEGER:
                                 i.callback(null, parseInt(data));
@@ -192,7 +192,7 @@ export class ProtocolClient
 
                     switch (type) {
                         case C.EDataType.FAILURE:
-                            i.result[offset] = new E.E_COMMAND_FAILURE({ 'message': data.toString() });
+                            i.result[offset] = new E.E_COMMAND_FAILURE(data.toString());
                             break;
                         case C.EDataType.INTEGER:
                             i.result[offset] = parseInt(data);
@@ -245,7 +245,7 @@ export class ProtocolClient
 
                     switch (type) {
                         case C.EDataType.FAILURE:
-                            i.callback(new E.E_COMMAND_FAILURE({ 'message': data.toString() }));
+                            i.callback(new E.E_COMMAND_FAILURE(data.toString()));
                             break;
                         case C.EDataType.INTEGER:
                             i.callback(null, parseInt(data));
@@ -409,7 +409,7 @@ export class ProtocolClient
 
             socket.on('error', (e) => {
 
-                reject(new E.E_CONNECT_FAILED({}, e));
+                reject(new E.E_CONNECT_FAILED(e));
             });
 
             socket.connect(port, host);
@@ -452,7 +452,7 @@ export class ProtocolClient
     /**
      * Make async process same in both callback and promise styles.
      * @param fn    The body of async process
-     * @param cb    The omitable callback function if not promise style.
+     * @param cb    The optional callback function if not promise style.
      * @returns     Return a promise if cb is not provided.
      */
     private _unifyAsync(fn: (resolve: C.ICallbackA) => Promise<any>, cb?: C.ICallbackA): Promise<any> | undefined {
@@ -584,7 +584,7 @@ export class ProtocolClient
         }, cb);
     }
 
-    protected _bulkCommands(cmds: Array<{ cmd: string; args: any[]; }>, cb?: C.ICallbackA): any {
+    protected _bulkCommands(cmdList: Array<{ cmd: string; args: any[]; }>, cb?: C.ICallbackA): any {
 
         return this._unifyAsync(async (callback) => {
 
@@ -592,9 +592,9 @@ export class ProtocolClient
 
             const handle: IQueueBatchItem = {
                 callback,
-                expected: cmds.length,
+                expected: cmdList.length,
                 state: ERequestState.PENDING,
-                result: new Array(cmds.length),
+                result: new Array(cmdList.length),
             };
 
             this._executingQueue.push(handle);
@@ -619,7 +619,7 @@ export class ProtocolClient
                 }, this._cfg.commandTimeout);
             }
 
-            const data = Buffer.concat(cmds.map((x) => this._encoder.encodeCommand(x.cmd, x.args)));
+            const data = Buffer.concat(cmdList.map((x) => this._encoder.encodeCommand(x.cmd, x.args)));
 
             await this._write2Socket(data);
 

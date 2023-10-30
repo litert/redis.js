@@ -6,5 +6,9 @@
 /tsconfig.json
 /node_modules/
 /dist/samples/
+/.husky/
 /test/
+/examples/
 /package-lock.json
+/commitlint.config.js
+/.eslintignore

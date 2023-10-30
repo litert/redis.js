@@ -14,83 +14,145 @@
  * limitations under the License.
  */
 
-import * as $Exceptions from '@litert/exception';
+/**
+ * The error class for LwDFX.
+ */
+export abstract class RedisError extends Error {
 
-export const errorRegistry = $Exceptions.createExceptionRegistry({
-    'module': 'redis.litert.org',
-    'types': {
-        'redis': {
-            'index': $Exceptions.createIncreaseCodeIndex(1)
-        }
+    public constructor(
+        /**
+         * The name of the error.
+         */
+        name: string,
+        /**
+         * The message of the error.
+         */
+        message: string,
+        /**
+         * The metadata of the error.
+         */
+        public readonly origin: unknown = null
+    ) {
+
+        super(message);
+        this.name = name;
     }
-});
+}
 
-export const E_PROTOCOL_ERROR = errorRegistry.register({
-    name: 'protocol_error',
-    message: 'Malformed data received from remote server.',
-    metadata: {},
-    type: 'redis'
-});
+export const E_PROTOCOL_ERROR = class extends RedisError {
 
-export const E_COMMAND_FAILURE = errorRegistry.register({
-    name: 'command_failure',
-    message: 'Recieved a failure response of command execution from remote server.',
-    metadata: {},
-    type: 'redis'
-});
+    public constructor(
+        origin: unknown = null
+    ) {
+        super(
+            'protocol_error',
+            'Malformed data received from remote server.',
+            origin,
+        );
+    }
+};
 
-export const E_CONN_LOST = errorRegistry.register({
-    name: 'conn_lost',
-    message: 'Lost the connection to remote server.',
-    metadata: {},
-    type: 'redis'
-});
+export const E_COMMAND_FAILURE = class extends RedisError {
 
-export const E_CONNECT_FAILED = errorRegistry.register({
-    name: 'connect_failed',
-    message: 'Failed to connect to Redis server.',
-    metadata: {},
-    type: 'redis'
-});
+    public constructor(
+        message: string,
+        origin: unknown = null
+    ) {
+        super(
+            'command_failure',
+            message,
+            origin,
+        );
+    }
+};
 
-export const E_COMMAND_QUEUE_FULL = errorRegistry.register({
-    name: 'command_queue_full',
-    message: 'The queue of commands is full.',
-    metadata: {},
-    type: 'redis'
-});
+export const E_CONN_LOST = class extends RedisError {
 
-export const E_PIPELINING = errorRegistry.register({
-    name: 'pipelining',
-    message: 'Some commands queued in pipeline, can not use MULTI.',
-    metadata: {},
-    type: 'redis'
-});
+    public constructor(
+        origin: unknown = null
+    ) {
+        super(
+            'conn_lost',
+            'Lost the connection to remote server.',
+            origin,
+        );
+    }
+};
 
-export const E_COMMAND_TIMEOUT = errorRegistry.register({
-    name: 'command_timeout',
-    message: 'There was no response for commands in time .',
-    metadata: {},
-    type: 'redis'
-});
+export const E_CONNECT_FAILED = class extends RedisError {
 
-export const E_CONNECT_TIMEOUT = errorRegistry.register({
-    name: 'connect_timeout',
-    message: 'Timeout while connecting to server.',
-    metadata: {},
-    type: 'redis'
-});
+    public constructor(
+        origin: unknown = null
+    ) {
+        super(
+            'connect_failed',
+            'Failed to connect to Redis server.',
+            origin,
+        );
+    }
+};
 
-export const E_INVALID_PARAM = errorRegistry.register({
-    name: 'invalid_param',
-    message: 'The parameters passed to the command is unacceptable.',
-    metadata: {},
-    type: 'redis'
-});
+export const E_COMMAND_QUEUE_FULL = class extends RedisError {
 
-export const E_NOT_MULTI_MODE = errorRegistry.register({
-    name: 'not_multi_mode',
-    message: 'The client is not under multi mode, please call multi method first.',
-    metadata: {},
-    type: 'redis'
-});
+    public constructor(
+        origin: unknown = null
+    ) {
+        super(
+            'command_queue_full',
+            'The queue of commands is full.',
+            origin,
+        );
+    }
+};
+
+export const E_COMMAND_TIMEOUT = class extends RedisError {
+
+    public constructor(
+        origin: unknown = null
+    ) {
+        super(
+            'command_timeout',
+            'There was no response for commands in time .',
+            origin,
+        );
+    }
+};
+
+export const E_CONNECT_TIMEOUT = class extends RedisError {
+
+    public constructor(
+        origin: unknown = null
+    ) {
+        super(
+            'connect_timeout',
+            'Timeout while connecting to server.',
+            origin,
+        );
+    }
+};
+
+export const E_INVALID_PARAM = class extends RedisError {
+
+    public constructor(
+        origin: unknown = null
+    ) {
+        super(
+            'invalid_param',
+            'The parameters passed to the command is unacceptable.',
+            origin,
+        );
+    }
+};
+
+export const E_NOT_MULTI_MODE = class extends RedisError {
+
+    public constructor(
+        origin: unknown = null
+    ) {
+        super(
+            'not_multi_mode',
+            'The client is not under multi mode, please call multi method first.',
+            origin,
+        );
+    }
+};

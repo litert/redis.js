@@ -15,7 +15,7 @@
  */
 
 /**
- * The error class for LwDFX.
+ * The error class for RedisClient.
  */
 export abstract class RedisError extends Error {
 

@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v3.0.1
+
+fix(docs): fixed comments.
+
 ## v3.0.0
 
 - build(deps): dropped `@litert/exception` and `@litert/observable`.

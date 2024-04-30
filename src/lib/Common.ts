@@ -1225,7 +1225,7 @@ export interface ICommandAPIs {
      * Command: zAdd
      * @see https://redis.io/commands/zAdd
      */
-    zAdd(key: string, member: string, score: string | Buffer): Promise<boolean>;
+    zAdd(key: string, score: number, member: string | Buffer): Promise<boolean>;
 
     /**
      * Command: zRem

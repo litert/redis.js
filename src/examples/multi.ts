@@ -16,7 +16,33 @@
 /* eslint-disable no-console */
 import * as Redis from '../lib';
 
+export async function testZ(): Promise<void> {
+
+    const cli = Redis.createCommandClient({});
+
+    await cli.connect();
+
+    console.log(await cli.zAdd('testZSet', 100, 'z100'));
+    console.log(await cli.zAdd('testZSet', 99, 'z99'));
+    console.log(await cli.zAdd('testZSet', 97, 'z97'));
+    console.log(await cli.zAdd('testZSet', 98, 'z98'));
+    console.log(await cli.zAdd('testZSet', 95, 'z95'));
+    console.log(await cli.zAdd('testZSet', 39, 'z39'));
+
+    console.log(await cli.zRangeWithScores('testZSet', 0, 3));
+
+    console.log(await cli.zRem('testZSet', ['z39', 'z97']));
+
+    console.log(await cli.zRangeWithScores('testZSet', 0, 3));
+
+    await cli.close();
+}
+
 (async () => {
+
+    await testZ();
+
+    return;
 
     const cli = Redis.createCommandClient({});
 

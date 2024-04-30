@@ -1627,7 +1627,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/sRem
      */
     'sRem': {
-        prepare: createDefaultPreparer('SREM')
+        prepare: (key: string, members: Array<string | Buffer>) => ({ args: [key, ...members], cmd: 'SREM' })
     },
 
     /**
@@ -2090,7 +2090,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/commands/zRem
      */
     'zRem': {
-        prepare: createDefaultPreparer('ZREM')
+        prepare: (key: string, members: Array<string | Buffer>) => ({ args: [key, ...members], cmd: 'ZREM' })
     },
 
     /**

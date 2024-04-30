@@ -2114,7 +2114,20 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 'args': [key, start, stop, 'WITHSCORES']
             };
         },
-        process: U.pairList2NullableStringDict
+        process: (items: Array<[number, Buffer]>): Array<{ member: string; score: number; }> => {
+
+            const ret: Array<{ member: string; score: number; }> = [];
+
+            for (let i = 0 ; i < items.length; i = i + 2) {
+
+                ret.push({
+                    'member': items[i][1].toString(),
+                    'score': parseFloat(items[i + 1][1].toString())
+                });
+            }
+
+            return ret;
+        }
     },
 
     /**
@@ -2129,7 +2142,20 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 'args': [key, start, stop, 'WITHSCORES']
             };
         },
-        process: U.pairList2NullableBufferDict
+        process: (items: Array<[number, Buffer]>): Array<{ member: Buffer; score: number; }> => {
+
+            const ret: Array<{ member: Buffer; score: number; }> = [];
+
+            for (let i = 0 ; i < items.length; i = i + 2) {
+
+                ret.push({
+                    'member': items[i][1],
+                    'score': parseFloat(items[i + 1][1].toString())
+                });
+            }
+
+            return ret;
+        }
     },
 
     /**

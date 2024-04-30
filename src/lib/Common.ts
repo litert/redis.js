@@ -1225,25 +1225,25 @@ export interface ICommandAPIs {
      * Command: zAdd
      * @see https://redis.io/commands/zAdd
      */
-    zAdd(key: string, field: string, value: string | Buffer): Promise<boolean>;
+    zAdd(key: string, member: string, score: string | Buffer): Promise<boolean>;
 
     /**
      * Command: zRem
      * @see https://redis.io/commands/zRem
      */
-    zRem(key: string, values: Array<string | Buffer>): Promise<number>;
+    zRem(key: string, members: Array<string | Buffer>): Promise<number>;
 
     /**
      * Command: zRange
      * @see https://redis.io/commands/zRange
      */
-    zRangeWithScores(key: string, start: number, stop: number): Promise<Record<string, string>>;
+    zRangeWithScores(key: string, start: number, stop: number): Promise<Array<{ member: string; score: number; }>>;
 
     /**
      * Command: zRange
      * @see https://redis.io/commands/zRange
      */
-    zRangeWithScores$(key: string, start: number, stop: number): Promise<Record<string, Buffer>>;
+    zRangeWithScores$(key: string, start: number, stop: number): Promise<Array<{ member: Buffer; score: number; }>>;
 
     /**
      * Command: pfAdd

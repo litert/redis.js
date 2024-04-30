@@ -1222,6 +1222,30 @@ export interface ICommandAPIs {
     rPushX(key: string, values: Array<string | Buffer>): Promise<number>;
 
     /**
+     * Command: zAdd
+     * @see https://redis.io/commands/zAdd
+     */
+    zAdd(key: string, field: string, value: string | Buffer): Promise<boolean>;
+
+    /**
+     * Command: zRem
+     * @see https://redis.io/commands/zRem
+     */
+    zRem(key: string, values: Array<string | Buffer>): Promise<number>;
+
+    /**
+     * Command: zRange
+     * @see https://redis.io/commands/zRange
+     */
+    zRangeWithScores(key: string, start: number, stop: number): Promise<Record<string, string>>;
+
+    /**
+     * Command: zRange
+     * @see https://redis.io/commands/zRange
+     */
+    zRangeWithScores$(key: string, start: number, stop: number): Promise<Record<string, Buffer>>;
+
+    /**
      * Command: pfAdd
      * @see https://redis.io/commands/pfAdd
      */

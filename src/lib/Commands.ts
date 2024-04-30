@@ -2086,6 +2086,53 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
     },
 
     /**
+     * Command: zRem
+     * @see https://redis.io/commands/zRem
+     */
+    'zRem': {
+        prepare: createDefaultPreparer('ZREM')
+    },
+
+    /**
+     * Command: zAdd
+     * @see https://redis.io/commands/zAdd
+     */
+    'zAdd': {
+        prepare: createDefaultPreparer('ZADD'),
+        process: isIntegerOne
+    },
+
+    /**
+     * Command: zRange
+     * @see https://redis.io/commands/zRange
+     */
+    'zRangeWithScores': {
+        prepare: (key: string, start: number, stop: number) => {
+
+            return {
+                'cmd': 'ZRANGE',
+                'args': [key, start, stop, 'WITHSCORES']
+            };
+        },
+        process: U.pairList2NullableStringDict
+    },
+
+    /**
+     * Command: zRange
+     * @see https://redis.io/commands/zRange
+     */
+    'zRangeWithScores$': {
+        prepare: (key: string, start: number, stop: number) => {
+
+            return {
+                'cmd': 'ZRANGE',
+                'args': [key, start, stop, 'WITHSCORES']
+            };
+        },
+        process: U.pairList2NullableBufferDict
+    },
+
+    /**
      * Command: pfAdd
      * @see https://redis.io/commands/pfAdd
      */

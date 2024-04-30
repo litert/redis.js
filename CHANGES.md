@@ -1,8 +1,15 @@
 # Changes Logs
 
+## v3.0.2
+
+- fix(command): Incorrect preprocessing of arguments for `SREM` command.
+- feat(command): Added basic supports for `ZADD`, `ZREM`, `ZRANGE` commands.
+- fix(docs): Fixed the links to the command documents.
+- build(test): Initialized test flows.
+
 ## v3.0.1
 
-fix(docs): fixed comments.
+- fix(docs): fixed comments.
 
 ## v3.0.0
 

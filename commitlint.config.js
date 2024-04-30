@@ -15,6 +15,7 @@ module.exports = {
             'subscriber',
             'protocol',
             'lint',
+            'test',
             'docs',
             'deps',
             'project'

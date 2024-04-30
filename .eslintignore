@@ -1,1 +1,5 @@
 /commitlint.config.js
+/src/test/
+/test/
+/lib/
+/examples/

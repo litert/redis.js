@@ -334,19 +334,19 @@ export interface ICommandAPIs {
 
     /**
      * Command: append
-     * @see https://redis.io/commands/append
+     * @see https://redis.io/docs/latest/commands/append
      */
     append(key: string, value: string | Buffer): Promise<number>;
 
     /**
      * Command: auth
-     * @see https://redis.io/commands/auth
+     * @see https://redis.io/docs/latest/commands/auth
      */
     auth(password: string, username?: string): Promise<void>;
 
     /**
      * Command: ping
-     * @see https://redis.io/commands/ping
+     * @see https://redis.io/docs/latest/commands/ping
      */
     ping(text?: string): Promise<string>;
 
@@ -355,7 +355,7 @@ export interface ICommandAPIs {
      *
      * > Return Redis server in 2 parts of seconds and microseconds.
      *
-     * @see https://redis.io/commands/time
+     * @see https://redis.io/docs/latest/commands/time
      */
     time(): Promise<Record<'secPart' | 'usPart', number>>;
 
@@ -364,7 +364,7 @@ export interface ICommandAPIs {
      *
      * > Return Redis server time as milliseconds.
      *
-     * @see https://redis.io/commands/time
+     * @see https://redis.io/docs/latest/commands/time
      */
     msTime(): Promise<number>;
 
@@ -373,7 +373,7 @@ export interface ICommandAPIs {
      *
      * > Return Redis server time as seconds.
      *
-     * @see https://redis.io/commands/time
+     * @see https://redis.io/docs/latest/commands/time
      */
     secTime(): Promise<number>;
 
@@ -382,273 +382,273 @@ export interface ICommandAPIs {
      *
      * > Return Redis server time as microseconds.
      *
-     * @see https://redis.io/commands/time
+     * @see https://redis.io/docs/latest/commands/time
      */
     usTime(): Promise<number>;
 
     /**
      * Command: incr
-     * @see https://redis.io/commands/incr
+     * @see https://redis.io/docs/latest/commands/incr
      */
     incr(key: string, step?: number): Promise<number>;
 
     /**
      * Command: incrByFloat
-     * @see https://redis.io/commands/incrByFloat
+     * @see https://redis.io/docs/latest/commands/incrbyfloat
      */
     incrByFloat(key: string, step: number): Promise<number>;
 
     /**
      * Command: decr
-     * @see https://redis.io/commands/decr
+     * @see https://redis.io/docs/latest/commands/decr
      */
     decr(key: string, step?: number): Promise<number>;
 
     /**
      * Command: incrByFloat
-     * @see https://redis.io/commands/incrByFloat
+     * @see https://redis.io/docs/latest/commands/incrbyfloat
      */
     decrByFloat(key: string, step: number): Promise<number>;
 
     /**
      * Command: del
-     * @see https://redis.io/commands/del
+     * @see https://redis.io/docs/latest/commands/del
      */
     del(keys: string | string[]): Promise<number>;
 
     /**
      * Command: unlink
-     * @see https://redis.io/commands/unlink
+     * @see https://redis.io/docs/latest/commands/unlink
      */
     unlink(keys: string | string[]): Promise<number>;
 
     /**
      * Command: get
-     * @see https://redis.io/commands/get
+     * @see https://redis.io/docs/latest/commands/get
      */
     get(key: string): Promise<string | null>;
 
     /**
      * Command: get
-     * @see https://redis.io/commands/get
+     * @see https://redis.io/docs/latest/commands/get
      */
     get$(key: string): Promise<Buffer | null>;
 
     /**
      * Command: getdel
-     * @see https://redis.io/commands/getdel
+     * @see https://redis.io/docs/latest/commands/getdel
      * @since v6.2.0
      */
     getAndDel(key: string): Promise<string | null>;
 
     /**
      * Command: getdel
-     * @see https://redis.io/commands/getdel
+     * @see https://redis.io/docs/latest/commands/getdel
      * @since v6.2.0
      */
     getAndDel$(key: string): Promise<Buffer | null>;
 
     /**
      * Command: getex
-     * @see https://redis.io/commands/getex
+     * @see https://redis.io/docs/latest/commands/getex
      * @since v6.2.0
      */
     getAndPersist(key: string): Promise<string | null>;
 
     /**
      * Command: getex
-     * @see https://redis.io/commands/getex
+     * @see https://redis.io/docs/latest/commands/getex
      * @since v6.2.0
      */
     getAndPersist$(key: string): Promise<Buffer | null>;
 
     /**
      * Command: getex
-     * @see https://redis.io/commands/getex
+     * @see https://redis.io/docs/latest/commands/getex
      * @since v6.2.0
      */
     getEx(key: string, ttl: number): Promise<string | null>;
 
     /**
      * Command: getex
-     * @see https://redis.io/commands/getex
+     * @see https://redis.io/docs/latest/commands/getex
      * @since v6.2.0
      */
     getEx$(key: string, ttl: number): Promise<Buffer | null>;
 
     /**
      * Command: getex
-     * @see https://redis.io/commands/getex
+     * @see https://redis.io/docs/latest/commands/getex
      * @since v6.2.0
      */
     getExAt(key: string, at: number): Promise<string | null>;
 
     /**
      * Command: getex
-     * @see https://redis.io/commands/getex
+     * @see https://redis.io/docs/latest/commands/getex
      * @since v6.2.0
      */
     getExAt$(key: string, at: number): Promise<Buffer | null>;
 
     /**
      * Command: getex
-     * @see https://redis.io/commands/getex
+     * @see https://redis.io/docs/latest/commands/getex
      * @since v6.2.0
      */
     getPEx(key: string, ttl: number): Promise<string | null>;
 
     /**
      * Command: getex
-     * @see https://redis.io/commands/getex
+     * @see https://redis.io/docs/latest/commands/getex
      * @since v6.2.0
      */
     getPEx$(key: string, ttl: number): Promise<Buffer | null>;
 
     /**
      * Command: getex
-     * @see https://redis.io/commands/getex
+     * @see https://redis.io/docs/latest/commands/getex
      * @since v6.2.0
      */
     getPExAt(key: string, at: number): Promise<string | null>;
 
     /**
      * Command: getex
-     * @see https://redis.io/commands/getex
+     * @see https://redis.io/docs/latest/commands/getex
      * @since v6.2.0
      */
     getPExAt$(key: string, at: number): Promise<Buffer | null>;
 
     /**
      * Command: getSet
-     * @see https://redis.io/commands/getSet
+     * @see https://redis.io/docs/latest/commands/getset
      * @deprecated since v6.2.0
      */
     getSet(key: string, value: string): Promise<string | null>;
 
     /**
      * Command: getSet
-     * @see https://redis.io/commands/getSet
+     * @see https://redis.io/docs/latest/commands/getset
      * @deprecated since v6.2.0
      */
     getSet$(key: string, value: Buffer): Promise<Buffer | null>;
 
     /**
      * Command: set
-     * @see https://redis.io/commands/set
+     * @see https://redis.io/docs/latest/commands/set
      */
     set(key: string, value: string | Buffer, ttl?: number): Promise<boolean>;
 
     /**
      * Command: setNX
-     * @see https://redis.io/commands/setNX
+     * @see https://redis.io/docs/latest/commands/setnx
      */
     setNX(key: string, value: string | Buffer, ttl?: number): Promise<boolean>;
 
     /**
      * Command: setEX
-     * @see https://redis.io/commands/setEX
+     * @see https://redis.io/docs/latest/commands/setex
      */
     setEX(key: string, value: string | Buffer, ttl: number): Promise<boolean>;
 
     /**
      * Command: pSetNX
-     * @see https://redis.io/commands/pSetNX
+     * @see https://redis.io/docs/latest/commands/set
      */
     pSetNX(key: string, value: string | Buffer, ttl?: number): Promise<boolean>;
 
     /**
      * Command: pSetEx
-     * @see https://redis.io/commands/pSetEx
+     * @see https://redis.io/docs/latest/commands/psetex
      */
     pSetEx(key: string, value: string | Buffer, ttl: number): Promise<boolean>;
 
     /**
      * Command: replace
-     * @see https://redis.io/commands/replace
+     * @see https://redis.io/docs/latest/commands/set
      */
     replace(key: string, value: string | Buffer, ttl?: number): Promise<boolean>;
 
     /**
      * Command: pReplace
-     * @see https://redis.io/commands/pReplace
+     * @see https://redis.io/docs/latest/commands/set
      */
     pReplace(key: string, value: string | Buffer, ttl: number): Promise<boolean>;
 
     /**
      * Command: ttl
-     * @see https://redis.io/commands/ttl
+     * @see https://redis.io/docs/latest/commands/ttl
      */
     ttl(key: string): Promise<number>;
 
     /**
      * Command: pTTL
-     * @see https://redis.io/commands/pTTL
+     * @see https://redis.io/docs/latest/commands/pttl
      */
     pTTL(key: string): Promise<number>;
 
     /**
      * Command: expire
-     * @see https://redis.io/commands/expire
+     * @see https://redis.io/docs/latest/commands/expire
      */
     expire(key: string, ttl: number): Promise<boolean>;
 
     /**
      * Command: pExpire
-     * @see https://redis.io/commands/pExpire
+     * @see https://redis.io/docs/latest/commands/pexpire
      */
     pExpire(key: string, ttl: number): Promise<boolean>;
 
     /**
      * Command: expireAt
-     * @see https://redis.io/commands/expireAt
+     * @see https://redis.io/docs/latest/commands/expireat
      */
     expireAt(key: string, ttl: number): Promise<boolean>;
 
     /**
      * Command: pExpireAt
-     * @see https://redis.io/commands/pExpireAt
+     * @see https://redis.io/docs/latest/commands/pexpireat
      */
     pExpireAt(key: string, ttl: number): Promise<boolean>;
 
     /**
      * Command: persist
-     * @see https://redis.io/commands/persist
+     * @see https://redis.io/docs/latest/commands/persist
      */
     persist(key: string): Promise<boolean>;
 
     /**
      * Command: exists
-     * @see https://redis.io/commands/exists
+     * @see https://redis.io/docs/latest/commands/exists
      */
     exists(key: string): Promise<boolean>;
 
     /**
      * Command: exists
-     * @see https://redis.io/commands/exists
+     * @see https://redis.io/docs/latest/commands/exists
      */
     mExists(keys: string[]): Promise<number>;
 
     /**
      * Command: type
-     * @see https://redis.io/commands/type
+     * @see https://redis.io/docs/latest/commands/type
      */
     type(key: string): Promise<string>;
 
     /**
      * Command: move
-     * @see https://redis.io/commands/move
+     * @see https://redis.io/docs/latest/commands/move
      */
     move(key: string, db: number): Promise<boolean>;
 
     /**
      * Command: swapdb
-     * @see https://redis.io/commands/swapdb
+     * @see https://redis.io/docs/latest/commands/swapdb
      */
     swapDB(dbA: number, dbB: number): Promise<boolean>;
 
     /**
      * Command: swapdb
-     * @see https://redis.io/commands/swapdb
+     * @see https://redis.io/docs/latest/commands/swapdb
      *
      * @param destDB    Specify an alternate destination db instead of db selected by current connection.
      * @param overwrite Overwrite existing destination key. [Default: false]
@@ -657,115 +657,115 @@ export interface ICommandAPIs {
 
     /**
      * Command: randomKey
-     * @see https://redis.io/commands/randomKey
+     * @see https://redis.io/docs/latest/commands/randomkey
      */
     randomKey(): Promise<string | null>;
 
     /**
      * Command: rename
-     * @see https://redis.io/commands/rename
+     * @see https://redis.io/docs/latest/commands/rename
      */
     rename(from: string, to: string): Promise<void>;
 
     /**
      * Command: renameNX
-     * @see https://redis.io/commands/renameNX
+     * @see https://redis.io/docs/latest/commands/renamenx
      */
     renameNX(from: string, to: string): Promise<boolean>;
 
     /**
      * Command: select
-     * @see https://redis.io/commands/select
+     * @see https://redis.io/docs/latest/commands/select
      */
     select(db: number): Promise<void>;
 
     /**
      * Command: flushDb
-     * @see https://redis.io/commands/flushDb
+     * @see https://redis.io/docs/latest/commands/flushdb
      */
     flushDb(async?: boolean): Promise<void>;
 
     /**
      * Command: flushAll
-     * @see https://redis.io/commands/flushAll
+     * @see https://redis.io/docs/latest/commands/flushall
      */
     flushAll(async?: boolean): Promise<void>;
 
     /**
      * Command: hDel
-     * @see https://redis.io/commands/hDel
+     * @see https://redis.io/docs/latest/commands/hdel
      */
     hDel(key: string, fields: string | string[]): Promise<number>;
 
     /**
      * Command: hGet
-     * @see https://redis.io/commands/hGet
+     * @see https://redis.io/docs/latest/commands/hget
      */
     hGet(key: string, fields: string): Promise<string | null>;
 
     /**
      * Command: hGet
-     * @see https://redis.io/commands/hGet
+     * @see https://redis.io/docs/latest/commands/hget
      */
     hGet$(key: string, field: string): Promise<Buffer | null>;
 
     /**
      * Command: hSet
-     * @see https://redis.io/commands/hSet
+     * @see https://redis.io/docs/latest/commands/hset
      */
     hSet(key: string, field: string, value: string | Buffer): Promise<boolean>;
 
     /**
      * Command: hSetNX
-     * @see https://redis.io/commands/hSetNX
+     * @see https://redis.io/docs/latest/commands/hsetnx
      */
     hSetNX(key: string, field: string, value: string | Buffer): Promise<boolean>;
 
     /**
      * Command: hrandfield
-     * @see https://redis.io/commands/hrandfield
+     * @see https://redis.io/docs/latest/commands/hrandfield
      */
     hRandField(key: string, count: number): Promise<string[]>;
 
     /**
      * Command: hrandfield
-     * @see https://redis.io/commands/hrandfield
+     * @see https://redis.io/docs/latest/commands/hrandfield
      */
     hRandField$(key: string, count: number): Promise<Buffer[]>;
 
     /**
      * Command: hrandfield with values returning.
-     * @see https://redis.io/commands/hrandfield
+     * @see https://redis.io/docs/latest/commands/hrandfield
      */
     hRandFieldWithValues(key: string, count: number): Promise<Record<string, string>>;
 
     /**
      * Command: hrandfield with values returning.
-     * @see https://redis.io/commands/hrandfield
+     * @see https://redis.io/docs/latest/commands/hrandfield
      */
     hRandFieldWithValues$(key: string, count: number): Promise<Record<string, Buffer>>;
 
     /**
      * Command: hExists
-     * @see https://redis.io/commands/hExists
+     * @see https://redis.io/docs/latest/commands/hexists
      */
     hExists(key: string, field: string): Promise<boolean>;
 
     /**
      * Command: keys
-     * @see https://redis.io/commands/keys
+     * @see https://redis.io/docs/latest/commands/keys
      */
     keys(pattern: string): Promise<string[]>;
 
     /**
      * Command: dump
-     * @see https://redis.io/commands/dump
+     * @see https://redis.io/docs/latest/commands/dump
      */
     dump(key: string): Promise<Buffer | null>;
 
     /**
      * Command: restore
-     * @see https://redis.io/commands/restore
+     * @see https://redis.io/docs/latest/commands/restore
      */
     restore(
         key: string,
@@ -779,553 +779,553 @@ export interface ICommandAPIs {
 
     /**
      * Command: strLen
-     * @see https://redis.io/commands/strLen
+     * @see https://redis.io/docs/latest/commands/strlen
      */
     strLen(key: string): Promise<number>;
 
     /**
      * Command: touch
-     * @see https://redis.io/commands/touch
+     * @see https://redis.io/docs/latest/commands/touch
      */
     touch(keys: string | string[]): Promise<number>;
 
     /**
      * Command: mGet
-     * @see https://redis.io/commands/mGet
+     * @see https://redis.io/docs/latest/commands/mget
      */
     mGet(keys: string | string[]): Promise<Record<string, string | null>>;
 
     /**
      * Command: mGet
-     * @see https://redis.io/commands/mGet
+     * @see https://redis.io/docs/latest/commands/mget
      */
     mGet$(key: string | string[]): Promise<Record<string, Buffer | null>>;
 
     /**
      * Command: mSet
-     * @see https://redis.io/commands/mSet
+     * @see https://redis.io/docs/latest/commands/mset
      */
     mSet(kv: Record<string, string | Buffer>): Promise<void>;
 
     /**
      * Command: mSetNX
-     * @see https://redis.io/commands/mSetNX
+     * @see https://redis.io/docs/latest/commands/msetnx
      */
     mSetNX(kv: Record<string, string | Buffer>): Promise<boolean>;
 
     /**
      * Command: hIncr
-     * @see https://redis.io/commands/hincrby
+     * @see https://redis.io/docs/latest/commands/hincrby
      */
     hIncr(key: string, field: string, step?: number): Promise<number>;
 
     /**
      * Command: hIncr
-     * @see https://redis.io/commands/hincrbyfloat
+     * @see https://redis.io/docs/latest/commands/hincrbyfloat
      */
     hIncrByFloat(key: string, field: string, step: number): Promise<number>;
 
     /**
      * Command: hIncr
-     * @see https://redis.io/commands/hincrby
+     * @see https://redis.io/docs/latest/commands/hincrby
      */
     hDecr(key: string, field: string, step?: number): Promise<number>;
 
     /**
      * Command: hIncr
-     * @see https://redis.io/commands/hincrbyfloat
+     * @see https://redis.io/docs/latest/commands/hincrbyfloat
      */
     hDecrByFloat(key: string, field: string, step: number): Promise<number>;
 
     /**
      * Command: hKeys
-     * @see https://redis.io/commands/hKeys
+     * @see https://redis.io/docs/latest/commands/hkeys
      */
     hKeys(key: string): Promise<string[]>;
 
     /**
      * Command: hVals
-     * @see https://redis.io/commands/hVals
+     * @see https://redis.io/docs/latest/commands/hvals
      */
     hVals(key: string): Promise<string[]>;
 
     /**
      * Command: hVals
-     * @see https://redis.io/commands/hVals
+     * @see https://redis.io/docs/latest/commands/hvals
      */
     hVals$(key: string): Promise<Buffer[]>;
 
     /**
      * Command: hLen
-     * @see https://redis.io/commands/hLen
+     * @see https://redis.io/docs/latest/commands/hlen
      */
     hLen(key: string): Promise<number>;
 
     /**
      * Command: hMGet
-     * @see https://redis.io/commands/hMGet
+     * @see https://redis.io/docs/latest/commands/hmget
      */
     hMGet(key: string, fields: string | string[]): Promise<Record<string, string | null>>;
 
     /**
      * Command: hGetAll
-     * @see https://redis.io/commands/hGetAll
+     * @see https://redis.io/docs/latest/commands/hgetall
      */
     hGetAll(key: string): Promise<Record<string, string | null>>;
 
     /**
      * Command: hGetAll
-     * @see https://redis.io/commands/hGetAll
+     * @see https://redis.io/docs/latest/commands/hgetall
      */
     hGetAll$(key: string): Promise<Record<string, Buffer | null>>;
 
     /**
      * Command: hMGet
-     * @see https://redis.io/commands/hMGet
+     * @see https://redis.io/docs/latest/commands/hmget
      */
     hMGet$(key: string, fields: string | string[]): Promise<Record<string, Buffer | null>>;
 
     /**
      * Command: hMSet
-     * @see https://redis.io/commands/hMSet
+     * @see https://redis.io/docs/latest/commands/hmset
      */
     hMSet(key: string, kv: Record<string, string | Buffer | number>): Promise<void>;
 
     /**
      * Command: hStrLen
-     * @see https://redis.io/commands/hStrLen
+     * @see https://redis.io/docs/latest/commands/hstrlen
      */
     hStrLen(key: string, field: string): Promise<number>;
 
     /**
      * Command: scan
-     * @see https://redis.io/commands/scan
+     * @see https://redis.io/docs/latest/commands/scan
      */
     scan(cursor: number, pattern?: string, count?: number): Promise<IScanResult<string>>;
 
     /**
      * Command: hScan
-     * @see https://redis.io/commands/hScan
+     * @see https://redis.io/docs/latest/commands/hscan
      */
     hScan(key: string, cursor: number, pattern?: string, count?: number): Promise<IScanResult<string>>;
 
     /**
      * Command: sAdd
-     * @see https://redis.io/commands/sAdd
+     * @see https://redis.io/docs/latest/commands/sadd
      */
     sAdd(key: string, values: Array<string | Buffer>): Promise<number>;
 
     /**
      * Command: sCard
-     * @see https://redis.io/commands/sCard
+     * @see https://redis.io/docs/latest/commands/scard
      */
     sCard(key: string): Promise<number>;
 
     /**
      * Command: sDiff
-     * @see https://redis.io/commands/sDiff
+     * @see https://redis.io/docs/latest/commands/sdiff
      */
     sDiff(key: string | string[]): Promise<string[]>;
 
     /**
      * Command: sDiff
-     * @see https://redis.io/commands/sDiff
+     * @see https://redis.io/docs/latest/commands/sdiff
      */
     sDiff$(key: string | string[]): Promise<Buffer[]>;
 
     /**
      * Command: sDiffStore
-     * @see https://redis.io/commands/sDiffStore
+     * @see https://redis.io/docs/latest/commands/sdiffstore
      */
     sDiffStore(key: string | string[], target: string): Promise<number>;
 
     /**
      * Command: sInter
-     * @see https://redis.io/commands/sInter
+     * @see https://redis.io/docs/latest/commands/sinter
      */
     sInter(key: string | string[]): Promise<string[]>;
 
     /**
      * Command: sInter
-     * @see https://redis.io/commands/sInter
+     * @see https://redis.io/docs/latest/commands/sinter
      */
     sInter$(key: string | string[]): Promise<Buffer[]>;
 
     /**
      * Command: sInterStore
-     * @see https://redis.io/commands/sInterStore
+     * @see https://redis.io/docs/latest/commands/sinterstore
      */
     sInterStore(key: string | string[], target: string): Promise<number>;
 
     /**
      * Command: sUnion
-     * @see https://redis.io/commands/sUnion
+     * @see https://redis.io/docs/latest/commands/sunion
      */
     sUnion(key: string | string[]): Promise<string[]>;
 
     /**
      * Command: sUnion
-     * @see https://redis.io/commands/sUnion
+     * @see https://redis.io/docs/latest/commands/sunion
      */
     sUnion$(key: string | string[]): Promise<Buffer[]>;
 
     /**
      * Command: sUnionStore
-     * @see https://redis.io/commands/sUnionStore
+     * @see https://redis.io/docs/latest/commands/sunionstore
      */
     sUnionStore(key: string | string[], target: string): Promise<number>;
 
     /**
      * Command: sIsMember
-     * @see https://redis.io/commands/sIsMember
+     * @see https://redis.io/docs/latest/commands/sismember
      */
     sIsMember(key: string, value: string | Buffer): Promise<boolean>;
 
     /**
      * Command: sMembers
-     * @see https://redis.io/commands/sMembers
+     * @see https://redis.io/docs/latest/commands/smembers
      */
     sMembers(key: string): Promise<string[]>;
 
     /**
      * Command: sMembers
-     * @see https://redis.io/commands/sMembers
+     * @see https://redis.io/docs/latest/commands/smembers
      */
     sMembers$(key: string): Promise<Buffer[]>;
 
     /**
      * Command: sMove
-     * @see https://redis.io/commands/sMove
+     * @see https://redis.io/docs/latest/commands/smove
      */
     sMove(from: string, to: string, value: string | Buffer): Promise<boolean>;
 
     /**
      * Command: sPop
-     * @see https://redis.io/commands/sPop
+     * @see https://redis.io/docs/latest/commands/spop
      */
     sPop(key: string, count?: number): Promise<string[]>;
 
     /**
      * Command: sPop
-     * @see https://redis.io/commands/sPop
+     * @see https://redis.io/docs/latest/commands/spop
      */
     sPop$(key: string, count?: number): Promise<Buffer[]>;
 
     /**
      * Command: sRandMember
-     * @see https://redis.io/commands/sRandMember
+     * @see https://redis.io/docs/latest/commands/srandmember
      */
     sRandMember(key: string, count?: number): Promise<string[]>;
 
     /**
      * Command: sRandMember
-     * @see https://redis.io/commands/sRandMember
+     * @see https://redis.io/docs/latest/commands/srandmember
      */
     sRandMember$(key: string, count?: number): Promise<Buffer[]>;
 
     /**
      * Command: sRem
-     * @see https://redis.io/commands/sRem
+     * @see https://redis.io/docs/latest/commands/srem
      */
     sRem(key: string, values: Array<string | Buffer>): Promise<number>;
 
     /**
      * Command: sScan
-     * @see https://redis.io/commands/sScan
+     * @see https://redis.io/docs/latest/commands/sscan
      */
     sScan(key: string, cursor: number, pattern?: string, count?: number): Promise<IScanResult<string>>;
 
     /**
      * Command: sScan
-     * @see https://redis.io/commands/sScan
+     * @see https://redis.io/docs/latest/commands/sscan
      */
     sScan$(key: string, cursor: number, pattern?: Buffer, count?: number): Promise<IScanResult<Buffer>>;
 
     /**
      * Command: bLPop
-     * @see https://redis.io/commands/bLPop
+     * @see https://redis.io/docs/latest/commands/blpop
      */
     bLPop(keys: string | string[], timeout: number): Promise<Record<string, string>>;
 
     /**
      * Command: bLPop
-     * @see https://redis.io/commands/bLPop
+     * @see https://redis.io/docs/latest/commands/blpop
      */
     bLPop$(keys: string | string[], timeout: number): Promise<Record<string, Buffer>>;
 
     /**
      * Command: bRPop
-     * @see https://redis.io/commands/bRPop
+     * @see https://redis.io/docs/latest/commands/brpop
      */
     bRPop(keys: string | string[], timeout: number): Promise<Record<string, string>>;
 
     /**
      * Command: bRPop
-     * @see https://redis.io/commands/bRPop
+     * @see https://redis.io/docs/latest/commands/brpop
      */
     bRPop$(keys: string | string[], timeout: number): Promise<Record<string, Buffer>>;
 
     /**
      * Command: bRPopLPush
-     * @see https://redis.io/commands/bRPopLPush
+     * @see https://redis.io/docs/latest/commands/brpoplpush
      */
     bRPopLPush(from: string, to: string, timeout: number): Promise<string | null>;
 
     /**
      * Command: bRPopLPush
-     * @see https://redis.io/commands/bRPopLPush
+     * @see https://redis.io/docs/latest/commands/brpoplpush
      */
     bRPopLPush$(from: string, to: string, timeout: number): Promise<Buffer | null>;
 
     /**
      * Command: lIndex
-     * @see https://redis.io/commands/lIndex
+     * @see https://redis.io/docs/latest/commands/lindex
      */
     lIndex(key: string, index: number): Promise<string | null>;
 
     /**
      * Command: lIndex
-     * @see https://redis.io/commands/lIndex
+     * @see https://redis.io/docs/latest/commands/lindex
      */
     lIndex$(key: string, index: number): Promise<Buffer | null>;
 
     /**
      * Command: lInsert
-     * @see https://redis.io/commands/lInsert
+     * @see https://redis.io/docs/latest/commands/linsert
      */
     lInsertBefore(key: string, pivot: string, value: string | Buffer): Promise<number>;
 
     /**
      * Command: lInsert
-     * @see https://redis.io/commands/lInsert
+     * @see https://redis.io/docs/latest/commands/linsert
      */
     lInsertAfter(key: string, pivot: string, value: string | Buffer): Promise<number>;
 
     /**
      * Command: lLen
-     * @see https://redis.io/commands/lLen
+     * @see https://redis.io/docs/latest/commands/llen
      */
     lLen(key: string): Promise<number>;
 
     /**
      * Command: lPop
-     * @see https://redis.io/commands/lPop
+     * @see https://redis.io/docs/latest/commands/lpop
      */
     lPop(key: string): Promise<string | null>;
 
     /**
      * Command: lPop
-     * @see https://redis.io/commands/lPop
+     * @see https://redis.io/docs/latest/commands/lpop
      */
     lPop(key: string, count: number): Promise<string[]>;
 
     /**
      * Command: lPop
-     * @see https://redis.io/commands/lPop
+     * @see https://redis.io/docs/latest/commands/lpop
      */
     lPop$(key: string): Promise<Buffer | null>;
 
     /**
      * Command: lPop
-     * @see https://redis.io/commands/lPop
+     * @see https://redis.io/docs/latest/commands/lpop
      */
     lPop$(key: string, count: number): Promise<Buffer[]>;
 
     /**
      * Command: lPush
-     * @see https://redis.io/commands/lPush
+     * @see https://redis.io/docs/latest/commands/lpush
      */
     lPush(key: string, values: Array<string | Buffer>): Promise<number>;
 
     /**
      * Command: lPushX
-     * @see https://redis.io/commands/lPushX
+     * @see https://redis.io/docs/latest/commands/lpushx
      */
     lPushX(key: string, values: Array<string | Buffer>): Promise<number>;
 
     /**
      * Command: lRange
-     * @see https://redis.io/commands/lRange
+     * @see https://redis.io/docs/latest/commands/lrange
      */
     lRange(key: string, start: number, stop: number): Promise<string[]>;
 
     /**
      * Command: lRange
-     * @see https://redis.io/commands/lRange
+     * @see https://redis.io/docs/latest/commands/lrange
      */
     lRange$(key: string, start: number, stop: number): Promise<Buffer[]>;
 
     /**
      * Command: lRem
-     * @see https://redis.io/commands/lRem
+     * @see https://redis.io/docs/latest/commands/lrem
      */
     lRem(key: string, value: string | Buffer, count: number): Promise<number>;
 
     /**
      * Command: lSet
-     * @see https://redis.io/commands/lSet
+     * @see https://redis.io/docs/latest/commands/lset
      */
     lSet(key: string, value: string | Buffer, index: number): Promise<void>;
 
     /**
      * Command: lTrim
-     * @see https://redis.io/commands/lTrim
+     * @see https://redis.io/docs/latest/commands/ltrim
      */
     lTrim(key: string, start: number, stop: number): Promise<void>;
 
     /**
      * Command: rPop
-     * @see https://redis.io/commands/rPop
+     * @see https://redis.io/docs/latest/commands/rpop
      */
     rPop(key: string): Promise<string | null>;
 
     /**
      * Command: rPop
-     * @see https://redis.io/commands/rPop
+     * @see https://redis.io/docs/latest/commands/rpop
      */
     rPop(key: string, count: number): Promise<string[]>;
 
     /**
      * Command: rPop
-     * @see https://redis.io/commands/rPop
+     * @see https://redis.io/docs/latest/commands/rpop
      */
     rPop$(key: string): Promise<Buffer | null>;
 
     /**
      * Command: rPop
-     * @see https://redis.io/commands/rPop
+     * @see https://redis.io/docs/latest/commands/rpop
      */
     rPop$(key: string, count: number): Promise<Buffer[]>;
 
     /**
      * Command: rPopLPush
-     * @see https://redis.io/commands/rPopLPush
+     * @see https://redis.io/docs/latest/commands/rpoplpush
      */
     rPopLPush(from: string, to: string): Promise<string>;
 
     /**
      * Command: rPopLPush
-     * @see https://redis.io/commands/rPopLPush
+     * @see https://redis.io/docs/latest/commands/rpoplpush
      */
     rPopLPush$(from: string, to: string): Promise<Buffer>;
 
     /**
      * Command: rPush
-     * @see https://redis.io/commands/rPush
+     * @see https://redis.io/docs/latest/commands/rpush
      */
     rPush(key: string, values: Array<string | Buffer>): Promise<number>;
 
     /**
      * Command: rPushX
-     * @see https://redis.io/commands/rPushX
+     * @see https://redis.io/docs/latest/commands/rpushx
      */
     rPushX(key: string, values: Array<string | Buffer>): Promise<number>;
 
     /**
      * Command: zAdd
-     * @see https://redis.io/commands/zAdd
+     * @see https://redis.io/docs/latest/commands/zadd
      */
     zAdd(key: string, score: number, member: string | Buffer): Promise<boolean>;
 
     /**
      * Command: zRem
-     * @see https://redis.io/commands/zRem
+     * @see https://redis.io/docs/latest/commands/zrem
      */
     zRem(key: string, members: Array<string | Buffer>): Promise<number>;
 
     /**
      * Command: zRange
-     * @see https://redis.io/commands/zRange
+     * @see https://redis.io/docs/latest/commands/zrange
      */
     zRangeWithScores(key: string, start: number, stop: number): Promise<Array<{ member: string; score: number; }>>;
 
     /**
      * Command: zRange
-     * @see https://redis.io/commands/zRange
+     * @see https://redis.io/docs/latest/commands/zrange
      */
     zRangeWithScores$(key: string, start: number, stop: number): Promise<Array<{ member: Buffer; score: number; }>>;
 
     /**
      * Command: pfAdd
-     * @see https://redis.io/commands/pfAdd
+     * @see https://redis.io/docs/latest/commands/pfadd
      */
     pfAdd(key: string, values: Array<string | Buffer>): Promise<boolean>;
 
     /**
      * Command: pfCount
-     * @see https://redis.io/commands/pfCount
+     * @see https://redis.io/docs/latest/commands/pfcount
      */
     pfCount(key: string): Promise<number>;
 
     /**
      * Command: pfMerge
-     * @see https://redis.io/commands/pfMerge
+     * @see https://redis.io/docs/latest/commands/pfmerge
      */
     pfMerge(keys: string | string[], target: string): Promise<void>;
 
     /**
      * Command: publish
-     * @see https://redis.io/commands/publish
+     * @see https://redis.io/docs/latest/commands/publish
      */
     publish(channel: string, data: Buffer | string): Promise<number>;
 
     /**
      * Command: pubsub
-     * @see https://redis.io/commands/pubsub
+     * @see https://redis.io/docs/latest/commands/pubsub
      */
     pubSubChannels(patterns?: string): Promise<string[]>;
 
     /**
      * Command: pubsub
-     * @see https://redis.io/commands/pubsub
+     * @see https://redis.io/docs/latest/commands/pubsub
      */
     pubSubNumSub(channels: [string, ...string[]]): Promise<Record<string, number>>;
 
     /**
      * Command: pubsub
-     * @see https://redis.io/commands/pubsub
+     * @see https://redis.io/docs/latest/commands/pubsub
      */
     pubSubNumPat(): Promise<number>;
 
     /**
      * Command: eval
-     * @see https://redis.io/commands/eval
+     * @see https://redis.io/docs/latest/commands/eval
      */
     eval(luaScript: string, keys: string[], args: Array<string | Buffer>): Promise<any>;
 
     /**
      * Command: evalsha
-     * @see https://redis.io/commands/evalsha
+     * @see https://redis.io/docs/latest/commands/evalsha
      */
     evalSHA(luaScriptSHA: string, keys: string[], args: Array<string | Buffer>): Promise<any>;
 
     /**
      * Command: script debug
-     * @see https://redis.io/commands/script-debug
+     * @see https://redis.io/docs/latest/commands/script-debug
      */
     scriptDebug(enabled: boolean | 'sync'): Promise<void>;
 
     /**
      * Command: script exists
-     * @see https://redis.io/commands/script-exists
+     * @see https://redis.io/docs/latest/commands/script-exists
      */
     scriptExists(shaList: string[]): Promise<number>;
 
     /**
      * Command: script kill
-     * @see https://redis.io/commands/script-kill
+     * @see https://redis.io/docs/latest/commands/script-kill
      */
     scriptKill(): Promise<void>;
 
     /**
      * Command: script flush
-     * @see https://redis.io/commands/script-flush
+     * @see https://redis.io/docs/latest/commands/script-flush
      */
     scriptFlush(): Promise<void>;
 
     /**
      * Command: script load
-     * @see https://redis.io/commands/script-load
+     * @see https://redis.io/docs/latest/commands/script-load
      */
     scriptLoad(script: string): Promise<string>;
 
@@ -1340,7 +1340,7 @@ export interface ICommandClientBase {
 
     /**
      * Command: multi
-     * @see https://redis.io/commands/multi
+     * @see https://redis.io/docs/latest/commands/multi
      */
     multi(): Promise<IMultiClient>;
 }
@@ -1356,13 +1356,13 @@ export interface IPipelineClientBase {
 
     /**
      * Command: auth
-     * @see https://redis.io/commands/auth
+     * @see https://redis.io/docs/latest/commands/auth
      */
     auth(...args: Parameters<ICommandAPIs['auth']>): Promise<void>;
 
     /**
      * Command: select
-     * @see https://redis.io/commands/select
+     * @see https://redis.io/docs/latest/commands/select
      */
     select(...args: Parameters<ICommandAPIs['select']>): Promise<void>;
 
@@ -1373,7 +1373,7 @@ export interface IPipelineClientBase {
 
     /**
      * Command: exec
-     * @see https://redis.io/commands/exec
+     * @see https://redis.io/docs/latest/commands/exec
      */
     exec<T extends any[]>(): Promise<T>;
 }
@@ -1384,43 +1384,43 @@ export interface IMultiClientBase {
 
     /**
      * Command: auth
-     * @see https://redis.io/commands/auth
+     * @see https://redis.io/docs/latest/commands/auth
      */
     auth(...args: Parameters<ICommandAPIs['auth']>): Promise<void>;
 
     /**
      * Command: select
-     * @see https://redis.io/commands/select
+     * @see https://redis.io/docs/latest/commands/select
      */
     select(...args: Parameters<ICommandAPIs['select']>): Promise<void>;
 
     /**
      * Command: multi
-     * @see https://redis.io/commands/multi
+     * @see https://redis.io/docs/latest/commands/multi
      */
     multi(): Promise<void>;
 
     /**
      * Command: watch
-     * @see https://redis.io/commands/watch
+     * @see https://redis.io/docs/latest/commands/watch
      */
     watch(keys: string[]): Promise<void>;
 
     /**
      * Command: unwatch
-     * @see https://redis.io/commands/unwatch
+     * @see https://redis.io/docs/latest/commands/unwatch
      */
     unwatch(): Promise<void>;
 
     /**
      * Command: discard
-     * @see https://redis.io/commands/discard
+     * @see https://redis.io/docs/latest/commands/discard
      */
     discard(): Promise<void>;
 
     /**
      * Command: exec
-     * @see https://redis.io/commands/exec
+     * @see https://redis.io/docs/latest/commands/exec
      */
     exec<T extends any[]>(): Promise<T>;
 }
@@ -1436,31 +1436,31 @@ export interface ISubscriberClient extends IProtocolClient {
 
     /**
      * Command: auth
-     * @see https://redis.io/commands/auth
+     * @see https://redis.io/docs/latest/commands/auth
      */
     auth(password: string, username?: string): Promise<void>;
 
     /**
      * Command: subscribe
-     * @see https://redis.io/commands/subscribe
+     * @see https://redis.io/docs/latest/commands/subscribe
      */
     subscribe(channels: string | string[]): Promise<void>;
 
     /**
      * Command: unsubscribe
-     * @see https://redis.io/commands/unsubscribe
+     * @see https://redis.io/docs/latest/commands/unsubscribe
      */
     unsubscribe(channels: string | string[]): Promise<void>;
 
     /**
      * Command: psubscribe
-     * @see https://redis.io/commands/psubscribe
+     * @see https://redis.io/docs/latest/commands/psubscribe
      */
     pSubscribe(patterns: string | string[]): Promise<void>;
 
     /**
      * Command: punsubscribe
-     * @see https://redis.io/commands/punsubscribe
+     * @see https://redis.io/docs/latest/commands/punsubscribe
      */
     pUnsubscribe(patterns: string | string[]): Promise<void>;
 }

@@ -4,6 +4,7 @@
 
 - fix(command): Return keys in `HMGET` command correctly.
 - fix(protocol): decode `*-1` correctly
+- feat(command): added lmove and blmove commands
 
 ## v3.0.2
 

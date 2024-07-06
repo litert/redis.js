@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v3.0.3
+
+- fix(command): Return keys in `HMGET` command correctly.
+
 ## v3.0.2
 
 - fix(command): Incorrect preprocessing of arguments for `SREM` command.

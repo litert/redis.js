@@ -1132,7 +1132,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         },
         process(data: Array<[number, Buffer]>, args: any[]): any {
 
-            return U.list2NullableStringDict(args[1], data);
+            return U.list2NullableStringDict(args.slice(1), data);
         }
     },
 
@@ -1163,7 +1163,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         },
         process(data: Array<[number, Buffer]>, args: any[]): any {
 
-            return U.list2NullableBufferDict(args[1], data);
+            return U.list2NullableBufferDict(args.slice(1), data);
         }
     },
 

@@ -2086,6 +2086,64 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
     },
 
     /**
+     * Command: lMove
+     * @see https://redis.io/docs/latest/commands/lmove
+     */
+    'lMove': {
+        prepare(srcKey: string, destKey: string, srcDir: 'LEFT' | 'RIGHT', destDir: 'LEFT' | 'RIGHT'): IPrepareResult {
+
+            return {
+                cmd: 'LMOVE',
+                args: [srcKey, destKey, srcDir, destDir]
+            };
+        },
+        process: U.nullableBuffer2String
+    },
+
+    /**
+     * Command: lMove
+     * @see https://redis.io/docs/latest/commands/lmove
+     */
+    'lMove$': {
+        prepare(srcKey: string, destKey: string, srcDir: 'LEFT' | 'RIGHT', destDir: 'LEFT' | 'RIGHT'): IPrepareResult {
+
+            return {
+                cmd: 'LMOVE',
+                args: [srcKey, destKey, srcDir, destDir]
+            };
+        }
+    },
+
+    /**
+     * Command: bLMove
+     * @see https://redis.io/docs/latest/commands/blmove
+     */
+    'bLMove': {
+        prepare(srcKey: string, destKey: string, srcDir: 'LEFT' | 'RIGHT', destDir: 'LEFT' | 'RIGHT', timeout: number): IPrepareResult {
+
+            return {
+                cmd: 'BLMOVE',
+                args: [srcKey, destKey, srcDir, destDir, timeout]
+            };
+        },
+        process: U.nullableBuffer2String
+    },
+
+    /**
+     * Command: bLMove
+     * @see https://redis.io/docs/latest/commands/blmove
+     */
+    'bLMove$': {
+        prepare(srcKey: string, destKey: string, srcDir: 'LEFT' | 'RIGHT', destDir: 'LEFT' | 'RIGHT', timeout: number): IPrepareResult {
+
+            return {
+                cmd: 'BLMOVE',
+                args: [srcKey, destKey, srcDir, destDir, timeout]
+            };
+        }
+    },
+
+    /**
      * Command: zRem
      * @see https://redis.io/docs/latest/commands/zrem
      */

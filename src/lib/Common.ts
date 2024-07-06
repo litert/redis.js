@@ -1222,6 +1222,30 @@ export interface ICommandAPIs {
     rPushX(key: string, values: Array<string | Buffer>): Promise<number>;
 
     /**
+     * Command: lMove
+     * @see https://redis.io/docs/latest/commands/lmove
+     */
+    lMove(srcKey: string, destKey: string, srcDir: 'LEFT' | 'RIGHT', destDir: 'LEFT' | 'RIGHT'): Promise<string | null>;
+
+    /**
+     * Command: lMove
+     * @see https://redis.io/docs/latest/commands/lmove
+     */
+    lMove$(srcKey: string, destKey: string, srcDir: 'LEFT' | 'RIGHT', destDir: 'LEFT' | 'RIGHT'): Promise<Buffer | null>;
+
+    /**
+     * Command: bLMove
+     * @see https://redis.io/docs/latest/commands/blmove
+     */
+    bLMove(srcKey: string, destKey: string, srcDir: 'LEFT' | 'RIGHT', destDir: 'LEFT' | 'RIGHT', timeout: number): Promise<string | null>;
+
+    /**
+     * Command: bLMove
+     * @see https://redis.io/docs/latest/commands/blmove
+     */
+    bLMove$(srcKey: string, destKey: string, srcDir: 'LEFT' | 'RIGHT', destDir: 'LEFT' | 'RIGHT', timeout: number): Promise<Buffer | null>;
+
+    /**
      * Command: zAdd
      * @see https://redis.io/docs/latest/commands/zadd
      */

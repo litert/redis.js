@@ -3,6 +3,7 @@
 ## v3.0.3
 
 - fix(command): Return keys in `HMGET` command correctly.
+- fix(protocol): decode `*-1` correctly
 
 ## v3.0.2
 

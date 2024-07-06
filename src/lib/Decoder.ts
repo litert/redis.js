@@ -234,24 +234,32 @@ export class Decoder extends EventEmitter implements C.IDecoder {
 
                     if (end > -1) {
 
-                        this._ctx.type = C.EDataType.LIST;
-
-                        this._ctx.value = [];
-
                         this._ctx.data.length = parseInt(this._buf.subarray(
                             this._ctx.pos,
                             end
                         ).toString());
 
-                        if (this._ctx.data.length === 0 || this._ctx.data.length === -1) {
+                        if (this._ctx.data.length === -1) {
 
+                            this._ctx.type = C.EDataType.NULL;
+                            this._ctx.value = null;
                             this._pop(end + 2);
                         }
                         else {
 
-                            this._cut(end + 2);
-                            this._ctx.pos = this._cursor;
-                            this._ctx.status = EDecodeStatus.READING_LIST;
+                            this._ctx.type = C.EDataType.LIST;
+                            this._ctx.value = [];
+
+                            if (this._ctx.data.length === 0) {
+
+                                this._pop(end + 2);
+                            }
+                            else {
+
+                                this._cut(end + 2);
+                                this._ctx.pos = this._cursor;
+                                this._ctx.status = EDecodeStatus.READING_LIST;
+                            }
                         }
                     }
                     else {

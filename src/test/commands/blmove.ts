@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import * as Assert from 'node:assert';
 import { cmdCli } from '../common';
 
-const TEST_KEY_PREFIX = 'test_hash_';
+const TEST_KEY_PREFIX = 'test_blmove_';
 
 test('Command For Lmove/Blmove', async (t) => {
 

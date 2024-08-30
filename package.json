@@ -11,6 +11,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf lib examples test",
     "lint": "eslint --ext ts src",
+    "prepare": "husky",
     "test": "node --test test/commands/*.js"
   },
   "keywords": [
@@ -32,12 +33,12 @@
   "types": "./lib/index.d.ts",
   "typings": "./lib/index.d.ts",
   "devDependencies": {
-    "@commitlint/cli": "^18.2.0",
-    "@commitlint/config-conventional": "^18.1.0",
-    "@litert/eslint-plugin-rules": "^0.1.6",
-    "@types/node": "^20.8.9",
-    "husky": "^8.0.3",
-    "typescript": "^5.2.2"
+    "@commitlint/cli": "^19.4.1",
+    "@commitlint/config-conventional": "^19.4.1",
+    "@litert/eslint-plugin-rules": "^0.1.7",
+    "@types/node": "^22.5.1",
+    "husky": "^9.1.5",
+    "typescript": "^5.5.4"
   },
   "engines": {
     "node": ">=16.0.0"

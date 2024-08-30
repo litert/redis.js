@@ -2,7 +2,7 @@
 
 ## v3.0.4
 
-- fix(protocol): drop request when connection lost after writing to kernel buffer.
+- fix(protocol): ensure writing network and queue in sync, avoiding disorder of execution queue.
 
 ## v3.0.3
 

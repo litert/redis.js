@@ -548,6 +548,8 @@ export class ProtocolClient
 
         return this._unifyAsync(async (callback) => {
 
+            const execQueue = this._executingQueue;
+
             this._checkQueueSize();
 
             const data = this._encoder.encodeCommand(cmd, args);
@@ -559,7 +561,13 @@ export class ProtocolClient
 
             await this._write2Socket(data);
 
-            this._executingQueue.push(handle);
+            if (execQueue !== this._executingQueue) {
+
+                handle.callback(new E.E_CONN_LOST());
+                return;
+            }
+
+            execQueue.push(handle);
 
             if (this._cfg.commandTimeout > 0) {
 

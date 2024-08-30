@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v3.0.4
+
+- fix(protocol): drop request when connection lost after writing to kernel buffer.
+
 ## v3.0.3
 
 - fix(command): Return keys in `HMGET` command correctly.

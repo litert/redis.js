@@ -16,7 +16,7 @@
 
 import * as C from './Common';
 import { EventEmitter } from 'node:events';
-import * as $Net from 'net';
+import * as $Net from 'node:net';
 import * as E from './Errors';
 
 enum ERequestState {
@@ -508,29 +508,6 @@ export class ProtocolClient
         return this._command(cmd, args, cb);
     }
 
-    protected async _write2Socket(data: Buffer, socket?: $Net.Socket): Promise<void> {
-
-        if (!socket) {
-
-            socket = await this._getConnection();
-        }
-
-        return new Promise<void>((resolve, reject) => {
-
-            socket.write(data, (e) => {
-
-                if (e) {
-
-                    reject(e);
-                }
-                else {
-
-                    resolve();
-                }
-            });
-        });
-    }
-
     protected _checkQueueSize(): void {
 
         if (this._cfg.queueSize && this._executingQueue.length >= this._cfg.queueSize) {
@@ -548,45 +525,24 @@ export class ProtocolClient
 
         return this._unifyAsync(async (callback) => {
 
-            const execQueue = this._executingQueue;
-
             this._checkQueueSize();
 
-            const data = this._encoder.encodeCommand(cmd, args);
+            const socket = this._socket ?? await this._getConnection();
+
+            socket.write(this._encoder.encodeCommand(cmd, args));
 
             const handle: IQueueItem = {
                 callback,
                 state: ERequestState.PENDING,
             };
 
-            await this._write2Socket(data);
-
-            if (execQueue !== this._executingQueue) {
-
-                handle.callback(new E.E_CONN_LOST());
-                return;
-            }
-
-            execQueue.push(handle);
+            this._executingQueue.push(handle);
 
             if (this._cfg.commandTimeout > 0) {
 
-                handle.timeout = setTimeout(() => {
-
-                    switch (handle.state) {
-                        case ERequestState.PENDING:
-                            handle.state = ERequestState.TIMEOUT;
-                            handle.callback(new E.E_COMMAND_TIMEOUT({
-                                mode: 'mono', cmd, argsQty: args.length
-                            }));
-                            break;
-                        case ERequestState.DONE:
-                        case ERequestState.TIMEOUT:
-                        default:
-                            break;
-                    }
-
-                }, this._cfg.commandTimeout);
+                this._setTimeoutForRequest(handle, () => new E.E_COMMAND_TIMEOUT({
+                    mode: 'mono', cmd, argsQty: args.length
+                }));
             }
 
         }, cb);
@@ -597,6 +553,10 @@ export class ProtocolClient
         return this._unifyAsync(async (callback) => {
 
             this._checkQueueSize();
+
+            const socket = this._socket ?? await this._getConnection();
+
+            socket.write(Buffer.concat(cmdList.map((x) => this._encoder.encodeCommand(x.cmd, x.args))));
 
             const handle: IQueueBatchItem = {
                 callback,
@@ -609,27 +569,10 @@ export class ProtocolClient
 
             if (this._cfg.commandTimeout > 0) {
 
-                handle.timeout = setTimeout(() => {
-
-                    switch (handle.state) {
-                        case ERequestState.PENDING:
-                            handle.state = ERequestState.TIMEOUT;
-                            handle.callback(new E.E_COMMAND_TIMEOUT({
-                                mode: 'bulk', cmdQty: handle.expected
-                            }));
-                            break;
-                        case ERequestState.DONE:
-                        case ERequestState.TIMEOUT:
-                        default:
-                            break;
-                    }
-
-                }, this._cfg.commandTimeout);
+                this._setTimeoutForRequest(handle, () => new E.E_COMMAND_TIMEOUT({
+                    mode: 'bulk', cmdQty: handle.expected
+                }));
             }
-
-            const data = Buffer.concat(cmdList.map((x) => this._encoder.encodeCommand(x.cmd, x.args)));
-
-            await this._write2Socket(data);
 
         }, cb);
     }
@@ -638,7 +581,9 @@ export class ProtocolClient
 
         return this._unifyAsync(async (callback) => {
 
-            const data = this._encoder.encodeCommand('EXEC', []);
+            const socket = this._socket ?? await this._getConnection();
+
+            socket.write(this._encoder.encodeCommand('EXEC', []));
 
             const handle: IQueueBatchItem = {
                 callback,
@@ -647,29 +592,34 @@ export class ProtocolClient
                 result: [],
             };
 
-            await this._write2Socket(data);
-
             this._executingQueue.push(handle);
 
             if (this._cfg.commandTimeout > 0) {
 
-                handle.timeout = setTimeout(() => {
-
-                    switch (handle.state) {
-                        case ERequestState.PENDING:
-                            handle.state = ERequestState.TIMEOUT;
-                            handle.callback(new E.E_COMMAND_TIMEOUT({
-                                mode: 'bulk', cmdQty: handle.expected
-                            }));
-                            break;
-                        case ERequestState.DONE:
-                        case ERequestState.TIMEOUT:
-                        default:
-                            break;
-                    }
-
-                }, this._cfg.commandTimeout);
+                this._setTimeoutForRequest(handle, () => new E.E_COMMAND_TIMEOUT({
+                    mode: 'bulk', cmdQty: handle.expected
+                }));
             }
         });
+    }
+
+    private _setTimeoutForRequest(handle: IQueueItem, mkError: () => Error): void {
+
+        handle.timeout = setTimeout(() => {
+
+            delete handle.timeout;
+
+            switch (handle.state) {
+                case ERequestState.PENDING:
+                    handle.state = ERequestState.TIMEOUT;
+                    handle.callback(mkError());
+                    break;
+                case ERequestState.DONE:
+                case ERequestState.TIMEOUT:
+                default:
+                    break;
+            }
+
+        }, this._cfg.commandTimeout);
     }
 }

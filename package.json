@@ -10,7 +10,7 @@
     "rebuild": "npm run clean && npm run lint && npm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf lib examples test",
-    "lint": "eslint --ext ts src",
+    "lint": "./utils/eslint.sh",
     "prepare": "husky",
     "test": "node --test test/commands/*.js"
   },
@@ -35,10 +35,10 @@
   "devDependencies": {
     "@commitlint/cli": "^19.4.1",
     "@commitlint/config-conventional": "^19.4.1",
-    "@litert/eslint-plugin-rules": "^0.1.7",
+    "@litert/eslint-plugin-rules": "^0.2.0",
     "@types/node": "^22.5.1",
     "husky": "^9.1.5",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.3"
   },
   "engines": {
     "node": ">=16.0.0"

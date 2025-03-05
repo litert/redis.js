@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /**
  * Copyright 2024 Angus.Fenying <fenying@litert.org>
  *
@@ -388,27 +389,43 @@ export interface ICommandAPIs {
 
     /**
      * Command: incr
+     *
+     * @param key       The key of the hash.
+     * @param increment The step to increase. [Default: 1]
+     *
      * @see https://redis.io/docs/latest/commands/incr
      */
-    incr(key: string, step?: number): Promise<number>;
+    incr(key: string, increment?: number): Promise<number>;
 
     /**
      * Command: incrByFloat
+     *
+     * @param key       The key of the hash.
+     * @param increment The step to increase. [Default: 1]
+     *
      * @see https://redis.io/docs/latest/commands/incrbyfloat
      */
-    incrByFloat(key: string, step: number): Promise<number>;
+    incrByFloat(key: string, increment?: number): Promise<number>;
 
     /**
      * Command: decr
+     *
+     * @param key       The key of the hash.
+     * @param decrement The step to decrease. [Default: 1]
+     *
      * @see https://redis.io/docs/latest/commands/decr
      */
-    decr(key: string, step?: number): Promise<number>;
+    decr(key: string, decrement?: number): Promise<number>;
 
     /**
      * Command: incrByFloat
+     *
+     * @param key       The key of the hash.
+     * @param decrement The step to decrease. [Default: 1]
+     *
      * @see https://redis.io/docs/latest/commands/incrbyfloat
      */
-    decrByFloat(key: string, step: number): Promise<number>;
+    decrByFloat(key: string, decrement?: number): Promise<number>;
 
     /**
      * Command: del
@@ -815,27 +832,47 @@ export interface ICommandAPIs {
 
     /**
      * Command: hIncr
+     *
+     * @param key       The key of the hash.
+     * @param field     The field of the hash.
+     * @param increment The step to increase. [Default: 1]
+     *
      * @see https://redis.io/docs/latest/commands/hincrby
      */
-    hIncr(key: string, field: string, step?: number): Promise<number>;
+    hIncr(key: string, field: string, increment?: number): Promise<number>;
 
     /**
-     * Command: hIncr
+     * Command: hIncrByFloat
+     *
+     * @param key       The key of the hash.
+     * @param field     The field of the hash.
+     * @param increment The step to increase. [Default: 1]
+     *
      * @see https://redis.io/docs/latest/commands/hincrbyfloat
      */
-    hIncrByFloat(key: string, field: string, step: number): Promise<number>;
+    hIncrByFloat(key: string, field: string, increment?: number): Promise<number>;
 
     /**
      * Command: hIncr
+     *
+     * @param key       The key of the hash.
+     * @param field     The field of the hash.
+     * @param decrement The step to decrease. [Default: 1]
+     *
      * @see https://redis.io/docs/latest/commands/hincrby
      */
-    hDecr(key: string, field: string, step?: number): Promise<number>;
+    hDecr(key: string, field: string, decrement?: number): Promise<number>;
 
     /**
-     * Command: hIncr
+     * Command: hIncrByFloat
+     *
+     * @param key       The key of the hash.
+     * @param field     The field of the hash.
+     * @param decrement The step to decrease. [Default: 1]
+     *
      * @see https://redis.io/docs/latest/commands/hincrbyfloat
      */
-    hDecrByFloat(key: string, field: string, step: number): Promise<number>;
+    hDecrByFloat(key: string, field: string, decrement?: number): Promise<number>;
 
     /**
      * Command: hKeys

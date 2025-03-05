@@ -5,7 +5,7 @@ module.exports = [
     ...LitertEslintRules.configs.typescript,
     {
         plugins: {
-            '@litert/rules': require('@litert/eslint-plugin-rules'),
+            '@litert/rules': LitertEslintRules,
         },
         files: [
             'src/lib/**/*.ts',

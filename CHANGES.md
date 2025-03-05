@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v3.0.5
+
+- fix(command): fixed optional step for `INCR-like` commands.
+
 ## v3.0.4
 
 - fix(protocol): ensure writing network and queue in sync, avoiding disorder of execution queue.

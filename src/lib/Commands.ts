@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* eslint-disable max-lines */
+
 import * as C from './Common';
 import * as U from './Utils';
 import * as E from './Errors';
@@ -77,7 +79,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         },
         process(data: Buffer | string): string {
 
-            return data instanceof Buffer ? data.toString() : data;
+            return data instanceof Buffer ? data.toString() : data as string;
         }
     },
 
@@ -146,13 +148,14 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/incr
      */
     'incr': {
-        prepare(key: string, step: number): IPrepareResult {
+        prepare(key: string, step: number = 1): IPrepareResult {
 
             return {
                 'cmd': 'INCRBY',
-                'args': [key, step || 1]
+                'args': [key, step]
             };
-        }
+        },
+        // process: parseInt, // always returning integer
     },
 
     /**
@@ -160,16 +163,14 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/incrbyfloat
      */
     'incrByFloat': {
-        prepare(key: string, step: number): IPrepareResult {
+        prepare(key: string, step: number = 1): IPrepareResult {
 
             return {
                 'cmd': 'INCRBYFLOAT',
                 'args': [key, step]
             };
         },
-        process(data: Buffer | string): number {
-            return parseFloat(data as string);
-        }
+        process: parseFloat,
     },
 
     /**
@@ -177,13 +178,14 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/decr
      */
     'decr': {
-        prepare(key: string, step: number): IPrepareResult {
+        prepare(key: string, step: number = 1): IPrepareResult {
 
             return {
                 'cmd': 'DECRBY',
                 'args': [key, step]
             };
-        }
+        },
+        // process: parseInt, // always returning integer
     },
 
     /**
@@ -191,16 +193,14 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/incrbyfloat
      */
     'decrByFloat': {
-        prepare(key: string, step: number): IPrepareResult {
+        prepare(key: string, step: number = 1): IPrepareResult {
 
             return {
                 'cmd': 'INCRBYFLOAT',
                 'args': [key, -step]
             };
         },
-        process(data: string | Buffer): number {
-            return parseFloat(data as string);
-        }
+        process: parseFloat,
     },
 
     /**
@@ -987,7 +987,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
     'mSet': {
         prepare(kv: Record<string, string | Buffer>): IPrepareResult {
 
-            const args: any[] = [];
+            const args: Array<string | Buffer> = [];
 
             for (const k in kv) {
 
@@ -1010,7 +1010,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
     'mSetNX': {
         prepare(kv: Record<string, string | Buffer>): IPrepareResult {
 
-            const args: any[] = [];
+            const args: Array<string | Buffer> = [];
 
             for (const k in kv) {
 
@@ -1031,7 +1031,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/hincrby
      */
     'hIncr': {
-        prepare: createDefaultPreparer('HINCRBY')
+        prepare(key: string, field: string, step: number = 1): IPrepareResult {
+            return {
+                cmd: 'HINCRBY',
+                args: [key, field, step]
+            };
+        },
+        // process: parseInt, // always returning integer
     },
 
     /**
@@ -1039,8 +1045,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/hincrbyfloat
      */
     'hIncrByFloat': {
-        prepare: createDefaultPreparer('HINCRBYFLOAT'),
-        process: parseFloat
+        prepare(key: string, field: string, step: number = 1): IPrepareResult {
+            return {
+                cmd: 'HINCRBYFLOAT',
+                args: [key, field, step]
+            };
+        },
+        process: parseFloat,
     },
 
     /**
@@ -1048,12 +1059,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/hincrby
      */
     'hDecr': {
-        prepare(key: string, field: string, step: number): IPrepareResult {
+        prepare(key: string, field: string, step: number = 1): IPrepareResult {
             return {
                 cmd: 'HINCRBY',
-                args: [key, field, -(step || 1)]
+                args: [key, field, -step]
             };
-        }
+        },
+        // process: parseInt, // always returning integer
     },
 
     /**
@@ -1061,7 +1073,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/hincrbyfloat
      */
     'hDecrByFloat': {
-        prepare(key: string, field: string, step: number): IPrepareResult {
+        prepare(key: string, field: string, step: number = 1): IPrepareResult {
             return {
                 cmd: 'HINCRBYFLOAT',
                 args: [key, field, -step]

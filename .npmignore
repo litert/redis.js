@@ -12,3 +12,7 @@
 /package-lock.json
 /commitlint.config.js
 /.eslintignore
+/utils/
+/src/test/
+/src/examples/
+/eslint.config.js

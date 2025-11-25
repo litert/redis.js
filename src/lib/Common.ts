@@ -1328,13 +1328,23 @@ export interface ICommandAPIs {
      * Command: zRange
      * @see https://redis.io/docs/latest/commands/zrange
      */
-    zRangeWithScores(key: string, start: number, stop: number, options?: IZRangeOptions): Promise<Array<{ member: string; score: number; }>>;
+    zRangeWithScores(
+        key: string,
+        start: number,
+        stop: number,
+        options?: IZRangeOptions,
+    ): Promise<Array<{ member: string; score: number; }>>;
 
     /**
      * Command: zRange
      * @see https://redis.io/docs/latest/commands/zrange
      */
-    zRangeWithScores$(key: string, start: number, stop: number, options?: IZRangeOptions): Promise<Array<{ member: Buffer; score: number; }>>;
+    zRangeWithScores$(
+        key: string,
+        start: number,
+        stop: number,
+        options?: IZRangeOptions,
+    ): Promise<Array<{ member: Buffer; score: number; }>>;
 
     /**
      * Command: pfAdd

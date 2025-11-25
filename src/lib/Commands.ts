@@ -2177,11 +2177,27 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/zrange
      */
     'zRangeWithScores': {
-        prepare: (key: string, start: number, stop: number) => {
+        prepare: (key: string, start: number, stop: number, options?: C.IZRangeOptions) => {
+
+            const args: Array<string | number> = [key, start, stop];
+
+            if (options?.by) {
+                args.push('BY' + options.by);
+            }
+
+            if (options?.rev) {
+                args.push('REV');
+            }
+
+            if (options?.offset !== undefined && options?.count !== undefined) {
+                args.push('LIMIT', options.offset, options.count);
+            }
+
+            args.push('WITHSCORES');
 
             return {
                 'cmd': 'ZRANGE',
-                'args': [key, start, stop, 'WITHSCORES']
+                'args': args
             };
         },
         process: (items: Array<[number, Buffer]>): Array<{ member: string; score: number; }> => {
@@ -2205,11 +2221,27 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/zrange
      */
     'zRangeWithScores$': {
-        prepare: (key: string, start: number, stop: number) => {
+        prepare: (key: string, start: number, stop: number, options?: C.IZRangeOptions) => {
+
+            const args: Array<string | number> = [key, start, stop];
+
+            if (options?.by) {
+                args.push('BY' + options.by);
+            }
+
+            if (options?.rev) {
+                args.push('REV');
+            }
+
+            if (options?.offset !== undefined && options?.count !== undefined) {
+                args.push('LIMIT', options.offset, options.count);
+            }
+
+            args.push('WITHSCORES');
 
             return {
                 'cmd': 'ZRANGE',
-                'args': [key, start, stop, 'WITHSCORES']
+                'args': args
             };
         },
         process: (items: Array<[number, Buffer]>): Array<{ member: Buffer; score: number; }> => {

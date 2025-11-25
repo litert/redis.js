@@ -331,6 +331,36 @@ export interface IScanResult<T> {
     items: T[];
 }
 
+/**
+ * Options for ZRANGE command.
+ * @see https://redis.io/docs/latest/commands/zrange
+ */
+export interface IZRangeOptions {
+
+    /**
+     * Range query type.
+     *
+     * - SCORE: Query by score range
+     * - LEX: Query by lexicographical range
+     */
+    'by'?: 'SCORE' | 'LEX';
+
+    /**
+     * Whether to return results in reverse order.
+     */
+    'reverse'?: boolean;
+
+    /**
+     * Pagination offset. Must be used together with count.
+     */
+    'offset'?: number;
+
+    /**
+     * Pagination count. Must be used together with offset.
+     */
+    'count'?: number;
+}
+
 export interface ICommandAPIs {
 
     /**
@@ -1298,13 +1328,13 @@ export interface ICommandAPIs {
      * Command: zRange
      * @see https://redis.io/docs/latest/commands/zrange
      */
-    zRangeWithScores(key: string, start: number, stop: number): Promise<Array<{ member: string; score: number; }>>;
+    zRangeWithScores(key: string, start: number, stop: number, options?: IZRangeOptions): Promise<Array<{ member: string; score: number; }>>;
 
     /**
      * Command: zRange
      * @see https://redis.io/docs/latest/commands/zrange
      */
-    zRangeWithScores$(key: string, start: number, stop: number): Promise<Array<{ member: Buffer; score: number; }>>;
+    zRangeWithScores$(key: string, start: number, stop: number, options?: IZRangeOptions): Promise<Array<{ member: Buffer; score: number; }>>;
 
     /**
      * Command: pfAdd

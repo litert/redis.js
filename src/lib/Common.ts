@@ -348,7 +348,7 @@ export interface IZRangeOptions {
     /**
      * Whether to return results in reverse order.
      */
-    'rev'?: boolean;
+    'reverse'?: boolean;
 
     /**
      * Pagination offset. Must be used together with count.

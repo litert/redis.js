@@ -2185,7 +2185,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 args.push('BY' + options.by);
             }
 
-            if (options?.rev) {
+            if (options?.reverse) {
                 args.push('REV');
             }
 
@@ -2229,7 +2229,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 args.push('BY' + options.by);
             }
 
-            if (options?.rev) {
+            if (options?.reverse) {
                 args.push('REV');
             }
 

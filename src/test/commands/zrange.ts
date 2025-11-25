@@ -32,7 +32,7 @@ test('Command For zRangeWithScores', async (t) => {
 
     await t.test('Get range by index with scores in reverse order', async () => {
 
-        const result = await cmdCli.zRangeWithScores(`${TEST_KEY_PREFIX}myset`, 0, 2, { 'rev': true });
+        const result = await cmdCli.zRangeWithScores(`${TEST_KEY_PREFIX}myset`, 0, 2, { 'reverse': true });
 
         Assert.deepEqual(result, [
             { 'member': 'five', 'score': 5 },
@@ -73,7 +73,7 @@ test('Command For zRangeWithScores', async (t) => {
 
         const result = await cmdCli.zRangeWithScores(`${TEST_KEY_PREFIX}myset`, 5, 1, {
             'by': 'SCORE',
-            'rev': true,
+            'reverse': true,
             'offset': 0,
             'count': 2
         });

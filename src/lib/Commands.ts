@@ -2185,12 +2185,13 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
 
                 return {
                     'cmd': 'ZADD',
-                    'args': args
+                    'args': args,
+                    'ctx': { 'legacy': true }
                 };
             }
 
             // --- zAdd(key, elements, options?) ---
-            const options = memberOrOptions as C.IZAddOptions | undefined;
+            const options = memberOrOptions as C.IZAddOptions | C.IZAddOptionsIncr | undefined;
 
             if (options?.mode) {
 
@@ -2222,14 +2223,22 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 'args': args
             };
         },
-        process: (data: number, args: any[]): boolean | number => {
+        process(data: number | Buffer | null, args: any[], ctx?: Record<string, unknown>): boolean | number | null {
 
-            // --- TODO ---
-            // --- old: boolean ---
-            return data === 1;
+            // old: boolean
+            if (ctx?.['legacy']) {
 
-            // --- new: number ---
-            // return data;
+                return data === 1;
+            }
+
+            // INCR: parse to number
+            if (data instanceof Buffer) {
+
+                return parseFloat(data.toString());
+            }
+
+            // New calling method without INCR: returns number
+            return data;
         }
     },
 

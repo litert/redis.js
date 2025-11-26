@@ -361,6 +361,35 @@ export interface IZRangeOptions {
     'count'?: number;
 }
 
+/**
+ * Options for ZADD command.
+ * @see https://redis.io/docs/latest/commands/zadd
+ */
+export interface IZAddOptions {
+
+    /**
+     * - NX: Only add new elements. Don't update already existing elements.
+     * - XX: Only update elements that already exist. Don't add new elements.
+     */
+    'mode'?: 'NX' | 'XX';
+
+    /**
+     * - GT: Only update existing elements if the new score is greater than the current score.
+     * - LT: Only update existing elements if the new score is less than the current score.
+     */
+    'comparison'?: 'GT' | 'LT';
+
+    /**
+     * Modify the return value to be the number of elements changed.
+     */
+    'ch'?: boolean;
+
+    /**
+     * When this option is specified ZADD acts like ZINCRBY.
+     */
+    'incr'?: boolean;
+}
+
 export interface ICommandAPIs {
 
     /**
@@ -1317,6 +1346,10 @@ export interface ICommandAPIs {
      * @see https://redis.io/docs/latest/commands/zadd
      */
     zAdd(key: string, score: number, member: string | Buffer): Promise<boolean>;
+    zAdd(key: string, elements: Array<{
+        score: number;
+        member: string | Buffer;
+    }>, options?: IZAddOptions): Promise<number>;
 
     /**
      * Command: zRem

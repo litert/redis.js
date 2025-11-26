@@ -2168,8 +2168,67 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/zadd
      */
     'zAdd': {
-        prepare: createDefaultPreparer('ZADD'),
-        process: isIntegerOne
+        prepare(
+            key: string,
+            scoreOrItems: number | Array<{ 'score': number; 'member': string | Buffer; }>,
+            memberOrOptions?: string | Buffer | C.IZAddOptions
+        ): IPrepareResult {
+
+            const args: Array<string | Buffer | number> = [key];
+
+            // --- zAdd(key, score, member) ---
+            if (typeof scoreOrItems === 'number') {
+
+                args.push(scoreOrItems, memberOrOptions as string | Buffer);
+
+                return {
+                    'cmd': 'ZADD',
+                    'args': args
+                };
+            }
+
+            // --- zAdd(key, elements, options?) ---
+            const options = memberOrOptions as C.IZAddOptions | undefined;
+
+            if (options?.mode) {
+
+                args.push(options.mode);
+            }
+
+            if (options?.comparison) {
+
+                args.push(options.comparison);
+            }
+
+            if (options?.ch) {
+
+                args.push('CH');
+            }
+
+            if (options?.incr) {
+
+                args.push('INCR');
+            }
+
+            for (const item of scoreOrItems) {
+
+                args.push(item.score, item.member);
+            }
+
+            return {
+                'cmd': 'ZADD',
+                'args': args
+            };
+        },
+        process: (data: number, args: any[]): boolean | number => {
+
+            // --- TODO ---
+            // --- old: boolean ---
+            return data === 1;
+
+            // --- new: number ---
+            // return data;
+        }
     },
 
     /**

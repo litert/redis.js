@@ -109,6 +109,7 @@ export class CommandClient
         }
 
         let process: string;
+
         const cmd = CMD.COMMANDS[name];
 
         if (cmd.process === undefined) {
@@ -121,7 +122,7 @@ export class CommandClient
         }
         else {
 
-            process = 'return process(await this._command(req.cmd, req.args), req.args);';
+            process = 'return process(await this._command(req.cmd, req.args), req.args, req.ctx);';
         }
 
         c.prototype[name] = (new Function(

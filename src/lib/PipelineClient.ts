@@ -26,6 +26,8 @@ interface IQueueItem {
     process: undefined | CMD.TProcessor;
 
     args: any[];
+
+    ctx?: Record<string, unknown>;
 }
 
 export class PipelineClient
@@ -78,7 +80,7 @@ export class PipelineClient
             }
             else {
 
-                ret[i] = item.process(data[i], item.args);
+                ret[i] = item.process(data[i], item.args, item.ctx);
             }
         }
 
@@ -113,7 +115,7 @@ export class PipelineClient
 
                 const req = command(...args);
 
-                this._queue.push({ args: req.args, process: process, cmd: req.cmd });
+                this._queue.push({ args: req.args, process: process, cmd: req.cmd, ctx: req.ctx });
             };`
         ))(cmd.process, cmd.prepare);
     }

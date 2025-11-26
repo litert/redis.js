@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v3.1.0
+
+- feat(client): added context between command building and processing.
+
 ## v3.0.6
 
 - feat(command): implement zRangeWithScores command with options for score range, reverse order, and pagination.

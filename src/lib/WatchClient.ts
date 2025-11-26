@@ -26,6 +26,8 @@ interface IQueueItem {
 
     process: undefined | CMD.TProcessor;
 
+    ctx?: Record<string, unknown>;
+
     args: any[];
 }
 
@@ -124,7 +126,7 @@ export class MultiClient
             }
             else {
 
-                ret[i] = qi.process(data[i][1], qi.args);
+                ret[i] = qi.process(data[i][1], qi.args, qi.ctx);
             }
         }
 
@@ -176,7 +178,7 @@ export class MultiClient
 
                 const ret = this._command(req.cmd, req.args);
 
-                this._queue.push({ args: req.args, process: process, cmd: req.cmd });
+                this._queue.push({ args: req.args, process: process, cmd: req.cmd, ctx: req.ctx });
 
                 return ret;
             };`

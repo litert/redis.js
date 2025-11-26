@@ -25,9 +25,11 @@ export interface IPrepareResult {
     'cmd': string;
 
     'args': Array<string | Buffer | number>;
+
+    'ctx'?: Record<string, unknown>;
 }
 
-export type TProcessor = null | ((data: any, args: any[]) => any);
+export type TProcessor = null | ((data: any, args: any[], ctx?: Record<string, unknown>) => any);
 
 export interface ICommand {
 

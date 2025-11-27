@@ -1,12 +1,9 @@
 # Changes Logs
 
-## v3.1.1
-
-- feat(command): enhance zAdd command with new options and INCR functionality.
-
 ## v3.1.0
 
 - feat(client): added context between command building and processing.
+- feat(command): enhance zAdd command with new options and INCR functionality.
 
 ## v3.0.6
 

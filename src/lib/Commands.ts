@@ -25,9 +25,11 @@ export interface IPrepareResult {
     'cmd': string;
 
     'args': Array<string | Buffer | number>;
+
+    'ctx'?: Record<string, unknown>;
 }
 
-export type TProcessor = null | ((data: any, args: any[]) => any);
+export type TProcessor = null | ((data: any, args: any[], ctx?: Record<string, unknown>) => any);
 
 export interface ICommand {
 
@@ -2168,8 +2170,76 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/zadd
      */
     'zAdd': {
-        prepare: createDefaultPreparer('ZADD'),
-        process: isIntegerOne
+        prepare(
+            key: string,
+            scoreOrItems: number | Array<{ 'score': number; 'member': string | Buffer; }>,
+            memberOrOptions?: string | Buffer | C.IZAddOptions
+        ): IPrepareResult {
+
+            const args: Array<string | Buffer | number> = [key];
+
+            // --- zAdd(key, score, member) ---
+            if (typeof scoreOrItems === 'number') {
+
+                args.push(scoreOrItems, memberOrOptions as string | Buffer);
+
+                return {
+                    'cmd': 'ZADD',
+                    'args': args,
+                    'ctx': { 'legacy': true }
+                };
+            }
+
+            // --- zAdd(key, elements, options?) ---
+            const options = memberOrOptions as C.IZAddOptions | C.IZAddOptionsIncr | undefined;
+
+            if (options?.mode) {
+
+                args.push(options.mode);
+            }
+
+            if (options?.updateIf) {
+
+                args.push(options.updateIf);
+            }
+
+            if (options?.returnChanged) {
+
+                args.push('CH');
+            }
+
+            if (options?.incr) {
+
+                args.push('INCR');
+            }
+
+            for (const item of scoreOrItems) {
+
+                args.push(item.score, item.member);
+            }
+
+            return {
+                'cmd': 'ZADD',
+                'args': args
+            };
+        },
+        process(data: number | Buffer | null, args: any[], ctx?: Record<string, unknown>): boolean | number | null {
+
+            // old: boolean
+            if (ctx?.['legacy']) {
+
+                return data === 1;
+            }
+
+            // INCR: parse to number
+            if (data instanceof Buffer) {
+
+                return parseFloat(data.toString());
+            }
+
+            // New calling method without INCR: returns number
+            return data;
+        }
     },
 
     /**

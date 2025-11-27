@@ -361,6 +361,91 @@ export interface IZRangeOptions {
     'count'?: number;
 }
 
+/**
+ * Base options for ZADD command.
+ * @see https://redis.io/docs/latest/commands/zadd
+ */
+export interface IZAddOptionsBase {
+
+    /**
+     * Modify the return value to be the number of elements changed.
+     */
+    'returnChanged'?: boolean;
+}
+
+/**
+ * Options for ZADD command without INCR.
+ *
+ * > In non-INCR mode, the return value is always a number (never null), even when
+ * > using NX/XX/GT/LT options. If no elements are changed, it returns 0.
+ *
+ * @see https://redis.io/docs/latest/commands/zadd
+ */
+export interface IZAddOptions extends IZAddOptionsBase {
+
+    /**
+     * - NX: Only add new elements. Don't update already existing elements.
+     * - XX: Only update elements that already exist. Don't add new elements.
+     */
+    'mode'?: 'NX' | 'XX';
+
+    /**
+     * - GT: Only update existing elements if the new score is greater than the current score.
+     * - LT: Only update existing elements if the new score is less than the current score.
+     */
+    'updateIf'?: 'GT' | 'LT';
+
+    'incr'?: false;
+}
+
+/**
+ * Options for ZADD command with INCR (with NX/XX/GT/LT conditions, may return null).
+ *
+ * > When mode or updateIf is set with INCR, the return value may be null if the
+ * > operation is aborted by the condition conflict.
+ *
+ * @see https://redis.io/docs/latest/commands/zadd
+ */
+export interface IZAddOptionsIncrNullable extends IZAddOptionsBase {
+
+    /**
+     * When this option is specified ZADD acts like ZINCRBY.
+     */
+    'incr': true;
+
+    /**
+     * - NX: Only add new elements. Don't update already existing elements.
+     * - XX: Only update elements that already exist. Don't add new elements.
+     */
+    'mode'?: 'NX' | 'XX';
+
+    /**
+     * - GT: Only update existing elements if the new score is greater than the current score.
+     * - LT: Only update existing elements if the new score is less than the current score.
+     */
+    'updateIf'?: 'GT' | 'LT';
+}
+
+/**
+ * Options for ZADD command with INCR only (no NX/XX/GT/LT conditions).
+ *
+ * > Without mode or updateIf, the return value is always a number (never null).
+ * > This ensures the score is always successfully incremented.
+ *
+ * @see https://redis.io/docs/latest/commands/zadd
+ */
+export interface IZAddOptionsIncr extends IZAddOptionsBase {
+
+    /**
+     * When this option is specified ZADD acts like ZINCRBY.
+     */
+    'incr': true;
+
+    'mode'?: undefined;
+
+    'updateIf'?: undefined;
+}
+
 export interface ICommandAPIs {
 
     /**
@@ -1317,6 +1402,33 @@ export interface ICommandAPIs {
      * @see https://redis.io/docs/latest/commands/zadd
      */
     zAdd(key: string, score: number, member: string | Buffer): Promise<boolean>;
+
+    /**
+     * Command: zAdd with INCR option only (no conditions, never returns null)
+     * @see https://redis.io/docs/latest/commands/zadd
+     */
+    zAdd(key: string, elements: [{
+        'score': number;
+        'member': string | Buffer;
+    }], options: IZAddOptionsIncr): Promise<number>;
+
+    /**
+     * Command: zAdd with INCR option (with NX/XX/GT/LT conditions, may return null)
+     * @see https://redis.io/docs/latest/commands/zadd
+     */
+    zAdd(key: string, elements: [{
+        'score': number;
+        'member': string | Buffer;
+    }], options: IZAddOptionsIncrNullable): Promise<number | null>;
+
+    /**
+     * Command: zAdd without INCR option
+     * @see https://redis.io/docs/latest/commands/zadd
+     */
+    zAdd(key: string, elements: Array<{
+        'score': number;
+        'member': string | Buffer;
+    }>, options?: IZAddOptions): Promise<number>;
 
     /**
      * Command: zRem

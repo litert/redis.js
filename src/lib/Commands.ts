@@ -2198,12 +2198,12 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
                 args.push(options.mode);
             }
 
-            if (options?.comparison) {
+            if (options?.updateIf) {
 
-                args.push(options.comparison);
+                args.push(options.updateIf);
             }
 
-            if (options?.ch) {
+            if (options?.returnChanged) {
 
                 args.push('CH');
             }

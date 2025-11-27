@@ -52,21 +52,21 @@ test('Command For Z-Set', async (t) => {
         const addedCH = await cmdCli.zAdd('test_z_set_multi', [
             { 'score': 35, 'member': 'm30' },
             { 'score': 60, 'member': 'm60' },
-        ], { 'ch': true });
+        ], { 'returnChanged': true });
         Assert.equal(addedCH, 2);
 
         // --- Add with GT option, only update if new score is greater ---
         const addedGT = await cmdCli.zAdd('test_z_set_multi', [
             { 'score': 5, 'member': 'm10' },
             { 'score': 100, 'member': 'm60' },
-        ], { 'comparison': 'GT', 'ch': true });
+        ], { 'updateIf': 'GT', 'returnChanged': true });
         Assert.equal(addedGT, 1);
 
         // --- Add with LT option, only update if new score is less ---
         const addedLT = await cmdCli.zAdd('test_z_set_multi', [
             { 'score': 1, 'member': 'm10' },
             { 'score': 200, 'member': 'm60' },
-        ], { 'comparison': 'LT', 'ch': true });
+        ], { 'updateIf': 'LT', 'returnChanged': true });
         Assert.equal(addedLT, 1);
 
         await cmdCli.del('test_z_set_multi');
@@ -124,13 +124,13 @@ test('Command For Z-Set', async (t) => {
         // --- INCR with GT, only update if new score is greater ---
         const incrGT = await cmdCli.zAdd('test_z_set_incr', [
             { 'score': -200, 'member': 'member1' },
-        ], { 'incr': true, 'comparison': 'GT' });
+        ], { 'incr': true, 'updateIf': 'GT' });
         Assert.equal(incrGT, null);
 
         // --- INCR with LT, only update if new score is less ---
         const incrLT = await cmdCli.zAdd('test_z_set_incr', [
             { 'score': -200, 'member': 'member1' },
-        ], { 'incr': true, 'comparison': 'LT' });
+        ], { 'incr': true, 'updateIf': 'LT' });
         Assert.equal(incrLT, -95);
 
         await cmdCli.del('test_z_set_incr');

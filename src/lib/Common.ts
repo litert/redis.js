@@ -370,7 +370,7 @@ export interface IZAddOptionsBase {
     /**
      * Modify the return value to be the number of elements changed.
      */
-    'ch'?: boolean;
+    'returnChanged'?: boolean;
 }
 
 /**
@@ -393,7 +393,7 @@ export interface IZAddOptions extends IZAddOptionsBase {
      * - GT: Only update existing elements if the new score is greater than the current score.
      * - LT: Only update existing elements if the new score is less than the current score.
      */
-    'comparison'?: 'GT' | 'LT';
+    'updateIf'?: 'GT' | 'LT';
 
     'incr'?: false;
 }
@@ -401,7 +401,7 @@ export interface IZAddOptions extends IZAddOptionsBase {
 /**
  * Options for ZADD command with INCR (with NX/XX/GT/LT conditions, may return null).
  *
- * > When mode or comparison is set with INCR, the return value may be null if the
+ * > When mode or updateIf is set with INCR, the return value may be null if the
  * > operation is aborted by the condition conflict.
  *
  * @see https://redis.io/docs/latest/commands/zadd
@@ -423,13 +423,13 @@ export interface IZAddOptionsIncrNullable extends IZAddOptionsBase {
      * - GT: Only update existing elements if the new score is greater than the current score.
      * - LT: Only update existing elements if the new score is less than the current score.
      */
-    'comparison'?: 'GT' | 'LT';
+    'updateIf'?: 'GT' | 'LT';
 }
 
 /**
  * Options for ZADD command with INCR only (no NX/XX/GT/LT conditions).
  *
- * > Without mode or comparison, the return value is always a number (never null).
+ * > Without mode or updateIf, the return value is always a number (never null).
  * > This ensures the score is always successfully incremented.
  *
  * @see https://redis.io/docs/latest/commands/zadd
@@ -443,7 +443,7 @@ export interface IZAddOptionsIncr extends IZAddOptionsBase {
 
     'mode'?: undefined;
 
-    'comparison'?: undefined;
+    'updateIf'?: undefined;
 }
 
 export interface ICommandAPIs {

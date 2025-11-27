@@ -2238,7 +2238,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
             }
 
             // New calling method without INCR: returns number
-            return data;
+            return data as number;
         }
     },
 

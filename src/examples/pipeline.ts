@@ -48,6 +48,15 @@ import * as Redis from '../lib';
 
     console.log(await cli.get('ccc'));
 
+    const [vHAge, rCCC, vCCC] = await cli.pipeline(async (c) => {
+
+        c.hGet('h', 'age');
+        c.set('ccc', 'b');
+        c.get('ccc');
+    });
+
+    console.log(`hGet: ${vHAge}, set: ${rCCC}, get: ${vCCC}`);
+
     await cli.close();
 
 })().catch((e) => { console.error(e); });

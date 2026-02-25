@@ -1,5 +1,15 @@
 # Changes Logs
 
+## v3.2.0
+
+- feat(client): improved pipeline usage with:
+
+    - Added `createPipelineClient` method to replace the original `pipeline` method for creating a pipeline client.
+    - Updated the original `pipeline` method to support executing multiple commands in a pipeline through a
+        callback function, which will return the results of all commands in an array.
+
+    This change is to avoid the missing of calling `close()` which may cause resource leak. The original `pipeline` method is marked as deprecated and will be removed in future versions.
+
 ## v3.1.0
 
 - feat(client): added context between command building and processing.

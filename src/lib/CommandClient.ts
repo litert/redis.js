@@ -40,7 +40,34 @@ export class CommandClient
         this._createEncoder = opts.encoderFactory;
     }
 
-    public async pipeline(): Promise<C.IPipelineClient> {
+    public async pipeline(cb?: (client: C.IPipelineClient) => Promise<void> | void): Promise<any> {
+
+        if (!cb) {
+
+            return this.createPipelineClient();
+
+        }
+
+        const cli = await this.createPipelineClient();
+
+        try {
+
+            const ret = cb(cli);
+
+            if (ret instanceof Promise) {
+
+                await ret;
+            }
+
+            return await cli.exec();
+        }
+        finally {
+
+            await cli.close();
+        }
+    }
+
+    public async createPipelineClient(): Promise<C.IPipelineClient> {
 
         const cli = new PipelineClient({
             'host': this.host,

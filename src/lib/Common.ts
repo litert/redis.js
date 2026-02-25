@@ -1547,9 +1547,29 @@ export interface ICommandAPIs {
 export interface ICommandClientBase {
 
     /**
-     * Create a client for multi-exec transaction.
+     * Run multiple commands in a pipeline. All commands in the callback will
+     * be executed in a pipeline and the results will be returned as an array
+     * in the same order.
+     *
+     * @param callback  A function that contains multiple commands to be executed in a pipeline.
+     */
+    pipeline<T extends unknown[]>(callback: (client: IPipelineClient) => void | Promise<void>): Promise<T>;
+
+    /**
+     * Create a client for multi-exec transaction
+     *
+     * @deprecated Use `pipeline(async (cli) => { ... })` or `createPipelineClient` instead.
      */
     pipeline(): Promise<IPipelineClient>;
+
+    /**
+     * Create a client for pipeline. The returned client is not connected to Redis server and all commands
+     * called on it will be cached until `exec` is called. After `exec`, the client **will not** be closed
+     * automatically and can be reused for another round of pipelining.
+     *
+     * Thus, **DON'T** forget to call `close()` to release resources when the client is no longer needed.
+     */
+    createPipelineClient(): Promise<IPipelineClient>;
 
     /**
      * Command: multi

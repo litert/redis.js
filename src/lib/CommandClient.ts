@@ -145,7 +145,7 @@ export class CommandClient
         }
         else if (cmd.process === null) {
 
-            process = 'this._command(req.cmd, req.args);';
+            process = 'await this._command(req.cmd, req.args);';
         }
         else {
 

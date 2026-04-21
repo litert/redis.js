@@ -35,6 +35,12 @@ export interface ICommand {
 
     prepare(...args: any[]): IPrepareResult;
 
+    /**
+     * The processor of the command result, when:
+     * - function: the function is used as the transformer of the command execution result.
+     * - null: the command result is ignored (always OK when succeeded), so the result is always `Promise<void>`.
+     * - undefined: the command result is returned as is.
+     */
     process?: TProcessor;
 }
 

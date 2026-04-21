@@ -1,5 +1,9 @@
 # Changes Logs
 
+## v3.2.1
+
+- fix(client): missing returning the result of "_command()" caused uncaught promise.
+
 ## v3.2.0
 
 - feat(client): improved pipeline usage with:

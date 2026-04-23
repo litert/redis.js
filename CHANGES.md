@@ -3,6 +3,7 @@
 ## v3.2.1
 
 - fix(client): missing returning the result of "_command()" caused uncaught promise.
+- test(client): added regression test for rejected promises from commands with `process: null`.
 
 ## v3.2.0
 

@@ -52,6 +52,18 @@ test('Command For Strings', async (t) => {
 
         Assert.ok(true);
     });
+
+    await t.test('Errors from void commands should reject the returned promise', async () => {
+
+        await Assert.rejects(
+            cmdCli.rename('test_set_missing_source', 'test_set_missing_dest'),
+            (e: any) => {
+
+                Assert.strictEqual(e?.name, 'command_failure');
+                return true;
+            }
+        );
+    });
 });
 
 test.after(async () => {

@@ -66,7 +66,7 @@ export async function testZ(): Promise<void> {
 
     await multi.hMGet('h', ['age', 'title']);
     await multi.hGetAll('h');
-    await multi.scan(0);
+    await multi.scan('0');
 
     await multi.incr('a', 123);
 

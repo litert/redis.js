@@ -326,7 +326,10 @@ export interface IDecoder extends IEventListener<IDecoderEvents> {
 
 export interface IScanResult<T> {
 
-    nextCursor: number;
+    /**
+     * Pass this cursor unchanged to the next scan. A completed scan returns '0'.
+     */
+    nextCursor: string;
 
     items: T[];
 }
@@ -1053,13 +1056,13 @@ export interface ICommandAPIs {
      * Command: scan
      * @see https://redis.io/docs/latest/commands/scan
      */
-    scan(cursor: number, pattern?: string, count?: number): Promise<IScanResult<string>>;
+    scan(cursor: string, pattern?: string, count?: number): Promise<IScanResult<string>>;
 
     /**
      * Command: hScan
      * @see https://redis.io/docs/latest/commands/hscan
      */
-    hScan(key: string, cursor: number, pattern?: string, count?: number): Promise<IScanResult<string>>;
+    hScan(key: string, cursor: string, pattern?: string, count?: number): Promise<IScanResult<string>>;
 
     /**
      * Command: sAdd
@@ -1185,13 +1188,13 @@ export interface ICommandAPIs {
      * Command: sScan
      * @see https://redis.io/docs/latest/commands/sscan
      */
-    sScan(key: string, cursor: number, pattern?: string, count?: number): Promise<IScanResult<string>>;
+    sScan(key: string, cursor: string, pattern?: string, count?: number): Promise<IScanResult<string>>;
 
     /**
      * Command: sScan
      * @see https://redis.io/docs/latest/commands/sscan
      */
-    sScan$(key: string, cursor: number, pattern?: Buffer, count?: number): Promise<IScanResult<Buffer>>;
+    sScan$(key: string, cursor: string, pattern?: Buffer, count?: number): Promise<IScanResult<Buffer>>;
 
     /**
      * Command: bLPop

@@ -1240,7 +1240,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/scan
      */
     'scan': {
-        prepare(cur: number, p?: string, cn?: number): IPrepareResult {
+        prepare(cur: string, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [cur];
 
@@ -1261,7 +1261,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         process(data: [[number, Buffer], [number, Array<[number, Buffer]>]]): C.IScanResult<string> {
 
             return {
-                'nextCursor': parseInt(data[0][1].toString()),
+                'nextCursor': data[0][1].toString(),
                 'items': U.list2StringList(data[1][1])
             };
         }
@@ -1272,7 +1272,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/hscan
      */
     'hScan': {
-        prepare(k: string, cur: number, p?: string, cn?: number): IPrepareResult {
+        prepare(k: string, cur: string, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [k, cur];
 
@@ -1293,7 +1293,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         process(data: [[number, Buffer], [number, Array<[number, Buffer]>]]): C.IScanResult<string> {
 
             return {
-                'nextCursor': parseInt(data[0][1].toString()),
+                'nextCursor': data[0][1].toString(),
                 'items': U.list2StringList(data[1][1])
             };
         }
@@ -1655,7 +1655,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/sscan
      */
     'sScan': {
-        prepare(k: string, cur: number, p?: string, cn?: number): IPrepareResult {
+        prepare(k: string, cur: string, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [k, cur];
 
@@ -1676,7 +1676,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         process(data: [[number, Buffer], [number, Array<[number, Buffer]>]]): C.IScanResult<string> {
 
             return {
-                'nextCursor': parseInt(data[0][1].toString()),
+                'nextCursor': data[0][1].toString(),
                 'items': U.list2StringList(data[1][1])
             };
         }
@@ -1687,7 +1687,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/sscan
      */
     'sScan$': {
-        prepare(k: string, cur: number, p?: string, cn?: number): IPrepareResult {
+        prepare(k: string, cur: string, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [k, cur];
 
@@ -1708,7 +1708,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
         process(data: [[number, Buffer], [number, Array<[number, Buffer]>]]): C.IScanResult<string> {
 
             return {
-                'nextCursor': parseInt(data[0][1].toString()),
+                'nextCursor': data[0][1].toString(),
                 'items': U.list2StringList(data[1][1])
             };
         }

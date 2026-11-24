@@ -156,8 +156,8 @@ import * as Redis from '../lib';
 
     await multiTrx.hMGet('h', ['age', 'title']);
     await multiTrx.hGetAll('h');
-    await multiTrx.scan(0);
-    // console.log(JSON.stringify(await multiTrx.scan(0), null, 2));
+    await multiTrx.scan('0');
+    // console.log(JSON.stringify(await multiTrx.scan('0'), null, 2));
 
     await multiTrx.incr('a', 123);
 
@@ -184,7 +184,7 @@ import * as Redis from '../lib';
 
     pipeline.hMGet('h', ['age', 'title']);
     pipeline.hGetAll('h');
-    pipeline.scan(0);
+    pipeline.scan('0');
 
     pipeline.incr('a', 123);
 

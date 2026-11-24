@@ -1,5 +1,10 @@
 # Changes Logs
 
+## v3.2.2
+
+- fix(command): changed the cursor type from number to string for `scan`, `hScan`, `sScan` and `sScan$` to preserve 64-bit cursor values. Use `'0'` to start a scan and check for `'0'` to detect completion.
+- test(command): added regression tests for scan pagination and 64-bit cursor arguments.
+
 ## v3.2.1
 
 - fix(client): missing returning the result of "_command()" caused uncaught promise.

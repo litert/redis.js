@@ -1,3 +1,4 @@
+/// <reference types="node" preserve="true" />
 /* eslint-disable max-lines */
 /**
  * Copyright 2026 Angus.Fenying <fenying@litert.org>

@@ -11,12 +11,12 @@ test('Command For Scan Cursors', async (t) => {
 
     await cmdCli.del([...keys, hashKey, setKey]);
 
-    await t.test('Scan keys across pages with string cursors', async () => {
+    await t.test('Start a key scan with a numeric cursor and continue with string cursors', async () => {
 
         await cmdCli.mSet(Object.fromEntries(keys.map(key => [key, 'value'])));
 
         const found = new Set<string>();
-        let page = await cmdCli.scan('0', TEST_KEY_PREFIX + 'key_*', 1);
+        let page = await cmdCli.scan(0, TEST_KEY_PREFIX + 'key_*', 1);
 
         Assert.notStrictEqual(page.nextCursor, '0');
 
@@ -44,15 +44,15 @@ test('Command For Scan Cursors', async (t) => {
         await cmdCli.hSet(hashKey, 'field', 'value');
         await cmdCli.sAdd(setKey, ['member']);
 
-        Assert.deepStrictEqual(await cmdCli.hScan(hashKey, '0'), {
+        Assert.deepStrictEqual(await cmdCli.hScan(hashKey, 0), {
             nextCursor: '0',
             items: ['field', 'value']
         });
-        Assert.deepStrictEqual(await cmdCli.sScan(setKey, '0'), {
+        Assert.deepStrictEqual(await cmdCli.sScan(setKey, 0), {
             nextCursor: '0',
             items: ['member']
         });
-        Assert.strictEqual((await cmdCli.sScan$(setKey, '0')).nextCursor, '0');
+        Assert.strictEqual((await cmdCli.sScan$(setKey, 0)).nextCursor, '0');
     });
 
     await t.test('Accept the largest unsigned 64-bit cursor', async () => {

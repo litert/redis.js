@@ -2,7 +2,7 @@
 
 ## v3.2.2
 
-- fix(command): changed the cursor type from number to string for `scan`, `hScan`, `sScan` and `sScan$` to preserve 64-bit cursor values. Use `'0'` to start a scan and check for `'0'` to detect completion.
+- fix(command): `scan`, `hScan`, `sScan` and `sScan$` accept `number | string` cursors and return `nextCursor` as a string to preserve 64-bit values. Start with `0` or `'0'`, pass `nextCursor` back unchanged, and stop when it equals `'0'`.
 - test(command): added regression tests for scan pagination and 64-bit cursor arguments.
 
 ## v3.2.1

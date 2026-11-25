@@ -1240,7 +1240,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/scan
      */
     'scan': {
-        prepare(cur: string, p?: string, cn?: number): IPrepareResult {
+        prepare(cur: number | string, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [cur];
 
@@ -1272,7 +1272,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/hscan
      */
     'hScan': {
-        prepare(k: string, cur: string, p?: string, cn?: number): IPrepareResult {
+        prepare(k: string, cur: number | string, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [k, cur];
 
@@ -1655,7 +1655,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/sscan
      */
     'sScan': {
-        prepare(k: string, cur: string, p?: string, cn?: number): IPrepareResult {
+        prepare(k: string, cur: number | string, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [k, cur];
 
@@ -1687,7 +1687,7 @@ export const COMMANDS: Record<keyof C.ICommandAPIs, ICommand> = {
      * @see https://redis.io/docs/latest/commands/sscan
      */
     'sScan$': {
-        prepare(k: string, cur: string, p?: string, cn?: number): IPrepareResult {
+        prepare(k: string, cur: number | string, p?: string, cn?: number): IPrepareResult {
 
             const args: any[] = [k, cur];
 
